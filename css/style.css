@@ -10,3 +10,18 @@
 textarea {
     resize: none !important;
 }
+
+div.box {
+	height /**/: 200px !important;
+	padding: 4px;
+	background: cyan;
+	overflow:auto;
+	font-size:10px;
+	margin: 50px 50px 0;
+}
+
+div.box-inner {
+	overflow:auto;
+	margin:25px 24px 0;
+	padding-right:2px
+}
