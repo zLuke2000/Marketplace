@@ -10,3 +10,7 @@
 textarea {
     resize: none !important;
 }
+
+ul {
+    height: 50%;
+}
