@@ -13,8 +13,50 @@
     <!-- Blockchain -->
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ipfs-core@0.14.2/index.min.js"></script>
+    <script src="https://unpkg.com/bigchaindb-driver@4.2.0/dist/browser/bigchaindb-driver.window.min.js"></script>
     <!-- Script generazione -->
     <script src="js/html.js"></script>
+
+    <script>
+        // BigchainDB server instance (e.g. https://example.com/api/v1/)
+        const API_PATH = 'http://localhost:9984/api/v1/'
+
+        // Create a new keypair.
+        const alice = new BigchainDB.Ed25519Keypair()
+
+        // Construct a transaction payload
+        const tx = BigchainDB.Transaction.makeCreateTransaction(
+            // Define the asset to store, in this example it is the current temperature
+            // (in Celsius) for the city of Berlin.
+            { city: 'Berlin, DE', temperature: 22, datetime: new Date().toString() },
+
+            // Metadata contains information about the transaction itself
+            // (can be `null` if not needed)
+            { what: 'My first BigchainDB transaction' },
+
+            // A transaction needs an output
+            [ BigchainDB.Transaction.makeOutput(
+                    BigchainDB.Transaction.makeEd25519Condition(alice.publicKey))
+            ],
+            alice.publicKey
+        )
+
+        // Sign the transaction with private keys
+        const txSigned = BigchainDB.Transaction.signTransaction(tx, alice.privateKey)
+
+        // Send the transaction off to BigchainDB
+        let conn = new BigchainDB.Connection(API_PATH)
+
+        conn.postTransactionCommit(txSigned)
+            .then(res => {
+                const elem = document.getElementById('lastTransaction')
+                elem.href = API_PATH + 'transactions/' + txSigned.id
+                elem.innerText = txSigned.id
+                console.log('Transaction', txSigned.id, 'accepted')
+            })
+        // Check console for the transaction's status
+    </script>
+
 </head>
 
 <body>
@@ -24,19 +66,6 @@
     <div class="box">
         <div class="box-inner" id="acquista">
             <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
         </div>
     </div>
 
@@ -44,27 +73,32 @@
     <hr>
     <h2 class="text-center">VENDI UN PRODOTTO</h2>
     <div class="form-group" style="margin-left: 50px; margin-right: 50px">
+        <!-- nome -->
         <div class="form-field">
             <label for="inputProductName">Nome:</label>
             <input type="text" class="form-control error" id="inputProductName" placeholder="Inserisci il nome del prodotto">
             <small></small>
         </div>
+        <!-- prezzo -->
         <div class="form-field">
             <label for="inputProductPrice">Prezzo:</label>
             <input type="number" class="form-control no-spin" id="inputProductPrice"
             placeholder="Inserisci il prezzo del prodotto in ETH" min="0.1" step="0.1">
             <small></small>
         </div>
+        <!-- descrizione -->
         <div class="form-field">
             <label for="inputDescription">Descrizione:</label>
             <textarea type="text" class="form-control" id="inputProductDescription"
             placeholder="Inserisci una descrizione per questo prodotto (OPZIONALE)" rows="5"></textarea>
         </div>
+        <!-- immagine -->
         <div class="form-field">
             <label for="inputImage">Scegli immagine:</label><br>
-            <input type="file" accept="image/*" id="inputImage" onchange="loadFile(event)"><br>
+            <input class="button-choose" type="file" accept="image/*" id="inputImage" onchange="loadFile(event)"><br>
             <img id="output" alt="">
         </div>
+        <!-- conferma -->
         <div class="form-field">
             <button type="submit" id="btn_createProduct">Salva prodotto</button>
         </div>  
@@ -75,9 +109,6 @@
     <h2 class="text-center">I MIEI PRODOTTI</h2>
     <div class="box">
         <div class="box-inner" id="miei">
-            <script>generaCard("miei")</script>
-            <script>generaCard("miei")</script>
-            <script>generaCard("miei")</script>
             <script>generaCard("miei")</script>
         </div>
     </div>
