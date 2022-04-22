@@ -13,10 +13,10 @@
     <script src="js/script.js"></script>
 </head>
 
-<body style="background-color:skyblue;">
+<body>
+    <!-- SEZIONE ACQUISTA UN PRODOTTO -->
     <hr>
     <h2 class="text-center">ACQUISTA UN PRODOTTO</h2>
-    <hr>
     <div class="box">
         <div class="box-inner">
             <div class="card mb-3" style="max-width: 2235px;">
@@ -46,25 +46,23 @@
         </div>
     </div>
 
-
+    <!-- SEZIONE VENDI UN PRODOTTO -->
     <hr>
     <h2 class="text-center">VENDI UN PRODOTTO</h2>
-    <hr>
     <div class="form-group" style="margin-left: 50px; margin-right: 50px">
         <label for="inputProductName">Nome:</label>
-        <input type="text" class="form-control" id="inputProductName" placeholder="Inserisci il nome del prodotto"
-            required>
+        <input type="text" class="form-control" id="inputProductName" placeholder="Inserisci il nome del prodotto" required>
         <label for="inputProductPrice">Prezzo:</label>
-        <input type="number" class="form-control no-spin" id="inputProductPrice"
-            placeholder="Inserisci il prezzo del prodotto in ETH" min="0.1" step="0.1" required>
+        <input type="number" class="form-control no-spin" id="inputProductPrice" placeholder="Inserisci il prezzo del prodotto in ETH" min="0.1" step="0.1" required>
         <label for="inputDescription">Descrizione:</label>
-        <textarea type="text" class="form-control" id="inputProductDescription"
-            placeholder="Inserisci una descrizione per questo prodotto (OPZIONALE)" rows="5"></textarea>
+        <textarea type="text" class="form-control" id="inputProductDescription" placeholder="Inserisci una descrizione per questo prodotto (OPZIONALE)" rows="5"></textarea>
         <label for="inputImage">Scegli immagine:</label>
         <input type="file" accept="image/*" id="inputImage" onchange="loadFile(event)"><br>
         <img id="output" alt="">
         <button type="submit" class="btn btn-primary">Salva prodotto</button>
     </div>
+
+    <!-- SEZIONE I MIEI PRODOTTI -->
     <hr>
     <h2 class="text-center">I MIEI PRODOTTI</h2>
     <div class="box">
@@ -94,26 +92,24 @@
             </div>
         </div>
     </div>
+    
+    <!-- FOOTER -->
     <hr>
-    <div class="container text-white bg-dark p-2">
+    <div class="text-white bg-dark p-2">
         <div class="row text-center">
             <div class="col">
                 <address>
-                    <strong>Marketplace, Inc.</strong><br>
-                    Centore Luca<br>
-                    Lattarulo Luca<br>
-                    Pintonello Christian
+                    <strong>Marketplace</strong>
+                    <br>Centore Luca
+                    <br>Lattarulo Luca
+                    <br>Pintonello Christian
                 </address>
             </div>
         </div>
     </div>
     <footer class="text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <p>Copyright © Uninsubria. All rights reserved.</p>
-                </div>
-            </div>
+        <div class="row">
+            <p>Copyright © Uninsubria. All rights reserved.</p>
         </div>
     </footer>
 </body>
