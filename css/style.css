@@ -1,6 +1,24 @@
+:root {
+	--background: #90caf9;
+	--error-color: #dc3545;
+	--success-color: #28a745;
+	--opaco50: rgba(255, 255, 255, 0.5);
+	--lightblue50: rgba(159, 168, 218, 0.5);
+}
+
+/* Rimozione spinner da input type="number" */
+.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-spin {
+    -moz-appearance:textfield;
+}
+
 /* Colore background */
 body {
-	background-color: #90caf9 !important;
+	background-color: var(--background) !important;
 }
 
 /* Rimuove il triangolo resize in basso a destra per la resize */
@@ -11,7 +29,7 @@ textarea {
 /* Box esterno card */
 div.box {
 	height: 500px !important;
-	background: rgba(159, 168, 218, 0.5);
+	background: var(--lightblue50);
 	overflow:auto;
 	margin: 25px;
 	border-radius: 10px;
@@ -25,7 +43,7 @@ div.box-inner {
 
 /* CARD */
 .card {
-	background: rgba(255, 255, 255, 0.5) !important;
+	background: var(--opaco50) !important;
 	border-radius: 10px !important;
 }
 
@@ -33,13 +51,13 @@ div.box-inner {
 .form-field textarea,
 .form-field button {
 	border-radius: 10px;
-	background-color: rgba(255, 255, 255, 0.5);
+	background-color: var(--opaco50);
 }
 
 .form-field.error input {
-	border-color: red;
+	border-color: var(--error-color);
 }
 
 .form-field small {
-	color: red;
+	color: var(--error-color);
 }
