@@ -1,3 +1,8 @@
+:root {
+	--error-color: #dc3545;
+	--success-color: #28a745;
+}
+
 .no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
@@ -24,4 +29,17 @@ div.box-inner {
 	overflow:auto;
 	margin:25px 24px 0;
 	padding-right:2px
+}
+
+.form-field input {
+	border-width: 2px;
+	border-radius: 5px;
+}
+
+.form-field.error input {
+	border-color: var(--error-color);
+}
+
+.form-field small {
+	color: var(--error-color);
 }

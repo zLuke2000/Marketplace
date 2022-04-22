@@ -6,11 +6,16 @@ var loadFile = function(event) {
     image.style.width = ratio * height;
   };
 
+function timestamp() {
+  let date = new Date()
+  console.log(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds())
+}
+
 async function loadWeb3() {
   if (window.ethereum) {
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
-    web3 = new Web3(window.ethereum);
+      web3 = new Web3(window.ethereum);
     } catch (error) {
       console.error("User denied access", error);
     }
@@ -118,8 +123,8 @@ async function loadContract() {
 async function createProduct() {
   console.log("creating the new product...");
   let account = await getCurrentAccount();
-  //calling the smart contract method
-  window.contract.methods.createProduct("prova", 5).send({from: account})
+  // calling the smart contract method
+  window.contract.methods.createProduct(productName, productPrice).send({from: account})
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
     console.error("An error occurred:\n" + error.message, error);
@@ -127,18 +132,93 @@ async function createProduct() {
       console.log("Transaction receipt:", receipt);
     }
   });
-  //listen for the event
+  // listen for the event
   contract.events.productCreated({
     fromBlock: 'latest'})
     .on("data", (event) => console.log(event))
     .on("error", (error) => {console.error("Something went wrong..." + error.message, error)});
 }
 
+async function addToIPFS(data) {
+  //attesa circa 10s
+  const node = await IpfsCore.create()
+  let results = await node.add(data)
+  console.log(results.path)
+}
+
 async function load() {
   await loadWeb3();
   window.contract = await loadContract();
   console.log("contract loaded!");
-  await createProduct();
+  // addToIPFS('prova')
 }
 
 load();
+
+function showError(input, message) {
+  // get the form-field element
+  let formField = input.parentElement;
+  // add the error class
+  formField.classList.remove('success');
+  formField.classList.add('error');
+
+  // show the error message
+  let error = formField.querySelector('small');
+  error.textContent = message;
+}
+
+function removeError(input) {
+  let formField = input.parentElement;
+  formField.classList.remove('error');
+  let error = formField.querySelector('small');
+  error.textContent = '';
+}
+
+function checkProductName() {
+  let productNameEl = document.querySelector("#inputProductName");
+  if (productNameEl.value.trim() === "") {
+    console.error("Name is blank");
+    showError(productNameEl, "Product name cannot be blank!");
+    return false;
+  } else {
+    console.log("Product name is ok!")
+    removeError(productNameEl)
+    return true;
+  }
+}
+
+function checkProductPrice() {
+  let productPriceEl = document.querySelector("#inputProductPrice");
+  const re = /\d/; 
+  let price = productPriceEl.valueAsNumber;
+  if (!re.test(price)) {
+    console.error("Product price is not valid!");
+    showError(productPriceEl, "Product price must contain only digits!");
+    return false;
+  } else {
+    console.log("Price is ok!");
+    removeError(productPriceEl)
+    return true;
+  }
+}
+
+document.querySelector("#btn_createProduct").addEventListener("click", function validate(e) {
+  let isProductNameValid = checkProductName(),
+    isProductPriceValid = checkProductPrice();
+
+    if (isProductNameValid && isProductPriceValid) {
+      console.log("All inputs are valid!");
+      console.log("Going to create a product");
+      // createProduct();
+    }
+  
+});
+
+async function getAllProducts() {
+  contract.getPastEvents("productCreated", { fromBlock: 0, toBlock: "latest"})
+    .then( (events) => {
+      for (let event of events) {
+        console.log(event.returnValues);
+      }
+    });
+}
