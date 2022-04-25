@@ -10,11 +10,11 @@
     <!-- Style -->
     <link href="css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <!-- Blockchain -->
+    <!-- Web3js -->
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <!-- IPFS -->
     <script src="https://cdn.jsdelivr.net/npm/ipfs-core@latest/index.min.js"></script>
-    <!-- Script generazione -->
-    <script src="js/html.js"></script>
+    
 </head>
 
 <body>
@@ -23,6 +23,7 @@
     <h2 class="text-center">ACQUISTA UN PRODOTTO</h2>
     <div class="box">
         <div class="box-inner" id="acquista">
+            <!-- <script>generaCard("acquista")</script>
             <script>generaCard("acquista")</script>
             <script>generaCard("acquista")</script>
             <script>generaCard("acquista")</script>
@@ -35,8 +36,7 @@
             <script>generaCard("acquista")</script>
             <script>generaCard("acquista")</script>
             <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
-            <script>generaCard("acquista")</script>
+            <script>generaCard("acquista")</script> -->
         </div>
     </div>
 
@@ -62,8 +62,8 @@
         </div>
         <div class="form-field">
             <label for="inputImage">Scegli immagine:</label><br>
-            <input type="file" accept="image/*" id="inputImage" onchange="loadFile(event)"><br>
-            <img id="output" alt="">
+            <input type="file" accept="image/*" id="inputImage"><br>
+            <img id="productImage">
         </div>
         <div class="form-field">
             <button type="submit" id="btn_createProduct">Salva prodotto</button>
@@ -75,10 +75,10 @@
     <h2 class="text-center">I MIEI PRODOTTI</h2>
     <div class="box">
         <div class="box-inner" id="miei">
+            <!-- <script>generaCard("miei")</script>
             <script>generaCard("miei")</script>
             <script>generaCard("miei")</script>
-            <script>generaCard("miei")</script>
-            <script>generaCard("miei")</script>
+            <script>generaCard("miei")</script> -->
         </div>
     </div>
     
@@ -103,6 +103,11 @@
     </footer>
 </body>
 
+<!-- Script generazione -->
+<script type="module" src="js/html.js"></script>
+<!-- Script web3 -->
 <script type="module" src="js/script.js"></script>
+<!-- Script IPFS -->
+<script type="module" src="js/ipfs.js"></script>
 
 </html>

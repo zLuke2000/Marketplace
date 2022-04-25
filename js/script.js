@@ -1,14 +1,13 @@
-var loadFile = function(event) {
-    var image = document.getElementById('output');
-    image.src = URL.createObjectURL(event.target.files[0]);
-    let ratio = image.style.width / image.style.height; 
-    image.style.height = "200px";
-    image.style.width = ratio * height;
-  };
+import { addData } from './ipfs.js'
 
-function timestamp() {
-  let date = new Date()
-  console.log(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds())
+function Product(name, price, owner, description, image, state) {
+  this.name = name;
+  this.price = price;
+  this.owner = owner;
+  this.description = description;
+  this.image = image;
+  this.state = false;
+
 }
 
 async function loadWeb3() {
@@ -122,6 +121,7 @@ async function loadContract() {
 
 async function createProduct() {
   console.log("creating the new product...");
+  // getting user account address
   let account = await getCurrentAccount();
   // calling the smart contract method
   window.contract.methods.createProduct(productName, productPrice).send({from: account})
@@ -139,81 +139,6 @@ async function createProduct() {
     .on("error", (error) => {console.error("Something went wrong..." + error.message, error)});
 }
 
-async function addToIPFS(data) {
-  //attesa circa 10s
-  const node = await IpfsCore.create()
-  let results = await node.add(data)
-  console.log(results.path)
-}
-
-async function load() {
-  await loadWeb3();
-  window.contract = await loadContract();
-  console.log("contract loaded!");
-  // addToIPFS('prova')
-}
-
-load();
-
-function showError(input, message) {
-  // get the form-field element
-  let formField = input.parentElement;
-  // add the error class
-  formField.classList.remove('success');
-  formField.classList.add('error');
-
-  // show the error message
-  let error = formField.querySelector('small');
-  error.textContent = message;
-}
-
-function removeError(input) {
-  let formField = input.parentElement;
-  formField.classList.remove('error');
-  let error = formField.querySelector('small');
-  error.textContent = '';
-}
-
-function checkProductName() {
-  let productNameEl = document.querySelector("#inputProductName");
-  if (productNameEl.value.trim() === "") {
-    console.error("Name is blank");
-    showError(productNameEl, "Product name cannot be blank!");
-    return false;
-  } else {
-    console.log("Product name is ok!")
-    removeError(productNameEl)
-    return true;
-  }
-}
-
-function checkProductPrice() {
-  let productPriceEl = document.querySelector("#inputProductPrice");
-  const re = /\d/; 
-  let price = productPriceEl.valueAsNumber;
-  if (!re.test(price)) {
-    console.error("Product price is not valid!");
-    showError(productPriceEl, "Product price must contain only digits!");
-    return false;
-  } else {
-    console.log("Price is ok!");
-    removeError(productPriceEl)
-    return true;
-  }
-}
-
-document.querySelector("#btn_createProduct").addEventListener("click", function validate(e) {
-  let isProductNameValid = checkProductName(),
-    isProductPriceValid = checkProductPrice();
-
-    if (isProductNameValid && isProductPriceValid) {
-      console.log("All inputs are valid!");
-      console.log("Going to create a product");
-      // createProduct();
-    }
-  
-});
-
 async function getAllProducts() {
   contract.getPastEvents("productCreated", { fromBlock: 0, toBlock: "latest"})
     .then( (events) => {
@@ -222,3 +147,11 @@ async function getAllProducts() {
       }
     });
 }
+
+async function load() {
+  await loadWeb3();
+  window.contract = await loadContract();
+  console.log("contract loaded!");
+}
+
+// load();
