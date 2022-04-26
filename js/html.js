@@ -23,7 +23,7 @@ function generaCard(divID) {
 document.querySelector('#inputImage').addEventListener('change', function(event) {
     let file = event.target.files[0]
     let url = URL.createObjectURL(file)
-    let image = document.querySelector('#productImage')
+    let image = document.querySelector('#inputProductImage')
     image.src = url
     let ratio = image.style.width / image.style.height
     image.style.height = "200px";

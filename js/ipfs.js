@@ -32,7 +32,8 @@ async function createNode() {
     console.log('node created!')
 }
 
-await createNode()
+// await createNode()
+
 // const product = {
 //     name: 'product',
 //     price: '999'

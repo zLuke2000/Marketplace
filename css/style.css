@@ -54,6 +54,21 @@ div.box-inner {
 	background-color: var(--opaco50);
 }
 
+.custom-file-input::-webkit-file-upload-button {
+	visibility: hidden;
+}
+.custom-file-input::before {
+	content: 'Seleziona immagine';
+	display: inline-block;
+	background-color: var(--opaco50);
+	border-radius: 10px;
+	padding: 5px 15px;
+	outline: none;
+	white-space: nowrap;
+	font-weight: 700;
+	font-size: 10pt;
+}
+
 .form-field.error input {
 	border-color: var(--error-color);
 }
