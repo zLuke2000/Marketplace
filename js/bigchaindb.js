@@ -1,49 +1,42 @@
-const API_PATH = 'http://localhost:9984/api/v1/'
+const conn = new BigchainDB.Connection('https://test.ipdb.io/api/v1/', {
+    header1: 'header1_value',
+    header2: 'header2_value'
+})
 
-const conn = new BigchainDB.Connection(API_PATH)
+function createProduct(product, address) {
 
-const alice = new BigchainDB.Ed25519Keypair()
+    const alice = new BigchainDB.Ed25519Keypair()
 
-// Assets are the immutable part of the transaction
-const asset = {
-    'product': {
-        'name': 'product',
-        'price': '999'
+    const asset = {
+        'ref': 'marketplace',
+        product
     }
+    const metadata = {
+        'owner': address,
+        'purchased': 'false'
+    }
+
+    const tx = BigchainDB.Transaction.makeCreateTransaction(
+        asset,
+        metadata,
+        [ BigchainDB.Transaction.makeOutput(
+            BigchainDB.Transaction.makeEd25519Condition(alice.publicKey))
+        ],
+        alice.privateKey
+    )
+
+    const txSigned = BigchainDB.Transaction.signTransaction(tx, alice.privateKey)
+
+    conn.postTransactionCommit(txSigned)
+    .then(retrievedTx  => {
+        console.log('Transaction ', retrievedTx.id, ' accepted')
+    })
 }
-// Metadata is mutable, the information in metadata can be updated in the future transactions
-const metadata = { 'purchased': false }
 
-console.log('creating tx')
-const tx = BigchainDB.Transaction.makeCreateTransaction(
-    asset,
-    metadata,
-    // A transaction needs an output
-    // Each output indicates the crypto-conditions which must be satisfied by anyone wishing to spend/transfer that output
-    [ BigchainDB.Transaction.makeOutput(
-        BigchainDB.Transaction.makeEd25519Condition(alice.publicKey))
-    ],
-    // Input of the transaction
-    // Each input spends/transfer the Output by satisfying the crypto-condition on that output
-    alice.publicKey
-)
+async function searchProducts() {
+    conn.searchAssets('marketplace')
+    .then(assets => console.log('Found assets:', assets))
+    .catch(error => console.error('Error while searching products', error))
+}
 
-console.log('signing tx')
-const txSigned = BigchainDB.Transaction.signTransaction(
-    tx,
-    alice.privateKey
-)
-
-console.log('posting tx')
-conn.postTransactionCommit(txSigned)
-.then(retrievedTx  => {
-    console.log('Transaction ', retrievedTx.id, ' accepted')
-})
-.then(() => {
-    console.log('we')
-})
-.catch( error => {
-    console.error('Error while posting the transaction:', error)
-})
-
-// conn.getTransaction(txSigned.id)
+// searchProducts()
