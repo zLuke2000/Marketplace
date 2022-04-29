@@ -21,17 +21,6 @@ function generaCard(divID) {
 
 //listener evento aggiunta immagine per nuovo prodotto
 document.querySelector('#inputImage').addEventListener('change', function() {
-  // let file = this.files[0]
-  // let url = URL.createObjectURL(file)
-  // let image = document.querySelector('#inputProductImage')
-  // image.src = url
-  // // sistema dimensione immagine
-  // let ratio = image.style.width / image.style.height
-  // image.style.height = '200px';
-  // image.style.width = ratio * image.style.height;
-  // image.onload = () => {
-  //   URL.revokeObjectURL(image.src)
-  // }
   let file = this.files[0]
   let reader = new FileReader()
   reader.readAsDataURL(file)
@@ -44,6 +33,22 @@ document.querySelector('#inputImage').addEventListener('change', function() {
     img.style.width = ratio * img.style.height;
   }
 });
+
+async function base64ToBlob(base64) {
+  const base64Response = await fetch(image.src)
+  const blob = await base64Response.blob()
+  console.log('image as blob', blob)
+  return blob
+}
+
+function blobToBase64(blob) {
+  const reader = new FileReader()
+  reader.readAsDataURL(blob)
+  reader.onload = () => { 
+    const base64 = reader.result
+    return base64
+   }
+}
 
 function showError(input, message) {
     // get the form-field element
@@ -94,35 +99,13 @@ function checkProductPrice() {
   
   // evento click per creare un nuovo prodotto
   document.querySelector("#btn_createProduct").addEventListener("click", async function() {
-    // let isProductNameValid = checkProductName(),
-    // isProductPriceValid = checkProductPrice();
+    const isProductNameValid = checkProductName()
+    const isProductPriceValid = checkProductPrice()
   
-    // if (isProductNameValid && isProductPriceValid) {
-    //     console.log("All inputs are valid!");
-    //     console.log("Going to create a product");
-    //     // createProduct();
-    //     // TODO: prendere immagine come blob o base64, creare prodotto e caricarlo su IPFS
-    //     let img = document.querySelector('#productImage')
-    //     let description = document.querySelector('#inputProductDescription')
-    //     console.log(img.src)
-    //     const product = {name: "prova", price: 5, description: description.value, image: img.src}
-    //     console.log(product)
-    //     // addData(product)
-    // }
-    let image = document.querySelector('#inputProductImage')
-    console.log(image.src)
-    
+    if (isProductNameValid && isProductPriceValid) {
+        console.log("All inputs are valid!");
+        console.log("Going to create a product");
+        let img = document.querySelector('#inputProductImage').src
+        let description = document.querySelector('#inputProductDescription').value
+    }
 });
-
-async function base64ToBlob(base64) {
-  const base64Response = await fetch(image.src)
-  const blob = await base64Response.blob()
-  console.log('image as blob', blob)
-  return blob
-}
-
-function blobToBase64(blob) {
-  const reader = new FileReader()
-  reader.readAsDataURL(blob)
-  reader.onload = () => {  }
-}

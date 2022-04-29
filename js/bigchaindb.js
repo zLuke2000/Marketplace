@@ -34,9 +34,7 @@ function createProduct(product, address) {
 }
 
 async function searchProducts() {
-    conn.searchAssets('marketplace')
+    conn.searchAssets('')
     .then(assets => console.log('Found assets:', assets))
     .catch(error => console.error('Error while searching products', error))
 }
-
-// searchProducts()

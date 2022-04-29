@@ -1,7 +1,7 @@
 :root {
-	--background: #90caf9;
-	--error-color: #dc3545;
-	--success-color: #28a745;
+	--background: #90CAF9;
+	--error-color: #DC3545;
+	--success-color: #28A745;
 	--opaco50: rgba(255, 255, 255, 0.5);
 	--lightblue50: rgba(159, 168, 218, 0.5);
 }
@@ -12,6 +12,7 @@
     margin: 0;
 }
 
+/* Rimozione spinner da input type="number" */
 .no-spin {
     -moz-appearance:textfield;
 }
@@ -47,32 +48,48 @@ div.box-inner {
 	border-radius: 10px !important;
 }
 
+/* Stile per i campi del form di creazione di un nuovo prodotto */
 .form-field input,
 .form-field textarea,
 .form-field button {
 	border-radius: 10px;
+	border-width: 2px;
 	background-color: var(--opaco50);
 }
 
-.custom-file-input::-webkit-file-upload-button {
-	visibility: hidden;
-}
-.custom-file-input::before {
-	content: 'Seleziona immagine';
-	display: inline-block;
-	background-color: var(--opaco50);
-	border-radius: 10px;
-	padding: 5px 15px;
-	outline: none;
-	white-space: nowrap;
-	font-weight: 700;
-	font-size: 10pt;
-}
-
+/* Stile di errore per input del form */
 .form-field.error input {
 	border-color: var(--error-color);
 }
 
+/* Stile per scritta di errore degli input del form */
 .form-field small {
 	color: var(--error-color);
+}
+
+/* Style per Input type="file" */
+.form-field input[type=file] {
+	display: none;
+}
+
+/* Style per Input type="file" */
+.form-field input[type=file] + label{
+	background-color: var(--opaco50);
+	border: 2px solid;
+	border-color: #CED4DA;
+	border-radius: 8px;
+	padding: 5px;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+/* Style per Input type="file" */
+.form-field input[type=file] + label:hover{
+	background-color: white;
+	border-color: #6FB3FA;
+	cursor: pointer;
+}
+
+.form-field button {
+	margin-top: 10px;
 }
