@@ -3,9 +3,9 @@ const conn = new BigchainDB.Connection('https://test.ipdb.io/api/v1/', {
     header2: 'header2_value'
 })
 
-function createProduct(product, address) {
+const alice = new BigchainDB.Ed25519Keypair()
 
-    const alice = new BigchainDB.Ed25519Keypair()
+export function createProduct(product, address) {
 
     const asset = {
         'ref': 'marketplace',
@@ -33,8 +33,8 @@ function createProduct(product, address) {
     })
 }
 
-async function searchProducts() {
-    conn.searchAssets('')
+export async function searchProducts() {
+    conn.searchAssets('marketplace')
     .then(assets => console.log('Found assets:', assets))
     .catch(error => console.error('Error while searching products', error))
 }

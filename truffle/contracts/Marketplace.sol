@@ -16,6 +16,7 @@ contract Marketplace {
 
     struct Product {
         string cid;
+        
     }
 
     // event productCreated (

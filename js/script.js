@@ -23,7 +23,7 @@ async function loadWeb3() {
   }
 }
 
-async function getCurrentAccount() {
+export async function getCurrentAccount() {
   const accounts = await window.web3.eth.getAccounts();
   return accounts[0];
 }
@@ -154,4 +154,4 @@ async function load() {
   console.log("contract loaded!");
 }
 
-// load();
+load();
