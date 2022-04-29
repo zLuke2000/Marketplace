@@ -1,4 +1,6 @@
+import { getCurrentAccount } from "./script.js";
 import { addData } from "./ipfs.js";
+import * as ic from "./inputChecker.js"
 
 function generaCard(divID) {
     let div = document.getElementById(divID);
@@ -45,75 +47,6 @@ document.querySelector('#inputImage').addEventListener('change', function() {
   }
 });
 
-function showError(input, message) {
-    // get the form-field element
-    let formField = input.parentElement;
-    // add the error class
-    formField.classList.remove('success');
-    formField.classList.add('error');
-  
-    // show the error message
-    let error = formField.querySelector('small');
-    error.textContent = message;
-}
-  
-function removeError(input) {
-    let formField = input.parentElement;
-    formField.classList.remove('error');
-    let error = formField.querySelector('small');
-    error.textContent = '';
-}
-  
-function checkProductName() {
-    let productNameEl = document.querySelector("#inputProductName");
-    if (productNameEl.value.trim() === "") {
-      console.error("Name is blank");
-      showError(productNameEl, "Product name cannot be blank!");
-      return false;
-    } else {
-      console.log("Product name is ok!")
-      removeError(productNameEl)
-      return true;
-    }
-}
-  
-function checkProductPrice() {
-    let productPriceEl = document.querySelector("#inputProductPrice");
-    const re = /\d/; 
-    let price = productPriceEl.valueAsNumber;
-    if (!re.test(price)) {
-      console.error("Product price is not valid!");
-      showError(productPriceEl, "Product price must contain only digits!");
-      return false;
-    } else {
-      console.log("Price is ok!");
-      removeError(productPriceEl)
-      return true;
-    }
-}
-  
-  // evento click per creare un nuovo prodotto
-  document.querySelector("#btn_createProduct").addEventListener("click", async function() {
-    // let isProductNameValid = checkProductName(),
-    // isProductPriceValid = checkProductPrice();
-  
-    // if (isProductNameValid && isProductPriceValid) {
-    //     console.log("All inputs are valid!");
-    //     console.log("Going to create a product");
-    //     // createProduct();
-    //     // TODO: prendere immagine come blob o base64, creare prodotto e caricarlo su IPFS
-    //     let img = document.querySelector('#productImage')
-    //     let description = document.querySelector('#inputProductDescription')
-    //     console.log(img.src)
-    //     const product = {name: "prova", price: 5, description: description.value, image: img.src}
-    //     console.log(product)
-    //     // addData(product)
-    // }
-    let image = document.querySelector('#inputProductImage')
-    console.log(image.src)
-    
-});
-
 async function base64ToBlob(base64) {
   const base64Response = await fetch(image.src)
   const blob = await base64Response.blob()
@@ -126,3 +59,24 @@ function blobToBase64(blob) {
   reader.readAsDataURL(blob)
   reader.onload = () => {  }
 }
+
+// evento click per creare un nuovo prodotto
+document.querySelector("#btn_createProduct").addEventListener("click", async function() {
+  // Controllo che nome, prezzo e descrizione rispettino determinati parametri
+  if (ic.checkProductName(document.querySelector("#inputProductName")) & ic.checkProductPrice(document.querySelector("#inputProductPrice")) & ic.checkProductDescription(document.querySelector("#inputProductDescription"))) {
+    console.log("All inputs are valid!");
+    console.log("Going to create a product");
+
+    const product = {
+      owner: getCurrentAccount(),
+      name: document.querySelector("#inputProductName").value.trim(),
+      price: document.querySelector("#inputProductPrice").value.trim(),
+      descritpion: document.querySelector('#inputProductDescription').value.trim(),
+      image: 'null',
+      state: 'DEFAULT'
+    }
+
+    console.log("OK - ", product)
+    addData()
+  }
+});
