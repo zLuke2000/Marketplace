@@ -39,3 +39,5 @@ export async function searchProducts() {
     .then(assets => console.log('Found assets:', assets))
     .catch(error => console.error('Error while searching products', error))
 }
+
+searchProducts()
