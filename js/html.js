@@ -1,14 +1,26 @@
 import { getCurrentAccount } from "./script.js";
-import { addData } from "./ipfs.js";
+import * as IPFS from "./ipfs.js";
 import * as ic from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
 caricaProdotti()
 
 async function caricaProdotti() {
-  var products = await BigChain.searchProducts()
+  var products = await BigChain.searchProducts()    //array
   if(products != undefined) {
     console.log("Ecco: ", products)
+
+    let i = 0
+    for(let pr of products){
+      let cid = pr.data.cid
+      console.log("CID elemento: ",i,cid)
+      let stringObj = await IPFS.retrieveData(cid)
+      //let obj = JSON.parse(stringObj)
+      //console.log("STAMPA DI OBJ: ",obj)
+      console.log("stringObj: ",stringObj)
+      i++
+    } 
+    console.log("LOG DOPO IL FOR")
   }
 }
 

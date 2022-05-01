@@ -22,16 +22,26 @@ export async function retrieveData(cid) {
         console.error('node is still undefined...')
         return new Promise(resolve => {
             setTimeout(function() {
-              resolve(addData(data))
+              resolve(retrieveData(cid))
             }, 3000)
           })
     } else {
+
+
+        console.log("prova prova")
         const stream = node.cat(cid)
         let data = ''
+        console.log("log di stream",stream)
         for await (const chunck of stream) {
             data += chunck.toString()
         } 
+        console.log("ELSE RETRIVEDATA")
         return data
+
+
+
+        let buffer = await node.cat(cid)
+        return buffer
     }
 }
 
