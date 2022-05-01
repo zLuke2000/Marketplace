@@ -3,6 +3,15 @@ import { addData } from "./ipfs.js";
 import * as ic from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
+caricaProdotti()
+
+async function caricaProdotti() {
+  var products = await BigChain.searchProducts()
+  if(products != undefined) {
+    console.log("Ecco: ", products)
+  }
+}
+
 function generaCard(divID) {
     let div = document.getElementById(divID);
     
