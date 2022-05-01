@@ -75,9 +75,10 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
     let stringObj = JSON.stringify(product)
     let cid = await addData(stringObj)
     console.log('product cid', cid)
-    // BigChain.createProduct(cid, address)
-    // setTimeout(() => {
-    //   BigChain.searchProducts()
-    // }, 5000);
+
+    BigChain.createProduct(cid, address)
+    setTimeout(() => {
+      BigChain.searchProducts()
+    }, 5000);
   }
 });

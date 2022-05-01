@@ -9,7 +9,8 @@ export function createProduct(product, address) {
 
     const asset = {
         'ref': 'marketplace',
-        product
+        //FIXME: deve contenere solo il cid quindi serve il toString() ?
+        'cid': product.toString()
     }
     const metadata = {
         'owner': address,
