@@ -5,12 +5,11 @@ const conn = new BigchainDB.Connection('https://test.ipdb.io/api/v1/', {
 
 const alice = new BigchainDB.Ed25519Keypair()
 
-export function createProduct(product, address) {
+export function createProduct(cid, address) {
 
     const asset = {
         'ref': 'marketplace',
-        //FIXME: deve contenere solo il cid quindi serve il toString() ?
-        'cid': product.toString()
+        'cid': cid
     }
     const metadata = {
         'owner': address,
@@ -35,9 +34,10 @@ export function createProduct(product, address) {
 }
 
 export async function searchProducts() {
-    conn.searchAssets('marketplace')
-    .then(assets => console.log('Found assets:', assets))
-    .catch(error => console.error('Error while searching products', error))
+    try {
+        return await conn.searchAssets('marketplace')
+    } catch (error) {
+        console.error('Error while searching products', error)
+    }
 }
 
-searchProducts()

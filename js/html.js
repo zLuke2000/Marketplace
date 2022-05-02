@@ -1,7 +1,27 @@
 import { getCurrentAccount } from "./script.js";
-import { addData } from "./ipfs.js";
+import * as IPFS from "./ipfs.js";
 import * as ic from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
+
+caricaProdotti()
+
+async function caricaProdotti() {
+  var products = await BigChain.searchProducts()
+  if(products != undefined) {
+    console.log("Products: ", products)
+
+    let i = 1
+    for(let pr of products){
+      let cid = pr.data.cid
+      console.log("CID elemento: ",i, cid)
+      let stringObj = await IPFS.retrieveData(cid)
+      let obj = JSON.parse(stringObj)
+      console.log('Object from BigChain:', obj)
+      i++
+    } 
+    // console.log("Log dopo il for")
+  }
+}
 
 function generaCard(divID) {
     let div = document.getElementById(divID);
@@ -73,7 +93,7 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
 
     console.log("OK, going to add the product to IPFS", product)
     let stringObj = JSON.stringify(product)
-    let cid = await addData(stringObj)
+    let cid = await IPFS.addData(stringObj)
     console.log('product cid', cid)
 
     BigChain.createProduct(cid, address)

@@ -7,7 +7,7 @@ export async function addData(data) {
         return new Promise(resolve => {
             setTimeout(function() {
               resolve(addData(data))
-            }, 3000)
+            }, 5000)
           })
     } else {
         let result = await node.add(data)
@@ -22,16 +22,24 @@ export async function retrieveData(cid) {
         console.error('node is still undefined...')
         return new Promise(resolve => {
             setTimeout(function() {
-              resolve(addData(data))
-            }, 3000)
+              resolve(retrieveData(cid))
+            }, 5000)
           })
     } else {
         const stream = node.cat(cid)
         let data = ''
+        // console.log("log di stream (retrieveData):", stream)
         for await (const chunck of stream) {
+            // console.log('chunck (retrieveData):', chunck)
             data += chunck.toString()
         } 
+        // console.log("Log dopo for await (retrieveData)")
         return data
+
+
+
+        // let buffer = await node.cat(cid)
+        // return buffer
     }
 }
 
