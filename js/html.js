@@ -6,21 +6,20 @@ import * as BigChain from './bigchaindb.js'
 caricaProdotti()
 
 async function caricaProdotti() {
-  var products = await BigChain.searchProducts()    //array
+  var products = await BigChain.searchProducts()
   if(products != undefined) {
-    console.log("Ecco: ", products)
+    console.log("Products: ", products)
 
-    let i = 0
+    let i = 1
     for(let pr of products){
       let cid = pr.data.cid
-      console.log("CID elemento: ",i,cid)
+      console.log("CID elemento: ",i, cid)
       let stringObj = await IPFS.retrieveData(cid)
-      //let obj = JSON.parse(stringObj)
-      //console.log("STAMPA DI OBJ: ",obj)
-      console.log("stringObj: ",stringObj)
+      let obj = JSON.parse(stringObj)
+      console.log('Object from BigChain:', obj)
       i++
     } 
-    console.log("LOG DOPO IL FOR")
+    // console.log("Log dopo il for")
   }
 }
 

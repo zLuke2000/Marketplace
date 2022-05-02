@@ -5,12 +5,11 @@ const conn = new BigchainDB.Connection('https://test.ipdb.io/api/v1/', {
 
 const alice = new BigchainDB.Ed25519Keypair()
 
-export function createProduct(product, address) {
+export function createProduct(cid, address) {
 
     const asset = {
         'ref': 'marketplace',
-        //FIXME: deve contenere solo il cid quindi serve il toString() ?
-        'cid': product.toString()
+        'cid': cid
     }
     const metadata = {
         'owner': address,
