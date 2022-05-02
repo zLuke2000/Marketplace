@@ -94,7 +94,7 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
 
     console.log("OK, going to add the product to IPFS", product)
     let stringObj = JSON.stringify(product)
-    let cid = await addData(stringObj)
+    let cid = await IPFS.addData(stringObj)
     console.log('product cid', cid)
 
     BigChain.createProduct(cid, address)
