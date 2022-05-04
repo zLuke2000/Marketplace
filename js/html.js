@@ -1,9 +1,9 @@
 import { getCurrentAccount } from "./script.js";
 import * as IPFS from "./ipfs.js";
-import * as ic from "./inputChecker.js"
+import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
-caricaProdotti()
+// caricaProdotti()
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -17,29 +17,41 @@ async function caricaProdotti() {
       let stringObj = await IPFS.retrieveData(cid)
       let obj = JSON.parse(stringObj)
       console.log('Object from BigChain:', obj)
+      await generaCard('boxAcquista', obj)
       i++
     } 
-    // console.log("Log dopo il for")
+    console.log("Log dopo il for")
   }
 }
 
-function generaCard(divID) {
-    let div = document.getElementById(divID);
+async function generaCard(divID, obj) {
+  let div = document.getElementById(divID);
+  let blob = new Blob([obj.image.text], {type: obj.image.type})
+  let base64 = await blobToBase64(blob)
+  console.log(base64)
     
-    let cardTemplate = '<div class="card mb-3"> ' +
-    '<div class="row no-gutters"> ' +
-    '<div class="col-md-11"> ' +
-    '<div class="card-body"> ' +
-    '<h5 class="card-title">Nome del prodotto</h5> ' +
-    '<p class="card-text">Descrizione del prodotto.</p> ' +
-    '<p class="card-text"><small class="text-muted">owner: </small></p> ' +
-    '</div> ' +
-    '</div> ' +
-    '<div class="col-md-1"> <img src="#" class="card-img" alt="..."> </div> ' +
-    '</div> ' +
-    '</div> '
+  let cardTemplate = 
+  `<div class="card mb-3">
+    <div class="row">
+      <div class="col-md-3">
+        <img src="${base64}" class="card-img">
+      </div>
+      <div class="col-md-6">
+        <div class="card-body">
+          <h3 class="card-title">${obj.name}</h3>
+          <h4 class="card-text">${obj.price} ETH</h4>
+          <p class="card-text">
+            <small>Owner: ${obj.owner}</small>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-3 justify-content-center"> 
+        <a href="#" class="btn btn-primary">Acquista</a> 
+      </div>
+    </div>
+  </div> `
 
-    div.innerHTML += cardTemplate
+  div.innerHTML += cardTemplate
 }
 
 //listener evento aggiunta immagine per nuovo prodotto
@@ -58,47 +70,72 @@ document.querySelector('#inputImage').addEventListener('change', function() {
 });
 
 async function base64ToBlob(base64) {
-  const base64Response = await fetch(image.src)
+  const base64Response = await fetch(base64)
   const blob = await base64Response.blob()
-  console.log('image as blob', blob)
   return blob
 }
 
 function blobToBase64(blob) {
   const reader = new FileReader()
-  reader.readAsDataURL(blob)
-  reader.onload = () => { 
-    const base64 = reader.result
-    return base64
-   }
+  return new Promise(resolve => {
+    reader.onloadend = () => {
+      resolve(reader.result)
+    }
+    reader.readAsDataURL(blob)
+  })
 }
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function() {
+  //TODO:  notifica che il prodotto e' stato correttmente creato e pulire i campi del form
   // Controllo che nome, prezzo e descrizione rispettino determinati parametri
-  if (ic.checkProductName(document.querySelector("#inputProductName")) & ic.checkProductPrice(document.querySelector("#inputProductPrice")) & ic.checkProductDescription(document.querySelector("#inputProductDescription"))) {
+  if (input.checkProductName(document.querySelector("#inputProductName")) & input.checkProductPrice(document.querySelector("#inputProductPrice"))) {
     console.log("All inputs are valid!");
     console.log("Going to create a product");
 
     let address = await getCurrentAccount()
+
+    let img = document.querySelector('#inputProductImage')
+    let blob = await base64ToBlob(img.src)
+    console.log('Blob:', blob)
+    let base64 = await blobToBase64(blob)
+    console.log('Base64:', base64)
+
+    let blobText = await blob.text()
 
     const product = {
       owner: address,
       name: document.querySelector("#inputProductName").value.trim(),
       price: document.querySelector("#inputProductPrice").value.trim(),
       descritpion: document.querySelector('#inputProductDescription').value.trim(),
-      image: 'null',
+      image: {
+        type: blob.type,
+        text: blobText
+      },
       purchased: 'false'
     }
 
-    console.log("OK, going to add the product to IPFS", product)
-    let stringObj = JSON.stringify(product)
-    let cid = await IPFS.addData(stringObj)
-    console.log('product cid', cid)
+    console.log('OBJ', product)
+    console.log('blob type:', product.image.type)
+    console.log('blob text:', product.image.text)
+    console.log('Blob:', blob)
 
-    BigChain.createProduct(cid, address)
-    setTimeout(() => {
-      BigChain.searchProducts()
-    }, 5000);
+    let stringObj = JSON.stringify(product)
+
+    let parsedObj = JSON.parse(stringObj)
+    let parsedBlob = new Blob([parsedObj.image.text], {type: parsedObj.image.type})
+    console.log('Parsed blob:', parsedObj.image.text)
+
+
+    let parsedBase64 = await blobToBase64(parsedBlob)
+    console.log('Parsed base64:', parsedBase64)
+    console.log('Blob are equal:', blob == parsedBlob)
+    console.log('Blob originale:', blob)
+    console.log('Parsed blob:', parsedBlob)
+
+    // let cid = await IPFS.addData(stringObj)
+    // console.log('Product\'s cid:', cid)
+
+    // BigChain.createProduct(cid, address)
   }
 });

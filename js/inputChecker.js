@@ -24,32 +24,36 @@ export function checkProductPrice(productPriceEl) {
     }
 }
 
-export function checkProductDescription(productDescriptionEl) {
-    if (productDescriptionEl.value.trim().length > 512) {
-        console.error("Description exceeded lenght limit!");
-        showError(productDescriptionEl, "Product description length can be 512 character max!");
-        return false;
-    } else {
-        console.log("Description is ok!")
-        removeError(productDescriptionEl)
-        return true;
-    }
+// export function checkProductDescription(productDescriptionEl) {
+//     //TODO: check realtime sulla lunghezza
+//     if (productDescriptionEl.value.trim().length > 512) {
+//         console.error("Description exceeded lenght limit!");
+//         showError(productDescriptionEl, "Product description length can be 512 character max!");
+//         return false;
+//     } else {
+//         console.log("Description is ok!")
+//         removeError(productDescriptionEl)
+//         return true;
+//     }
+// }
+
+document.querySelector('#inputProductDescription').onkeyup = function () {
+    // document.getElementById('count').innerHTML = "Characters left: " + (500 - this.value.length);
+    let formField = this.parentElement
+    let counter = formField.querySelector('small')
+    counter.textContent = this.value.length + ' / 512'  
 }
 
 function showError(input, message) {
-    // get the form-field element
-    let formField = input.parentElement;
-    // add the error class
-    formField.classList.remove('success');
-    formField.classList.add('error');
-    // show the error message
-    let error = formField.querySelector('small');
-    error.textContent = message;
+    let formField = input.parentElement
+    formField.classList.add('error')
+    let error = formField.querySelector('small')
+    error.textContent = message
 }
   
 function removeError(input) {
-    let formField = input.parentElement;
-    formField.classList.remove('error');
-    let error = formField.querySelector('small');
-    error.textContent = '';
+    let formField = input.parentElement
+    formField.classList.remove('error')
+    let error = formField.querySelector('small')
+    error.textContent = ''
 }

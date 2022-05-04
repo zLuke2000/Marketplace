@@ -63,7 +63,7 @@ div.box-inner {
 }
 
 /* Stile per scritta di errore degli input del form */
-.form-field small {
+.form-field input + small {
 	color: var(--error-color);
 }
 

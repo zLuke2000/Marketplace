@@ -28,23 +28,14 @@ export async function retrieveData(cid) {
     } else {
         const stream = node.cat(cid)
         let data = ''
-        // console.log("log di stream (retrieveData):", stream)
         for await (const chunck of stream) {
-            // console.log('chunck (retrieveData):', chunck)
             data += chunck.toString()
         } 
-        // console.log("Log dopo for await (retrieveData)")
         return data
-
-
-
-        // let buffer = await node.cat(cid)
-        // return buffer
     }
 }
 
 async function createNode() {
-    //FIXME: nodo non viene mai creato
     console.log('creating node...')
     //attesa circa 10s
     node = await IpfsCore.create()
