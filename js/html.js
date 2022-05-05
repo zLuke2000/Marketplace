@@ -3,7 +3,7 @@ import * as IPFS from "./ipfs.js";
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
-// caricaProdotti()
+caricaProdotti()
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -11,24 +11,27 @@ async function caricaProdotti() {
     console.log("Products: ", products)
 
     let i = 1
-    for(let pr of products){
+    for(let pr of products) {
       let cid = pr.data.cid
-      console.log("CID elemento: ",i, cid)
+      console.log("CID elemento:", i, cid)
       let stringObj = await IPFS.retrieveData(cid)
       let obj = JSON.parse(stringObj)
       console.log('Object from BigChain:', obj)
       await generaCard('boxAcquista', obj)
       i++
     } 
-    console.log("Log dopo il for")
+    console.log("Finished to read products from BigChainDB")
   }
 }
 
 async function generaCard(divID, obj) {
-  let div = document.getElementById(divID);
-  let blob = new Blob([obj.image.text], {type: obj.image.type})
-  let base64 = await blobToBase64(blob)
-  console.log(base64)
+  let div = document.getElementById(divID)
+  
+  let arr = await IPFS.retrieveData(obj.image)
+  console.log('Retrieved array:',typeof arr)
+  let base64 = arrayBufferToBase64(arr)
+  console.log('base64 from array:', base64)
+  
     
   let cardTemplate = 
   `<div class="card mb-3">
@@ -49,7 +52,7 @@ async function generaCard(divID, obj) {
         <a href="#" class="btn btn-primary">Acquista</a> 
       </div>
     </div>
-  </div> `
+  </div>`
 
   div.innerHTML += cardTemplate
 }
@@ -75,67 +78,68 @@ async function base64ToBlob(base64) {
   return blob
 }
 
-function blobToBase64(blob) {
-  const reader = new FileReader()
-  return new Promise(resolve => {
-    reader.onloadend = () => {
-      resolve(reader.result)
-    }
-    reader.readAsDataURL(blob)
-  })
+// function blobToBase64(blob) {
+//   const reader = new FileReader()
+//   return new Promise(resolve => {
+//     reader.onloadend = () => {
+//       resolve(reader.result)
+//     }
+//     reader.readAsDataURL(blob)
+//   })
+// }
+
+async function base64ToArrayBuffer(base64) {
+  let response = await fetch(base64)
+  return await response.arrayBuffer() 
+}
+
+function arrayBufferToBase64(buffer) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
 }
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function() {
   //TODO:  notifica che il prodotto e' stato correttmente creato e pulire i campi del form
   // Controllo che nome, prezzo e descrizione rispettino determinati parametri
-  if (input.checkProductName(document.querySelector("#inputProductName")) & input.checkProductPrice(document.querySelector("#inputProductPrice"))) {
+  let productNameEl = document.querySelector("#inputProductName")
+  let productPriceEl = document.querySelector("#inputProductPrice")
+  if (input.checkProductName(productNameEl) & input.checkProductPrice(productPriceEl)) {
     console.log("All inputs are valid!");
     console.log("Going to create a product");
-
+    
+    //recupera l'account di Metamask
     let address = await getCurrentAccount()
+    let productDescriptionEl =  document.querySelector('#inputProductDescription')
+    let image = document.querySelector('#inputProductImage')
+    let arr = await base64ToArrayBuffer(image.src)
+    console.log('Base64 string from image src:', image.src)
+    console.log('ArrayBuffer from function:', arr)
 
-    let img = document.querySelector('#inputProductImage')
-    let blob = await base64ToBlob(img.src)
-    console.log('Blob:', blob)
-    let base64 = await blobToBase64(blob)
-    console.log('Base64:', base64)
-
-    let blobText = await blob.text()
+    console.log('Adding image to IPFS')
+    let img_cid = await IPFS.addData(arr)
 
     const product = {
       owner: address,
-      name: document.querySelector("#inputProductName").value.trim(),
-      price: document.querySelector("#inputProductPrice").value.trim(),
-      descritpion: document.querySelector('#inputProductDescription').value.trim(),
-      image: {
-        type: blob.type,
-        text: blobText
-      },
+      name: productNameEl.value.trim(),
+      price:productPriceEl.value.trim(),
+      descritpion: productDescriptionEl.value.trim(),
+      image: img_cid,
       purchased: 'false'
     }
 
-    console.log('OBJ', product)
-    console.log('blob type:', product.image.type)
-    console.log('blob text:', product.image.text)
-    console.log('Blob:', blob)
-
     let stringObj = JSON.stringify(product)
 
-    let parsedObj = JSON.parse(stringObj)
-    let parsedBlob = new Blob([parsedObj.image.text], {type: parsedObj.image.type})
-    console.log('Parsed blob:', parsedObj.image.text)
+    console.log('Adding product to IPFS')
+    let cid = await IPFS.addData(stringObj)
+    console.log('Product\'s cid:', cid)
 
-
-    let parsedBase64 = await blobToBase64(parsedBlob)
-    console.log('Parsed base64:', parsedBase64)
-    console.log('Blob are equal:', blob == parsedBlob)
-    console.log('Blob originale:', blob)
-    console.log('Parsed blob:', parsedBlob)
-
-    // let cid = await IPFS.addData(stringObj)
-    // console.log('Product\'s cid:', cid)
-
-    // BigChain.createProduct(cid, address)
+    console.log('Adding product to BigChainDB')
+    BigChain.createProduct(cid, address)
   }
 });

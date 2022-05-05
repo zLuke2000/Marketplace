@@ -11,7 +11,6 @@ export async function addData(data) {
           })
     } else {
         let result = await node.add(data)
-        console.log('Added file:', result.path, result.cid)
         //path == cid.toString()
         return result.path
     }
