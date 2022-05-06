@@ -14,6 +14,7 @@ async function loadWeb3() {
   if (window.ethereum) {
     try {
       let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      console.log('Account array:', accounts)
       window.account = accounts[0]
       console.log('Selected account is:', window.account)
       web3 = new Web3(window.ethereum)

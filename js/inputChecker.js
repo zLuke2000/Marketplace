@@ -24,19 +24,6 @@ export function checkProductPrice(productPriceEl) {
     }
 }
 
-// export function checkProductDescription(productDescriptionEl) {
-//     //TODO: check realtime sulla lunghezza
-//     if (productDescriptionEl.value.trim().length > 512) {
-//         console.error("Description exceeded lenght limit!");
-//         showError(productDescriptionEl, "Product description length can be 512 character max!");
-//         return false;
-//     } else {
-//         console.log("Description is ok!")
-//         removeError(productDescriptionEl)
-//         return true;
-//     }
-// }
-
 document.querySelector('#inputProductDescription').onkeyup = function () {
     // document.getElementById('count').innerHTML = "Characters left: " + (500 - this.value.length);
     let formField = this.parentElement

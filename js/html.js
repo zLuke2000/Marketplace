@@ -13,10 +13,13 @@ async function caricaProdotti() {
     let i = 1
     for(let pr of products) {
       let cid = pr.data.cid
-      console.log("CID elemento:", i, cid)
+      console.log('CID elemento (', i, ') :', cid)
       let stringObj = await IPFS.readData(cid)
       let obj = JSON.parse(stringObj)
       console.log('Object from BigChain:', obj)
+      console.log('Do I own the product?:', obj.owner.toString() == window.account)
+      console.log('Product owner:', obj.owner)
+      console.log('User account:', window.account)
       if(obj.owner == window.account) {
         await generaCard('boxMiei', obj)
       } else {
