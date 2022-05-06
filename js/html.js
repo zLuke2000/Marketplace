@@ -1,5 +1,5 @@
-import { getCurrentAccount } from "./script.js";
-import * as IPFS from "./ipfs.js";
+// import { getCurrentAccount } from "./web3.js"
+import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
@@ -8,7 +8,7 @@ caricaProdotti()
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
   if(products != undefined) {
-    console.log("Products: ", products)
+    console.log("Products found: ", products.length)
 
     let i = 1
     for(let pr of products) {
@@ -75,34 +75,40 @@ document.querySelector('#inputImage').addEventListener('change', function() {
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function() {
-  //TODO:  notifica che il prodotto e' stato correttmente creato e pulire i campi del form
-  // Controllo che nome, prezzo e descrizione rispettino determinati parametri
-  let productNameEl = document.querySelector("#inputProductName")
-  let productPriceEl = document.querySelector("#inputProductPrice")
-  if (input.checkProductName(productNameEl) & input.checkProductPrice(productPriceEl)) {
-    console.log("All inputs are valid!");
-    console.log("Going to create a product");
-    
-    //recupera l'account di Metamask
-    let productDescriptionEl =  document.querySelector('#inputProductDescription')
-    let image = document.querySelector('#inputProductImage')
+  if (!window.ethereum) {
+    console.error('Metamask is required')
+    alert('Please install Metamkas')
+  } else {
+    //TODO:  notifica che il prodotto e' stato correttmente creato e pulire i campi del form
+    // Controllo che nome, prezzo e descrizione rispettino determinati parametri
+    let productNameEl = document.querySelector("#inputProductName")
+    let productPriceEl = document.querySelector("#inputProductPrice")
+    if (input.checkProductName(productNameEl) & input.checkProductPrice(productPriceEl)) {
+      console.log("All inputs are valid!");
+      console.log("Going to create a product");
+      
+      //recupera l'account di Metamask
+      // let address = await getCurrentAccount()
+      let productDescriptionEl =  document.querySelector('#inputProductDescription')
+      let image = document.querySelector('#inputProductImage')
 
-    const product = {
-      owner: window.account,
-      name: productNameEl.value.trim(),
-      price:productPriceEl.value.trim(),
-      descritpion: productDescriptionEl.value.trim(),
-      image: image.src,
-      purchased: 'false'
+      const product = {
+        owner: window.account,
+        name: productNameEl.value.trim(),
+        price:productPriceEl.value.trim(),
+        descritpion: productDescriptionEl.value.trim(),
+        image: image.src,
+        purchased: 'false'
+      }
+
+      let stringObj = JSON.stringify(product)
+
+      console.log('Adding product to IPFS')
+      let cid = await IPFS.addData(stringObj)
+      console.log('Product\'s cid:', cid)
+
+      console.log('Adding product to BigChainDB')
+      BigChain.createProduct(cid, address)
     }
-
-    let stringObj = JSON.stringify(product)
-
-    console.log('Adding product to IPFS')
-    let cid = await IPFS.addData(stringObj)
-    console.log('Product\'s cid:', cid)
-
-    console.log('Adding product to BigChainDB')
-    BigChain.createProduct(cid, address)
   }
 });

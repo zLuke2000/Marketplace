@@ -13,20 +13,28 @@ function Product(name, price, owner, description, image, state) {
 async function loadWeb3() {
   if (window.ethereum) {
     try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      web3 = new Web3(window.ethereum);
+      let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      window.account = accounts[0]
+      console.log('Selected account is:', window.account)
+      web3 = new Web3(window.ethereum)
+      
+      window.ethereum.on('accountsChanged', function(accounts) {
+        window.account = accounts[0]
+        console.log('Selected account changed to:', window.account)
+      })
     } catch (error) {
       console.error("User denied access", error);
     }
   } else {
     console.error("Metamask is required!")
+    alert("Please install Metamaks")
   }
 }
 
-export async function getCurrentAccount() {
-  const accounts = await window.web3.eth.getAccounts();
-  return accounts[0];
-}
+// export async function getCurrentAccount() {
+//   const accounts = await window.web3.eth.getAccounts();
+//   return accounts[0];
+// }
 
 async function loadContract() {
   return await new window.web3.eth.Contract([
@@ -122,9 +130,9 @@ async function loadContract() {
 async function createProduct() {
   console.log("creating the new product...");
   // getting user account address
-  let account = await getCurrentAccount();
+  // let account = await getCurrentAccount();
   // calling the smart contract method
-  window.contract.methods.createProduct(productName, productPrice).send({from: account})
+  window.contract.methods.createProduct(productName, productPrice).send({from: window.account})
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
     console.error("An error occurred:\n" + error.message, error);
@@ -151,7 +159,6 @@ async function getAllProducts() {
 async function load() {
   await loadWeb3();
   window.contract = await loadContract();
-  console.log("contract loaded!");
 }
 
 load();
