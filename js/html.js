@@ -69,37 +69,6 @@ document.querySelector('#inputImage').addEventListener('change', function() {
   }
 });
 
-async function base64ToBlob(base64) {
-  const base64Response = await fetch(base64)
-  const blob = await base64Response.blob()
-  return blob
-}
-
-// function blobToBase64(blob) {
-//   const reader = new FileReader()
-//   return new Promise(resolve => {
-//     reader.onloadend = () => {
-//       resolve(reader.result)
-//     }
-//     reader.readAsDataURL(blob)
-//   })
-// }
-
-async function base64ToArrayBuffer(base64) {
-  let response = await fetch(base64)
-  return await response.arrayBuffer() 
-}
-
-function arrayBufferToBase64(buffer) {
-  var binary = '';
-  var bytes = new Uint8Array(buffer);
-  var len = bytes.byteLength;
-  for (var i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-  }
-  return window.btoa(binary);
-}
-
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function() {
   //TODO:  notifica che il prodotto e' stato correttmente creato e pulire i campi del form
