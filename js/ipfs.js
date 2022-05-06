@@ -1,30 +1,21 @@
-var node
-createNode()
+console.log('creating node...')
+const node = await IpfsCore.create()
+console.log('node created!')
+
+const opType = {
+    Add: 'Add',
+    Read: 'Read'
+};
 
 export async function addData(data) {
-    if (node == undefined) {
-        console.error('node is still undefined...')
-        return new Promise(resolve => {
-            setTimeout(function() {
-              resolve(addData(data))
-            }, 5000)
-          })
-    } else {
+    if (checkNode(data, null, 5000)) {
         let result = await node.add(data)
-        //path == cid.toString()
         return result.path
     }
 }
 
-export async function retrieveData(cid) {
-    if (node == undefined) {
-        console.error('node is still undefined...')
-        return new Promise(resolve => {
-            setTimeout(function() {
-              resolve(retrieveData(cid))
-            }, 5000)
-          })
-    } else {
+export async function readData(cid) {
+    if (checkNode(null, cid, 5000)) {
         const stream = node.cat(cid)
         let data = ''
         for await (const chunck of stream) {
@@ -34,9 +25,20 @@ export async function retrieveData(cid) {
     }
 }
 
-async function createNode() {
-    console.log('creating node...')
-    //attesa circa 10s
-    node = await IpfsCore.create()
-    console.log('node created!')
+function checkNode(operation, data, delay) {
+    if (node == undefined) {
+        console.error('node is still undefined...')
+        new Promise(resolve => {
+            setTimeout(function() {
+                if(operation === opType.Add) {
+                    resolve(addData(data))
+                } else if(operation === opType.Read) {
+                    resolve(readData(data))
+                }
+            }, delay)
+        })
+    } else {
+        return true
+    }
+    return false
 }

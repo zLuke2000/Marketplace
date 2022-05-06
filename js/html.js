@@ -14,10 +14,14 @@ async function caricaProdotti() {
     for(let pr of products) {
       let cid = pr.data.cid
       console.log("CID elemento:", i, cid)
-      let stringObj = await IPFS.retrieveData(cid)
+      let stringObj = await IPFS.readData(cid)
       let obj = JSON.parse(stringObj)
       console.log('Object from BigChain:', obj)
-      await generaCard('boxAcquista', obj)
+      if(obj.owner == window.account) {
+        await generaCard('boxMiei', obj)
+      } else {
+        await generaCard('boxAcquista', obj)
+      }
       i++
     } 
     console.log("Finished to read products from BigChainDB")
@@ -80,12 +84,11 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
     console.log("Going to create a product");
     
     //recupera l'account di Metamask
-    let address = await getCurrentAccount()
     let productDescriptionEl =  document.querySelector('#inputProductDescription')
     let image = document.querySelector('#inputProductImage')
 
     const product = {
-      owner: address,
+      owner: window.account,
       name: productNameEl.value.trim(),
       price:productPriceEl.value.trim(),
       descritpion: productDescriptionEl.value.trim(),
