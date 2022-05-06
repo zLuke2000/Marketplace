@@ -26,18 +26,12 @@ async function caricaProdotti() {
 
 async function generaCard(divID, obj) {
   let div = document.getElementById(divID)
-  
-  let arr = await IPFS.retrieveData(obj.image)
-  console.log('Retrieved array:',typeof arr)
-  let base64 = arrayBufferToBase64(arr)
-  console.log('base64 from array:', base64)
-  
-    
+
   let cardTemplate = 
   `<div class="card mb-3">
     <div class="row">
       <div class="col-md-3">
-        <img src="${base64}" class="card-img">
+        <img src="${obj.image}" class="card-img">
       </div>
       <div class="col-md-6">
         <div class="card-body">
@@ -60,15 +54,18 @@ async function generaCard(divID, obj) {
 //listener evento aggiunta immagine per nuovo prodotto
 document.querySelector('#inputImage').addEventListener('change', function() {
   let file = this.files[0]
+  console.log('Image File:', file)
   let reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
     let img = document.querySelector('#inputProductImage')
     img.src = reader.result
+    console.log('Length:', img.src.length)
     //sistema dimensione immagine
     let ratio = img.style.width / img.style.height
     img.style.height = '200px';
     img.style.width = ratio * img.style.height;
+    console.log('Length after compression:', img.src.length)
   }
 });
 
@@ -117,19 +114,13 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
     let address = await getCurrentAccount()
     let productDescriptionEl =  document.querySelector('#inputProductDescription')
     let image = document.querySelector('#inputProductImage')
-    let arr = await base64ToArrayBuffer(image.src)
-    console.log('Base64 string from image src:', image.src)
-    console.log('ArrayBuffer from function:', arr)
-
-    console.log('Adding image to IPFS')
-    let img_cid = await IPFS.addData(arr)
 
     const product = {
       owner: address,
       name: productNameEl.value.trim(),
       price:productPriceEl.value.trim(),
       descritpion: productDescriptionEl.value.trim(),
-      image: img_cid,
+      image: image.src,
       purchased: 'false'
     }
 
