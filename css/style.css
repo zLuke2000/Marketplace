@@ -63,16 +63,16 @@ div.box-inner {
 }
 
 /* Stile per scritta di errore degli input del form */
-.form-field input + small {
+.form-field input + small, .form-field label + small {
 	color: var(--error-color);
 }
 
-/* Style per Input type="file" */
+/* Stile per Input file */
 .form-field input[type=file] {
 	display: none;
 }
 
-/* Style per Input type="file" */
+/* Stile per Input file */
 .form-field input[type=file] + label{
 	background-color: var(--opaco50);
 	border: 2px solid;
@@ -83,11 +83,16 @@ div.box-inner {
 	margin-bottom: 10px;
 }
 
-/* Style per Input type="file" */
+/* Stile per Input file */
 .form-field input[type=file] + label:hover{
 	background-color: white;
 	border-color: #6FB3FA;
 	cursor: pointer;
+}
+
+/* Stile di errore per Input file */
+.form-field.error input[type=file] + label{
+	border-color: var(--error-color);
 }
 
 .form-field button {

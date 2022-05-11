@@ -24,8 +24,19 @@ export function checkProductPrice(productPriceEl) {
     }
 }
 
+export function checkProductImage(productImageEl) {
+    if (productImageEl.src === '') {
+        console.error('Must select an image!')
+        showError(productImageEl, "You must choose an image for this product!")
+        return false
+    } else {
+        console.log('Image is ok!')
+        removeError(productImageEl)
+        return true
+    }
+}
+
 document.querySelector('#inputProductDescription').onkeyup = function () {
-    // document.getElementById('count').innerHTML = "Characters left: " + (500 - this.value.length);
     let formField = this.parentElement
     let counter = formField.querySelector('small')
     counter.textContent = this.value.length + ' / 512'  

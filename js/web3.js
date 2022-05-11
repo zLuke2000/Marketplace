@@ -14,13 +14,12 @@ async function loadWeb3() {
   if (window.ethereum) {
     try {
       let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      console.log('Account array:', accounts)
-      window.account = accounts[0]
-      console.log('Selected account is:', window.account)
       web3 = new Web3(window.ethereum)
-      
+      window.account = web3.utils.toChecksumAddress(accounts[0])
+      console.log('Selected account is:', window.account)
+      //FIXME: non viene eseguita la funzione
       window.ethereum.on('accountsChanged', function(accounts) {
-        window.account = accounts[0]
+        window.account = web3.utils.toChecksumAddress(accounts[0])
         console.log('Selected account changed to:', window.account)
       })
     } catch (error) {
@@ -31,11 +30,6 @@ async function loadWeb3() {
     alert("Please install Metamaks")
   }
 }
-
-// export async function getCurrentAccount() {
-//   const accounts = await window.web3.eth.getAccounts();
-//   return accounts[0];
-// }
 
 async function loadContract() {
   return await new window.web3.eth.Contract([

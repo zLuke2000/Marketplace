@@ -1,0 +1,85 @@
+.card {
+    max-width: 300px;
+    text-align: center;
+}
+
+.row {
+    width: 100%;
+}
+
+.box .row::-webkit-scrollbar {
+    width: 12px;               /* width of the entire scrollbar */
+  }
+  
+.box .row::-webkit-scrollbar-track {
+    background: orange !important;        /* color of the tracking area */
+}
+  
+.row::-webkit-scrollbar-thumb {
+    background-color: blue;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid orange;  /* creates padding around scroll thumb */
+}
+
+/* Stile per l'immagine della card */
+.card-img-top {
+    border: solid 1px;
+}
+
+.card .container { 
+    padding: 0px;
+    position: relative;
+}
+
+/* Permette di offuscare l'immagine */
+.overlay {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    padding: 5px;
+    word-wrap: break-word;
+    overflow: scroll;
+    padding: 10px;
+}
+
+.container:hover .overlay {
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease-in-out;
+    background-color: rgba(144, 202, 249, 0.6);
+    color: black;
+}
+
+/* Stile della scrollbar della card */
+.overlay::-webkit-scrollbar {
+    display: none;
+}
+
+.overlay p {
+    font-size: 12px;
+    text-align: left;
+}
+
+/* Stile per il bottone della card */
+.card button {
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    background-color: blue;
+}
+
+/* Stile per il campo contenente l'indirizzo */
+.card p {
+    font-size: 11px;
+}
+
+/* Stile per il campo contenente il nome del prodotto */
+.card-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
