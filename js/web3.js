@@ -17,7 +17,7 @@ async function loadWeb3() {
       web3 = new Web3(window.ethereum)
       window.account = web3.utils.toChecksumAddress(accounts[0])
       console.log('Selected account is:', window.account)
-      //FIXME: non viene eseguita la funzione
+      
       window.ethereum.on('accountsChanged', function(accounts) {
         window.account = web3.utils.toChecksumAddress(accounts[0])
         console.log('Selected account changed to:', window.account)
