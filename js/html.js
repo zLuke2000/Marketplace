@@ -9,23 +9,23 @@ async function caricaProdotti() {
   if(products != undefined) {
     console.log("Products found: ", products.length)
 
-    let availableProducts = new Array()
-    let myProducts = new Array()
-
     let i = 1
     for(let pr of products) {
       let cid = pr.data.cid
       console.log('CID elemento (', i, ') :', cid)
       let stringObj = await IPFS.readData(cid)
+      console.log(stringObj)
       let obj = JSON.parse(stringObj)
       console.log('Object from BigChain:', obj)
 
       if(obj.owner == window.account) {
+
         await generaCard('myProductsRow', obj)
-        // myProducts.push(obj)
+
       } else {
+
         await generaCard('buyProductsRow', obj)
-        // availableProducts.push(obj)
+
       }
       i++
     } 
@@ -36,27 +36,6 @@ async function caricaProdotti() {
 async function generaCard(divID, obj) {
 
   let div = document.getElementById(divID)
-
-  // const cardTemplate = 
-  // `<div class="card mb-3">
-  //   <div class="row">
-  //     <div class="col-md-3">
-  //       <img src="${obj.image}" class="card-img">
-  //     </div>
-  //     <div class="col-md-6">
-  //       <div class="card-body">
-  //         <h3 class="card-title">${obj.name}</h3>
-  //         <h4 class="card-text">${obj.price} ETH</h4>
-  //         <p class="card-text">
-  //           <small>Owner: ${obj.owner}</small>
-  //         </p>
-  //       </div>
-  //     </div>
-  //     <div class="col-md-3 justify-content-center"> 
-  //       <a href="#" class="btn btn-primary">Acquista</a> 
-  //     </div>
-  //   </div>
-  // </div>`
 
   const cardTemplate = 
   `<div class="col-md-4">
