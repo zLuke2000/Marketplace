@@ -2,7 +2,7 @@ import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
-caricaProdotti()
+// caricaProdotti()
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -62,21 +62,46 @@ async function generaCard(divID, obj) {
 //listener evento aggiunta immagine per nuovo prodotto
 document.querySelector('#inputImage').addEventListener('change', function() {
   let file = this.files[0]
-  console.log('Image File:', file)
   let reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
-    let img = document.querySelector('#inputProductImage')
-    img.src = reader.result
-    //TODO: comprimere immagine
-    console.log('Length:', img.src.length)
-    //sistema dimensione immagine
-    let ratio = img.style.width / img.style.height
-    img.style.height = '200px';
-    img.style.width = ratio * img.style.height;
-    console.log('Length after compression:', img.src.length)
+    // let img = document.querySelector('#inputProductImage')
+    let imgTemp = document.createElement('img')
+    console.log('Result', reader.result)
+    imgTemp.src = reader.result
+    imgTemp.onload = () => {
+      compressImage(imgTemp)
+    }
   }
 });
+
+function compressImage(imgToCompress) {
+
+  const canvas = document.createElement("canvas")
+  const context = canvas.getContext("2d")
+  
+  canvas.width = 320
+  canvas.height = 200
+  
+  context.drawImage(
+    imgToCompress,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  )
+
+  canvas.toBlob(
+    (blob) => {
+      if (blob) {
+        let img = document.querySelector('#inputProductImage')
+        img.src = URL.createObjectURL(blob)
+      }
+    },
+    "image/jpeg",
+    0.5
+  )
+}
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function(event) {
@@ -113,16 +138,16 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
         purchased: 'false'
       }
 
-      console.log('Prod Description:', product.description)
+      console.log('Image:', image.src)
 
       let stringObj = JSON.stringify(product)
 
-      console.log('Adding product to IPFS')
-      let cid = await IPFS.addData(stringObj)
-      console.log('Product\'s cid:', cid)
+      // console.log('Adding product to IPFS')
+      // let cid = await IPFS.addData(stringObj)
+      // console.log('Product\'s cid:', cid)
 
-      console.log('Adding product to BigChainDB')
-      BigChain.createProduct(cid, window.account)
+      // console.log('Adding product to BigChainDB')
+      // BigChain.createProduct(cid, window.account)
     }
   }
 });

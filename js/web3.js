@@ -17,7 +17,7 @@ async function loadWeb3() {
       web3 = new Web3(window.ethereum)
       window.account = web3.utils.toChecksumAddress(accounts[0])
       console.log('Selected account is:', window.account)
-      
+    
       window.ethereum.on('accountsChanged', function(accounts) {
         window.account = web3.utils.toChecksumAddress(accounts[0])
         console.log('Selected account changed to:', window.account)
@@ -27,6 +27,7 @@ async function loadWeb3() {
     }
   } else {
     console.error("Metamask is required!")
+    window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en')
     alert("Please install Metamaks")
   }
 }
