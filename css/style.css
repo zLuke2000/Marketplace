@@ -21,11 +21,15 @@ textarea {
 /* Box esterno card */
 div.box {
 	height: 500px !important;
+	/*display: flex;   
+	justify-content: center;   
+	*/align-items: center;
 	background: var(--lightblue50);
 	overflow: auto;
 	margin: 25px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
+	text-align: center;
 }
 
 /* Stile per i campi del form di creazione di un nuovo prodotto */
@@ -89,3 +93,13 @@ div.box {
 .form-field button {
 	margin-top: 10px;
 }
+
+.spinner-border{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	size: 8;
+	width: 4rem!important; 
+    height: 4rem!important;
+	margin: -2rem 0 0 -2rem;
+  }
