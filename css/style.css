@@ -4,17 +4,8 @@
 	--success-color: #28A745;
 	--opaco50: rgba(255, 255, 255, 0.5);
 	--lightblue50: rgba(159, 168, 218, 0.5);
-}
-
-/* Rimozione spinner da input type="number" */
-.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Rimozione spinner da input type="number" */
-.no-spin {
-    -moz-appearance:textfield;
+	--box-scrollbar-track: #98A4E9;
+	--box-scrollbar-thumb: #8A90DE;
 }
 
 /* Colore background */
@@ -31,21 +22,10 @@ textarea {
 div.box {
 	height: 500px !important;
 	background: var(--lightblue50);
-	overflow:auto;
+	overflow: auto;
 	margin: 25px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
-}
-
-/* Box interno card */
-div.box-inner {
-	margin: 16px;
-}
-
-/* CARD */
-.card {
-	background: var(--opaco50) !important;
-	border-radius: 10px !important;
 }
 
 /* Stile per i campi del form di creazione di un nuovo prodotto */
@@ -55,6 +35,17 @@ div.box-inner {
 	border-radius: 10px;
 	border-width: 2px;
 	background-color: var(--opaco50);
+}
+
+/* Rimozione spinner da input type="number" */
+.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Rimozione spinner da input type="number" */
+.no-spin {
+    -moz-appearance:textfield;
 }
 
 /* Stile di errore per input del form */

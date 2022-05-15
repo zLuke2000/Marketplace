@@ -1,24 +1,31 @@
+/* Stile per la colonna della card */
+.col-md-2 {
+    padding: 10px !important;
+} 
+ 
+/* Stile per la card dei prodotti */
 .card {
     max-width: 300px;
     text-align: center;
 }
 
-.row {
-    width: 100%;
+/* Stile della row contenente i prodotti */
+.box .row {
+    margin: 20px;
 }
 
-.box .row::-webkit-scrollbar {
-    width: 12px;               /* width of the entire scrollbar */
+/* Stile per la scrollbar dei box */
+.box::-webkit-scrollbar {
+    width: 15px;              
   }
   
-.box .row::-webkit-scrollbar-track {
-    background: orange !important;        /* color of the tracking area */
+.box::-webkit-scrollbar-track {
+    background: var(--box-scrollbar-track) !important;        
 }
   
-.row::-webkit-scrollbar-thumb {
-    background-color: blue;    /* color of the scroll thumb */
-    border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid orange;  /* creates padding around scroll thumb */
+.box::-webkit-scrollbar-thumb {
+    background-color: var(--box-scrollbar-thumb);  
+    border-radius: 20px; 
 }
 
 /* Stile per l'immagine della card */
@@ -69,12 +76,12 @@
     width: 100%;
     padding: 10px;
     color: white;
-    background-color: blue;
+    background-color: #3666FF;
 }
 
 /* Stile per il campo contenente l'indirizzo */
 .card p {
-    font-size: 11px;
+    font-size: 10px;
 }
 
 /* Stile per il campo contenente il nome del prodotto */
@@ -83,3 +90,32 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .ripple:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, black 10%, transparent 10%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;  
+  }
+
+  .ripple:active:after {
+    transform: scale(0, 0);
+    opacity: .2;
+    transition: 0s;
+  }

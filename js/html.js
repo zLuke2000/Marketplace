@@ -2,7 +2,7 @@ import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
-// caricaProdotti()
+caricaProdotti()
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -14,9 +14,7 @@ async function caricaProdotti() {
       let cid = pr.data.cid
       console.log('CID elemento (', i, ') :', cid)
       let stringObj = await IPFS.readData(cid)
-      console.log(stringObj)
       let obj = JSON.parse(stringObj)
-      console.log('Object from BigChain:', obj)
 
       if(obj.owner == window.account) {
 
@@ -38,7 +36,7 @@ async function generaCard(divID, obj) {
   let div = document.getElementById(divID)
 
   const cardTemplate = 
-  `<div class="col-md-4">
+  `<div class="col-md-2">
     <div class="card">
       <div class="container">
           <img class="card-img-top" src="${obj.image}">
@@ -52,7 +50,7 @@ async function generaCard(divID, obj) {
           <p>${obj.owner}</p>
           <h6>${obj.price} ETH</h6>
       </div>
-      <button>Buy now</button>
+      <button class="ripple">Buy now</button>
     </div>
   </div>`
 
@@ -65,9 +63,7 @@ document.querySelector('#inputImage').addEventListener('change', function() {
   let reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
-    // let img = document.querySelector('#inputProductImage')
     let imgTemp = document.createElement('img')
-    console.log('Result', reader.result)
     imgTemp.src = reader.result
     imgTemp.onload = () => {
       compressImage(imgTemp)
@@ -79,7 +75,6 @@ function compressImage(imgToCompress) {
 
   const canvas = document.createElement("canvas")
   const context = canvas.getContext("2d")
-  
   canvas.width = 320
   canvas.height = 200
   
@@ -90,17 +85,10 @@ function compressImage(imgToCompress) {
     canvas.width,
     canvas.height
   )
-
-  canvas.toBlob(
-    (blob) => {
-      if (blob) {
-        let img = document.querySelector('#inputProductImage')
-        img.src = URL.createObjectURL(blob)
-      }
-    },
-    "image/jpeg",
-    0.5
-  )
+  
+  let dataURI = canvas.toDataURL('image/jpeg', 0.5)
+  let img = document.querySelector('#inputProductImage')
+  img.src = dataURI
 }
 
 // evento click per creare un nuovo prodotto
@@ -138,16 +126,14 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
         purchased: 'false'
       }
 
-      console.log('Image:', image.src)
-
       let stringObj = JSON.stringify(product)
 
-      // console.log('Adding product to IPFS')
-      // let cid = await IPFS.addData(stringObj)
-      // console.log('Product\'s cid:', cid)
+      console.log('Adding product to IPFS')
+      let cid = await IPFS.addData(stringObj)
+      console.log('Product\'s cid:', cid)
 
-      // console.log('Adding product to BigChainDB')
-      // BigChain.createProduct(cid, window.account)
+      console.log('Adding product to BigChainDB')
+      BigChain.createProduct(cid, window.account)
     }
   }
 });
