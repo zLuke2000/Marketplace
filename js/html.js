@@ -7,6 +7,9 @@ caricaProdotti()
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
   if(products != undefined) {
+    let spinners = document.querySelectorAll(".box .spinner-border")
+    console.log(spinners)
+    spinners.forEach(element => {element.add})
     console.log("Products found: ", products.length)
 
     let i = 1
@@ -17,13 +20,9 @@ async function caricaProdotti() {
       let obj = JSON.parse(stringObj)
 
       if(obj.owner == window.account) {
-
         await generaCard('myProductsRow', obj)
-
       } else {
-
         await generaCard('buyProductsRow', obj)
-
       }
       i++
     } 
