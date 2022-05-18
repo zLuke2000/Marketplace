@@ -19,13 +19,9 @@ async function caricaProdotti() {
       console.log('Object from BigChain:', obj)
 
       if(obj.owner == window.account) {
-
         await generaCard('myProductsRow', obj)
-
       } else {
-
         await generaCard('buyProductsRow', obj)
-
       }
       i++
     } 
@@ -59,8 +55,11 @@ async function generaCard(divID, obj) {
   div.insertAdjacentHTML('beforeend', cardTemplate)
 }
 
+var timestampImage
 //listener evento aggiunta immagine per nuovo prodotto
 document.querySelector('#inputImage').addEventListener('change', function() {
+  timestampImage = []
+  timestampImage.push(Date.now())
   let file = this.files[0]
   let reader = new FileReader()
   reader.readAsDataURL(file)
@@ -70,7 +69,10 @@ document.querySelector('#inputImage').addEventListener('change', function() {
     console.log('Result', reader.result)
     imgTemp.src = reader.result
     imgTemp.onload = () => {
+      timestampImage.push(Date.now())
       compressImage(imgTemp)
+      timestampImage.push(Date.now())
+      console.log(timestampImage, " Tempo totale caricamneto: ", timestampImage[1] - timestampImage[0], "ms e compressione: ", timestampImage[2] - timestampImage[1], "ms")
     }
   }
 });
@@ -79,10 +81,10 @@ function compressImage(imgToCompress) {
 
   const canvas = document.createElement("canvas")
   const context = canvas.getContext("2d")
-  
+
   canvas.width = 320
   canvas.height = 200
-  
+
   context.drawImage(
     imgToCompress,
     0,
