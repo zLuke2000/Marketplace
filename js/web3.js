@@ -14,7 +14,7 @@ async function loadWeb3() {
   if (window.ethereum) {
     try {
       let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      web3 = new Web3(window.ethereum)
+      window.web3 = new Web3(window.ethereum)
       window.account = web3.utils.toChecksumAddress(accounts[0])
       console.log('Selected account is:', window.account)
     
@@ -153,8 +153,10 @@ async function getAllProducts() {
 }
 
 async function load() {
-  await loadWeb3();
-  window.contract = await loadContract();
+  await loadWeb3()
+  if (window.account == undefined) {
+    window.contract = await loadContract()
+  }
 }
 
 load();

@@ -38,7 +38,7 @@ export function createProduct(cid, address) {
 
 export async function searchProducts() {
     try {
-        return await conn.searchAssets('marketplace_prova_card')
+        return await conn.searchAssets('marketplace_prova_card') 
     } catch (error) {
         console.error('Error while searching products', error)
     }

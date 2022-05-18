@@ -22,39 +22,56 @@ if (xmlhttp.status == 200) {
     image = xmlhttp.responseText;
 }
 
-const timestampArray = [parseInt(Date.now())]
+async function addProducts(num) {
+    
+    console.log('Starting to add the products!')
+    let startingDate = Date.now()
 
-// 0 - Inizio creazione del prodotto
+    for (let i = 0; i < num; i++) {
 
-const product = {
-    owner: window.account,
-    name: items[Math.floor(Math.random() * (items.length-1))],
-    price: Math.floor(Math.random() * 100)+1,
-    description: lorem.substring(0, Math.floor(Math.random() * (lorem.length-1))),
-    image: image,
-    purchased: 'false'
+        const timestampArray = [parseInt(Date.now())]
+
+        // 0 - Inizio creazione del prodotto
+        const product = {
+            owner: window.account,
+            name: items[i % (items.length - 1)],
+            price: Math.floor(Math.random() * 100) + 1,
+            description: lorem.substring(0, Math.floor(Math.random() * (lorem.length-1))),
+            image: image,
+            purchased: 'false'
+        }
+
+        let stringObj = JSON.stringify(product)
+
+        // Fine creazione del prodotto
+        timestampArray.push(parseInt(Date.now()))
+
+        // 1 -  Inizio caricamneto su IPFS
+        let cid = await IPFS.addData(stringObj)
+
+        // Fine caricamneto su IPFS
+        timestampArray.push(parseInt(Date.now()))
+
+        // 2 - Inizio caricamneto su bigChainDB
+        BigChain.createProduct(cid, window.account)
+
+        // 3 - Fine caricamento su bigChainDB
+        timestampArray.push(parseInt(Date.now()))
+
+        console.log("Prodotto: ", product.name, "salvato in ", timestampArray[3] - timestampArray[0], "millisecondi")
+        console.log(timestampArray) 
+
+    }
+
+    console.log('Finished to add the products!')
+    let finishDate = Date.now()
+    console.log('Elapsed time:', finishDate - startingDate, 'milliseconds')
+
 }
-let stringObj = JSON.stringify(product)
 
-// Fine creazione del prodotto
-// 1 -  Inizio caricamneto su IPFS
+window.addProducts = addProducts
 
-timestampArray.push(parseInt(Date.now()))
-//let cid = await IPFS.addData(stringObj)
-
-// Fine caricamneto su IPFS
-// 2 - Inizio caricamneto su bigChainDB
-
-timestampArray.push(parseInt(Date.now()))
-//BigChain.createProduct(cid, window.account)
-
-// 3 - Fine caricamento su bigChainDB
-
-timestampArray.push(parseInt(Date.now()))
-console.log("Prodotto: ", product, "salvato in ", timestampArray[3]-timestampArray[0], "millisecondi")
-console.log(timestampArray)
-
-const saveTemplateAsFile = (filename, dataObj, timestamp) => {
+function saveTemplateAsFile  (filename, dataObj, timestamp) {
     const blob = new Blob([JSON.stringify(dataObj)], { type: "text/json" });
     const link = document.createElement("a");
 
@@ -70,6 +87,6 @@ const saveTemplateAsFile = (filename, dataObj, timestamp) => {
 
     link.dispatchEvent(evt);
     link.remove()
-};
+}
 
 //saveTemplateAsFile("test.json", product)

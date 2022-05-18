@@ -4,17 +4,8 @@
 	--success-color: #28A745;
 	--opaco50: rgba(255, 255, 255, 0.5);
 	--lightblue50: rgba(159, 168, 218, 0.5);
-}
-
-/* Rimozione spinner da input type="number" */
-.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Rimozione spinner da input type="number" */
-.no-spin {
-    -moz-appearance:textfield;
+	--box-scrollbar-track: #98A4E9;
+	--box-scrollbar-thumb: #8A90DE;
 }
 
 /* Colore background */
@@ -29,23 +20,14 @@ textarea {
 
 /* Box esterno card */
 div.box {
-	height: 500px !important;
+	height: 520px !important; 
+	align-items: center;
 	background: var(--lightblue50);
-	overflow:auto;
+	overflow: auto;
 	margin: 25px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
-}
-
-/* Box interno card */
-div.box-inner {
-	margin: 16px;
-}
-
-/* CARD */
-.card {
-	background: var(--opaco50) !important;
-	border-radius: 10px !important;
+	position: relative;
 }
 
 /* Stile per i campi del form di creazione di un nuovo prodotto */
@@ -55,6 +37,17 @@ div.box-inner {
 	border-radius: 10px;
 	border-width: 2px;
 	background-color: var(--opaco50);
+}
+
+/* Rimozione spinner da input type="number" */
+.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Rimozione spinner da input type="number" */
+.no-spin {
+    -moz-appearance:textfield;
 }
 
 /* Stile di errore per input del form */
@@ -97,4 +90,19 @@ div.box-inner {
 
 .form-field button {
 	margin-top: 10px;
+}
+
+/* Stile per gli spinner dei box */
+.box .spinner-border{
+	width: 4rem !important; 
+    height: 4rem !important;
+	position: absolute;
+	top: 45%;
+	left: 48%;
+}
+
+.text-warn-no-product{
+	position: absolute;
+	top: 47%;
+	left: 34%;
 }

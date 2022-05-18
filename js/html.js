@@ -2,21 +2,29 @@ import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
-// caricaProdotti()
+caricaProdotti()
+// setTimeout(() => {
+//   caricaProdotti()
+// }, 3000);
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
   if(products != undefined) {
+
+    //nascondi gli spinner dei box
+    let spinners = document.querySelectorAll(".box .spinner-border")
+    spinners.forEach(element => {
+      element.remove()
+    })
     console.log("Products found: ", products.length)
+    
 
     let i = 1
     for(let pr of products) {
       let cid = pr.data.cid
       console.log('CID elemento (', i, ') :', cid)
       let stringObj = await IPFS.readData(cid)
-      console.log(stringObj)
       let obj = JSON.parse(stringObj)
-      console.log('Object from BigChain:', obj)
 
       if(obj.owner == window.account) {
         await generaCard('myProductsRow', obj)
@@ -26,33 +34,78 @@ async function caricaProdotti() {
       i++
     } 
     console.log("Finished to read products from BigChainDB")
+  }else{
+    let warnNoProduct = document.querySelectorAll(".text-warn-no-product")
+    warnNoProduct.forEach(element => {
+      element.remove()
+    })
   }
 }
 
 async function generaCard(divID, obj) {
 
   let div = document.getElementById(divID)
+  let cardTemplate
 
-  const cardTemplate = 
-  `<div class="col-md-4">
-    <div class="card">
-      <div class="container">
-          <img class="card-img-top" src="${obj.image}">
-          <div class="overlay">
-              <h6>${obj.name}</h6>
-              <p>${obj.description}</p>
+  switch (divID) {
+
+    case 'buyProductsRow':
+      cardTemplate = 
+      `<div class="col-md-2">
+        <div class="card">
+          <div class="container">
+              <img class="card-img-top" src="${obj.image}">
+              <div class="overlay">
+                  <h6>${obj.name}</h6>
+                  <p>${obj.description}</p>
+              </div>
           </div>
-      </div>
-      <div class="card-body">
-          <h5 class="card-title">${obj.name}</h5>
-          <p>${obj.owner}</p>
-          <h6>${obj.price} ETH</h6>
-      </div>
-      <button>Buy now</button>
-    </div>
-  </div>`
+          <div class="card-body">
+              <h5 id="name" class="card-title">${obj.name}</h5>
+              <p>${obj.owner}</p>
+              <h6 id="price">${obj.price} ETH</h6>
+          </div>
+          <button class="ripple">Buy now</button>
+        </div>
+      </div>`
+      break;
+  
+    case 'myProductsRow':
+      
+      cardTemplate = 
+      `<div class="col-md-2">
+        <div class="card">
+          <div class="container">
+              <img class="card-img-top" src="${obj.image}">
+              <div class="overlay">
+                  <h6>${obj.name}</h6>
+                  <p>${obj.description}</p>
+              </div>
+          </div>
+          <div class="card-body">
+              <h5 id="name" class="card-title">${obj.name}</h5>
+              <h6 id="price">${obj.price} ETH</h6>
+          </div>
+          <button class="ripple">NOT PURCHASED</button>
+        </div>
+      </div>`
+      break;
+  }
 
   div.insertAdjacentHTML('beforeend', cardTemplate)
+}
+
+document.querySelector('#buyProductsRow').addEventListener('click', event => buyProduct(event))
+
+//listener per l'acquisto di un prodotto
+async function buyProduct(event) {
+  if (event.target.tagName === 'BUTTON') {
+    let parent = event.target.parentElement
+    let name = parent.querySelector('#name').innerHTML
+    let price = parent.querySelector('#price').innerHTML.replace(/\D/g, '')
+    console.log(name, price)
+    //TODO: interazione con contratto per acquistare il prodotto
+  }
 }
 
 var timestampImage
@@ -64,9 +117,7 @@ document.querySelector('#inputImage').addEventListener('change', function() {
   let reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
-    // let img = document.querySelector('#inputProductImage')
     let imgTemp = document.createElement('img')
-    console.log('Result', reader.result)
     imgTemp.src = reader.result
     imgTemp.onload = () => {
       timestampImage.push(Date.now())
@@ -81,28 +132,18 @@ function compressImage(imgToCompress) {
 
   const canvas = document.createElement("canvas")
   const context = canvas.getContext("2d")
-
-  canvas.width = 320
-  canvas.height = 200
-
+  canvas.width = 280
+  canvas.height = 280
+  
   context.drawImage(
     imgToCompress,
-    0,
-    0,
-    canvas.width,
-    canvas.height
+    0, 0, imgToCompress.width, imgToCompress.height,
+    0, 0, canvas.width, canvas.height
   )
-
-  canvas.toBlob(
-    (blob) => {
-      if (blob) {
-        let img = document.querySelector('#inputProductImage')
-        img.src = URL.createObjectURL(blob)
-      }
-    },
-    "image/jpeg",
-    0.5
-  )
+  
+  let dataURI = canvas.toDataURL('image/jpeg', 0.5)
+  let img = document.querySelector('#inputProductImage')
+  img.src = dataURI
 }
 
 // evento click per creare un nuovo prodotto
@@ -140,16 +181,14 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
         purchased: 'false'
       }
 
-      console.log('Image:', image.src)
-
       let stringObj = JSON.stringify(product)
 
-      // console.log('Adding product to IPFS')
-      // let cid = await IPFS.addData(stringObj)
-      // console.log('Product\'s cid:', cid)
+      console.log('Adding product to IPFS')
+      let cid = await IPFS.addData(stringObj)
+      console.log('Product\'s cid:', cid)
 
-      // console.log('Adding product to BigChainDB')
-      // BigChain.createProduct(cid, window.account)
+      console.log('Adding product to BigChainDB')
+      BigChain.createProduct(cid, window.account)
     }
   }
 });
