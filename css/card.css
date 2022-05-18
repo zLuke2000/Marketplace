@@ -1,17 +1,26 @@
 /* Stile per la colonna della card */
 .col-md-2 {
     padding: 10px !important;
+    width: 300px !important;
+    height: 480px !important;
 } 
  
 /* Stile per la card dei prodotti */
 .card {
-    max-width: 300px;
+    text-align: center;
+    height: 100%;                   /* 457.11 */
+    width: 100%;                    /* 282.16 */
+    position: relative;
+}
+
+.card-body {
+    vertical-align: center;
     text-align: center;
 }
 
 /* Stile della row contenente i prodotti */
 .box .row {
-    margin: 20px;
+    margin: 15px;
 }
 
 /* Stile per la scrollbar dei box */
@@ -111,7 +120,8 @@
 
 /* Stile per il campo contenente l'indirizzo */
 .card p {
-    font-size: 10px;
+    font-size: 11px;
+    white-space: nowrap;
 }
 
 /* Stile per il campo contenente il nome del prodotto */

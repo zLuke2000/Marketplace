@@ -20,16 +20,14 @@ textarea {
 
 /* Box esterno card */
 div.box {
-	height: 500px !important;
-	/*display: flex;   
-	justify-content: center;   
-	*/align-items: center;
+	height: 520px !important; 
+	align-items: center;
 	background: var(--lightblue50);
 	overflow: auto;
 	margin: 25px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
-	text-align: center;
+	position: relative;
 }
 
 /* Stile per i campi del form di creazione di un nuovo prodotto */
@@ -94,12 +92,11 @@ div.box {
 	margin-top: 10px;
 }
 
-.spinner-border{
+/* Stile per gli spinner dei box */
+.box .spinner-border{
+	width: 4rem !important; 
+    height: 4rem !important;
 	position: absolute;
-	top: 50%;
+	top: 45%;
 	left: 50%;
-	size: 8;
-	width: 4rem!important; 
-    height: 4rem!important;
-	margin: -2rem 0 0 -2rem;
   }

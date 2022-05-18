@@ -3,13 +3,17 @@ import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
 
 caricaProdotti()
+// setTimeout(() => {
+//   caricaProdotti()
+// }, 3000);
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
   if(products != undefined) {
+
+    //nascondi gli spinner dei box
     let spinners = document.querySelectorAll(".box .spinner-border")
-    console.log(spinners)
-    spinners.forEach(element => {element.add})
+    spinners.forEach(element => {element.remove()})
     console.log("Products found: ", products.length)
 
     let i = 1
@@ -33,27 +37,67 @@ async function caricaProdotti() {
 async function generaCard(divID, obj) {
 
   let div = document.getElementById(divID)
+  let cardTemplate
 
-  const cardTemplate = 
-  `<div class="col-md-2">
-    <div class="card">
-      <div class="container">
-          <img class="card-img-top" src="${obj.image}">
-          <div class="overlay">
-              <h6>${obj.name}</h6>
-              <p>${obj.description}</p>
+  switch (divID) {
+
+    case 'buyProductsRow':
+      cardTemplate = 
+      `<div class="col-md-2">
+        <div class="card">
+          <div class="container">
+              <img class="card-img-top" src="${obj.image}">
+              <div class="overlay">
+                  <h6>${obj.name}</h6>
+                  <p>${obj.description}</p>
+              </div>
           </div>
-      </div>
-      <div class="card-body">
-          <h5 class="card-title">${obj.name}</h5>
-          <p>${obj.owner}</p>
-          <h6>${obj.price} ETH</h6>
-      </div>
-      <button class="ripple">Buy now</button>
-    </div>
-  </div>`
+          <div class="card-body">
+              <h5 id="name" class="card-title">${obj.name}</h5>
+              <p>${obj.owner}</p>
+              <h6 id="price">${obj.price} ETH</h6>
+          </div>
+          <button class="ripple">Buy now</button>
+        </div>
+      </div>`
+      break;
+  
+    case 'myProductsRow':
+      
+      cardTemplate = 
+      `<div class="col-md-2">
+        <div class="card">
+          <div class="container">
+              <img class="card-img-top" src="${obj.image}">
+              <div class="overlay">
+                  <h6>${obj.name}</h6>
+                  <p>${obj.description}</p>
+              </div>
+          </div>
+          <div class="card-body">
+              <h5 id="name" class="card-title">${obj.name}</h5>
+              <h6 id="price">${obj.price} ETH</h6>
+          </div>
+          <button class="ripple">NOT PURCHASED</button>
+        </div>
+      </div>`
+      break;
+  }
 
   div.insertAdjacentHTML('beforeend', cardTemplate)
+}
+
+document.querySelector('#buyProductsRow').addEventListener('click', event => buyProduct(event))
+
+//listener per l'acquisto di un prodotto
+async function buyProduct(event) {
+  if (event.target.tagName === 'BUTTON') {
+    let parent = event.target.parentElement
+    let name = parent.querySelector('#name').innerHTML
+    let price = parent.querySelector('#price').innerHTML.replace(/\D/g, '')
+    console.log(name, price)
+    //TODO: interazione con contratto per acquistare il prodotto
+  }
 }
 
 //listener evento aggiunta immagine per nuovo prodotto
@@ -74,15 +118,13 @@ function compressImage(imgToCompress) {
 
   const canvas = document.createElement("canvas")
   const context = canvas.getContext("2d")
-  canvas.width = 320
-  canvas.height = 200
+  canvas.width = 280
+  canvas.height = 280
   
   context.drawImage(
     imgToCompress,
-    0,
-    0,
-    canvas.width,
-    canvas.height
+    0, 0, imgToCompress.width, imgToCompress.height,
+    0, 0, canvas.width, canvas.height
   )
   
   let dataURI = canvas.toDataURL('image/jpeg', 0.5)
