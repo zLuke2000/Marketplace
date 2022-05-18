@@ -98,5 +98,11 @@ div.box {
     height: 4rem !important;
 	position: absolute;
 	top: 45%;
-	left: 50%;
-  }
+	left: 48%;
+}
+
+.text-warn-no-product{
+	position: absolute;
+	top: 47%;
+	left: 34%;
+}

@@ -13,8 +13,11 @@ async function caricaProdotti() {
 
     //nascondi gli spinner dei box
     let spinners = document.querySelectorAll(".box .spinner-border")
-    spinners.forEach(element => {element.remove()})
+    spinners.forEach(element => {
+      element.remove()
+    })
     console.log("Products found: ", products.length)
+    
 
     let i = 1
     for(let pr of products) {
@@ -31,6 +34,11 @@ async function caricaProdotti() {
       i++
     } 
     console.log("Finished to read products from BigChainDB")
+  }else{
+    let warnNoProduct = document.querySelectorAll(".text-warn-no-product")
+    warnNoProduct.forEach(element => {
+      element.remove()
+    })
   }
 }
 
