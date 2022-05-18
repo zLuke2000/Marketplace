@@ -24,11 +24,17 @@ export async function readData(cid) {
             }, 5000)
           })
     } else {
-        const stream = await ipfs.cat(cid)
-        let data = ''
-        for await (const chunck of stream) {
-            data += new TextDecoder().decode(chunck)
+        try {
+            const stream = await ipfs.cat(cid)
+            let data = ''
+            for await (const chunck of stream) {
+                data += new TextDecoder().decode(chunck)
+            }
+            return data
+        } catch (error) {
+            console.error('Error while retrieving data from IPFS:', error)
+            return null;
         }
-        return data
-    }
+        
+    } 
 }

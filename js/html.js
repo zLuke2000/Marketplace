@@ -19,8 +19,11 @@ async function caricaProdotti() {
     let i = 1
     for(let pr of products) {
       let cid = pr.data.cid
-      console.log('CID elemento (', i, ') :', cid)
+      console.log('CID elemento (', i++, ') :', cid)
       let stringObj = await IPFS.readData(cid)
+      if (stringObj == null) {
+        continue
+      }
       let obj = JSON.parse(stringObj)
 
       if(obj.owner == window.account) {
@@ -28,7 +31,6 @@ async function caricaProdotti() {
       } else {
         await generaCard('buyProductsRow', obj)
       }
-      i++
     } 
     console.log("Finished to read products from BigChainDB")
   }
@@ -63,7 +65,7 @@ async function generaCard(divID, obj) {
       break;
   
     case 'myProductsRow':
-      
+
       cardTemplate = 
       `<div class="col-md-2">
         <div class="card">
@@ -78,7 +80,7 @@ async function generaCard(divID, obj) {
               <h5 id="name" class="card-title">${obj.name}</h5>
               <h6 id="price">${obj.price} ETH</h6>
           </div>
-          <button class="ripple">NOT PURCHASED</button>
+          <button class="ripple">RESELL</button>
         </div>
       </div>`
       break;
