@@ -1,13 +1,10 @@
 import { addData } from './ipfs.js'
 
-function Product(name, price, owner, description, image, state) {
-  this.name = name;
-  this.price = price;
-  this.owner = owner;
-  this.description = description;
-  this.image = image;
-  this.state = false;
-
+class Product {
+  constructor(cid, price) {
+    this.cid = cid
+    this.price = price
+  }
 }
 
 async function loadWeb3() {
@@ -123,24 +120,24 @@ async function loadContract() {
   ], "0x0f64a4c92d48ae2397a921eCF000066557139778");
 }
 
-async function createProduct() {
+async function createProduct(product) {
   console.log("creating the new product...");
   // getting user account address
   // let account = await getCurrentAccount();
   // calling the smart contract method
-  window.contract.methods.createProduct(productName, productPrice).send({from: window.account})
+  window.contract.methods.createProduct(product.cid, product.price).send({from: window.account})
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
-    console.error("An error occurred:\n" + error.message, error);
+    console.error("An error occurred:\n" + error.message, error)
     if (receipt != null) {
-      console.log("Transaction receipt:", receipt);
+      console.log("Transaction receipt:", receipt)
     }
   });
   // listen for the event
   contract.events.productCreated({
     fromBlock: 'latest'})
     .on("data", (event) => console.log(event))
-    .on("error", (error) => {console.error("Something went wrong..." + error.message, error)});
+    .on("error", (error) => {console.error("Something went wrong..." + error.message, error)})
 }
 
 async function getAllProducts() {
@@ -160,3 +157,4 @@ async function load() {
 }
 
 load();
+createProduct(new Product("QmSxfBYgK2J4xbLknRhgH3AcCZ15u1sXStWsdgP7AqCnSM", 5))
