@@ -1,6 +1,7 @@
 import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
 import * as BigChain from './bigchaindb.js'
+import * as WEB3 from './web3.js'
 
 caricaProdotti()
 // setTimeout(() => {
@@ -33,6 +34,7 @@ async function caricaProdotti() {
         await generaCard('buyProductsRow', obj)
       }
     } 
+
     console.log("Finished to read products from BigChainDB")
 
     //mostra un messaggio se non ci sono prodotti in un box
@@ -47,7 +49,6 @@ async function caricaProdotti() {
         no_elem_text.style.display = 'unset'
       }
     })
-
   }
 }
 
@@ -58,7 +59,8 @@ async function generaCard(divID, obj) {
 
   switch (divID) {
 
-    case 'buyProductsRow':
+    case 'buyProductsRow': 
+    
       cardTemplate = 
       `<div class="col-md-2">
         <div class="card">
@@ -118,13 +120,13 @@ async function buyProduct(event) {
     let name = parent.querySelector('#name').innerHTML
     let price = parent.querySelector('#price').innerHTML.replace(/\D/g, '')
     console.log(name, price)
-    //TODO: interazione con contratto per acquistare il prodotto
+    
   }
 }
 
 
 //listener evento aggiunta immagine per nuovo prodotto
-document.querySelector('#inputImage').addEventListener('change', function() {ù
+document.querySelector('#inputImage').addEventListener('change', function() {
   let timestampImage = []
   timestampImage.push(Date.now())
   let file = this.files[0]
@@ -203,6 +205,8 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
 
       console.log('Adding product to BigChainDB')
       BigChain.createProduct(cid, window.account)
+
+      WEB3.createProduct(cid, product.price)
     }
   }
 });

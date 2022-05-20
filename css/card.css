@@ -74,6 +74,7 @@
     display: none;
 }
 
+/* Stile per la descrizione del prodotto nella card */
 .overlay p {
     font-size: 12px;
     text-align: left;

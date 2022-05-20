@@ -96,7 +96,8 @@
       "name": "purchaseProduct",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"productCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"prevOwner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"productPurchased\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"createProduct\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"purchaseProduct\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Marketplace.sol\":\"Marketplace\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Marketplace.sol\":{\"keccak256\":\"0x28ce33487e8abb00f0570fb47ddb8f0516cb83eabecf4115c72b07950798d6ab\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0c4a4bc163fd2ce07b57a1a6777342c31414619ff1cde279337515161ef2398f\",\"dweb:/ipfs/QmWVDeY67Nud8CCaEV4mcfzAJXq7tQGJyUthVnzXQCHcz8\"]}},\"version\":1}",
@@ -6030,9 +6031,17 @@
     "name": "solc",
     "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x5eC8c5B20aa4E1d06b319f6203A05f76DeEf6Dc5",
+      "transactionHash": "0x439da1bc7371d6fa6bf9a1cf025a147d7501b66a47c3b66137574966f43696b2"
+    }
+  },
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-05-20T09:08:26.547Z",
+  "updatedAt": "2022-05-20T09:09:59.346Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
