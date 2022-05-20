@@ -1,5 +1,3 @@
-import { addData } from './ipfs.js'
-
 const contract_address = '0xeee999b31ECEf178B8D3EE85D66c0056A613C240'
 const contract_abi = [
   {
@@ -16,6 +14,12 @@ const contract_abi = [
         "internalType": "address",
         "name": "owner",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
       }
     ],
     "name": "productCreated",
@@ -63,6 +67,11 @@ const contract_abi = [
         "internalType": "address",
         "name": "owner",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
       }
     ],
     "name": "createProduct",
@@ -86,8 +95,7 @@ const contract_abi = [
     "name": "purchaseProduct",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function",
-    "payable": true
+    "type": "function"
   }
 ]
 
@@ -117,22 +125,22 @@ async function loadContract() {
   return await new window.web3.eth.Contract(contract_abi, contract_address);
 }
 
-async function createProduct() {
+async function createProduct(name, price) {
   console.log("creating the new product...")
   // calling the smart contract method
-  window.contract.methods.createProduct(productName, productPrice).send({from: window.account})
+  window.contract.methods.createProduct(name, price).send({from: window.account})
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
-    console.error("An error occurred:\n" + error.message, error);
+    console.error("An error occurred:\n" + error.message, error)
     if (receipt != null) {
-      console.log("Transaction receipt:", receipt);
+      console.log("Transaction receipt:", receipt)
     }
   });
   // listen for the event
   contract.events.productCreated({
     fromBlock: 'latest'})
     .on("data", (event) => console.log(event))
-    .on("error", (error) => {console.error("Something went wrong..." + error.message, error)});
+    .on("error", (error) => {console.error("Something went wrong..." + error.message, error)})
 }
 
 async function getAllProducts() {

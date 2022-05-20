@@ -122,8 +122,11 @@ async function buyProduct(event) {
   }
 }
 
+
 //listener evento aggiunta immagine per nuovo prodotto
-document.querySelector('#inputImage').addEventListener('change', function() {
+document.querySelector('#inputImage').addEventListener('change', function() {ù
+  let timestampImage = []
+  timestampImage.push(Date.now())
   let file = this.files[0]
   let reader = new FileReader()
   reader.readAsDataURL(file)
@@ -131,7 +134,10 @@ document.querySelector('#inputImage').addEventListener('change', function() {
     let imgTemp = document.createElement('img')
     imgTemp.src = reader.result
     imgTemp.onload = () => {
+      timestampImage.push(Date.now())
       compressImage(imgTemp)
+      timestampImage.push(Date.now())
+      console.log(timestampImage, " Tempo totale caricamneto: ", timestampImage[1] - timestampImage[0], "ms e compressione: ", timestampImage[2] - timestampImage[1], "ms")
     }
   }
 });

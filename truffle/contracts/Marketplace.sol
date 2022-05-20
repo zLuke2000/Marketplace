@@ -5,7 +5,8 @@ contract Marketplace {
 
     event productCreated (
         string cid,
-        address owner
+        address owner,
+        uint price
     );
 
     event productPurchased(
@@ -15,13 +16,12 @@ contract Marketplace {
         uint amount
     );
 
-    function createProduct(string memory cid, address owner) public {
-        emit productCreated(cid, owner);
+    function createProduct(string memory cid, address owner, uint price) public {
+        emit productCreated(cid, owner, price);
     }
 
     function purchaseProduct (string memory cid, address payable owner) public payable {
         owner.transfer(msg.value);
         emit productPurchased(cid, owner, msg.sender, msg.value);
     }
-
 }
