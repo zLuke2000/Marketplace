@@ -11,19 +11,20 @@ async function caricaProdotti() {
   var products = await BigChain.searchProducts()
   if(products != undefined) {
 
-    //nascondi gli spinner dei box
-    let spinners = document.querySelectorAll(".box .spinner-border")
-    spinners.forEach(element => {element.remove()})
     console.log("Products found: ", products.length)
+    
 
     let i = 1
     for(let pr of products) {
       let cid = pr.data.cid
       console.log('CID elemento (', i++, ') :', cid)
       let stringObj = await IPFS.readData(cid)
+
+      //se IPFS genera un errore allora salta questo prodotto
       if (stringObj == null) {
         continue
       }
+
       let obj = JSON.parse(stringObj)
 
       if(obj.owner == window.account) {
@@ -33,6 +34,20 @@ async function caricaProdotti() {
       }
     } 
     console.log("Finished to read products from BigChainDB")
+
+    //mostra un messaggio se non ci sono prodotti in un box
+    document.querySelectorAll('.box .row').forEach( element => {
+      if (element.childNodes.length == 0) {
+        let parent = element.parentElement
+        let spinner = parent.querySelector('.spinner-border')
+        if (spinner != null) {
+          spinner.remove()
+        }
+        let no_elem_text = parent.querySelector('.text-warn-no-product')
+        no_elem_text.style.display = 'unset'
+      }
+    })
+
   }
 }
 
@@ -84,6 +99,11 @@ async function generaCard(divID, obj) {
         </div>
       </div>`
       break;
+  }
+
+  //nascondi lo spinner prima di inserire il primo prodotto
+  if (div.childNodes.length == 0) {
+    div.parentElement.querySelector('.spinner-border').remove()
   }
 
   div.insertAdjacentHTML('beforeend', cardTemplate)

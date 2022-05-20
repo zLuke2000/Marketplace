@@ -98,10 +98,12 @@ div.box {
     height: 4rem !important;
 	position: absolute;
 	top: 45%;
-	left: 50%;
+	left: 48%;
 }
 
-.row {
-	margin-left: 0px !important;
-	margin-right: 0px !important;
+.text-warn-no-product{
+	position: absolute;
+	top: 47%;
+	left: 34%;
+	display: none;
 }
