@@ -29,9 +29,9 @@ async function caricaProdotti() {
       let obj = JSON.parse(stringObj)
 
       if(obj.owner == window.account) {
-        await generaCard('myProductsRow', obj)
+        await generaCard('myProductsRow', obj, cid)
       } else {
-        await generaCard('buyProductsRow', obj)
+        await generaCard('buyProductsRow', obj, cid)
       }
     } 
 
@@ -52,7 +52,7 @@ async function caricaProdotti() {
   }
 }
 
-async function generaCard(divID, obj) {
+async function generaCard(divID, obj, cid) {
 
   let div = document.getElementById(divID)
   let cardTemplate
@@ -60,7 +60,7 @@ async function generaCard(divID, obj) {
   switch (divID) {
 
     case 'buyProductsRow': 
-    
+
       cardTemplate = 
       `<div class="col-md-2">
         <div class="card">
@@ -72,9 +72,10 @@ async function generaCard(divID, obj) {
               </div>
           </div>
           <div class="card-body">
-              <h5 id="name" class="card-title">${obj.name}</h5>
-              <p>${obj.owner}</p>
+              <h5 id="name" class="card-title" cid=${cid}>${obj.name}</h5>
+              <p id="owner">${obj.owner}</p>
               <h6 id="price">${obj.price} ETH</h6>
+              <p id="cid" style="display:none">${cid}</p>
           </div>
           <button class="ripple">Buy now</button>
         </div>
@@ -94,8 +95,9 @@ async function generaCard(divID, obj) {
               </div>
           </div>
           <div class="card-body">
-              <h5 id="name" class="card-title">${obj.name}</h5>
+              <h5 id="name" class="card-title" cid=${cid}>${obj.name}</h5>
               <h6 id="price">${obj.price} ETH</h6>
+              <p id="cid" style="display:none">${cid}</p>
           </div>
           <button class="ripple">RESELL</button>
         </div>
@@ -117,10 +119,13 @@ document.querySelector('#buyProductsRow').addEventListener('click', event => buy
 async function buyProduct(event) {
   if (event.target.tagName === 'BUTTON') {
     let parent = event.target.parentElement
+    let owner = parent.querySelector('#owner').innerHTML
     let name = parent.querySelector('#name').innerHTML
     let price = parent.querySelector('#price').innerHTML.replace(/\D/g, '')
-    console.log(name, price)
+    let cid = parent.querySelector('#cid').innerHTML
+    console.log('Going to buy', name, 'for', price, 'ETH')
     
+    WEB3.buyProduct(cid, owner, price)
   }
 }
 

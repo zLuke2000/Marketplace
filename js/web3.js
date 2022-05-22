@@ -1,4 +1,4 @@
-const contract_address = '0x5eC8c5B20aa4E1d06b319f6203A05f76DeEf6Dc5'
+const contract_address = '0xd422E816F46a503F51a45215Ec74e498bcdfa90A'
 const contract_abi = [
   {
     "anonymous": false,
@@ -49,7 +49,7 @@ const contract_abi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "price",
         "type": "uint256"
       }
     ],
@@ -62,11 +62,6 @@ const contract_abi = [
         "internalType": "string",
         "name": "cid",
         "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -95,7 +90,8 @@ const contract_abi = [
     "name": "purchaseProduct",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
+    "type": "function",
+    "payable": true
   }
 ]
 
@@ -128,7 +124,7 @@ async function loadContract() {
 export async function createProduct(cid, price) {
   console.log("creating the new product...")
   // calling the smart contract method
-  contract.methods.createProduct(cid, window.account, price).send({from: window.account})
+  contract.methods.createProduct(cid, price).send({from: window.account})
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
     console.error("An error occurred:\n" + error.message, error)
@@ -138,8 +134,17 @@ export async function createProduct(cid, price) {
   })
 }
 
-export async function buyProduct() {
-  
+export async function buyProduct(cid, owner, price) {
+  console.log('going to buy the product...')
+  // calling the smart contract method
+  contract.methods.purchaseProduct(cid, owner).send({from: window.account, value: web3.utils.toWei(price)})
+  .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
+  .on("error", function(error, receipt) {
+    console.error("An error occurred:\n" + error.message, error)
+    if (receipt != null) {
+      console.log("Transaction receipt:", receipt)
+    }
+  })
 }
 
 async function getAllProducts() {

@@ -10,7 +10,7 @@ const alice = new BigchainDB.Ed25519Keypair()
 export function createProduct(cid, address) {
 
     const asset = {
-        'ref': 'marketplace_prova_card',
+        'ref': 'marketplace_prova_blockchain',
         'cid': cid
     }
     const metadata = {
@@ -38,7 +38,7 @@ export function createProduct(cid, address) {
 
 export async function searchProducts() {
     try {
-        return await conn.searchAssets('marketplace_prova_card') 
+        return await conn.searchAssets('marketplace_prova_blockchain') 
     } catch (error) {
         console.error('Error while searching products', error)
     }

@@ -13,15 +13,15 @@ contract Marketplace {
         string cid, 
         address prevOwner,
         address newOwner,
-        uint amount
+        uint price
     );
 
-    function createProduct(string memory cid, address owner, uint price) public {
-        emit productCreated(cid, owner, price);
+    function createProduct(string memory cid, uint price) public {
+        emit productCreated(cid, msg.sender, price);
     }
 
-    function purchaseProduct (string memory cid, address payable owner) public payable {
+    function purchaseProduct(string memory cid, address payable owner) public payable {
         owner.transfer(msg.value);
-        emit productPurchased(cid, owner, msg.sender, msg.value);
+        emit productPurchased(cid, owner, msg.sender, msg.value / 1 ether);
     }
 }
