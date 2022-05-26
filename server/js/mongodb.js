@@ -1,23 +1,22 @@
-const MongoClient = require('mongodb').MongoClient
-const url = 'mongodb://localhost:27017/'
+import { MongoClient } from 'mongodb'
 
-var db = connectToDB()
-var dbo
-var collection
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+const db = await connectToDB()
+const dbo = db.db('marketplace')
+const collection = dbo.collection('products')
 
 async function connectToDB() {
     try {
-        db = await MongoClient.connect(url)
-        dbo = db.db('marketplace')
-        collection = dbo.collection('products')
-        await readOwner("0xCCd553E1f9277909E717D1a352afD83067027f51")
+        return await MongoClient.connect(url)
     } catch (error) {
         console.error('Connection error', error)
         return null
     }
 }
 
-async function addProduct(owner, cid) {
+export async function addProduct(owner, cid) {
     try {
         const res = await collection.insertOne({owner: owner, cid: cid})
         console.log('Result', res)
@@ -26,7 +25,7 @@ async function addProduct(owner, cid) {
     }
 }
 
-async function readAll() {
+export async function readAll() {
     try {
         console.log("Cerco per tutti")
         var counter = 0

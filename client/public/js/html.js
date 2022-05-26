@@ -1,7 +1,8 @@
-import * as IPFS from "./ipfs.js"
+//import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
-//import * as _MongoDB from '../server/mongodb.js'
-import * as WEB3 from './web3.js'
+//import * as WEB3 from './web3.js'
+
+/*
 
 caricaProdotti()
 // setTimeout(() => {
@@ -113,6 +114,7 @@ async function generaCard(divID, obj, cid) {
 
   div.insertAdjacentHTML('beforeend', cardTemplate)
 }
+*/
 
 document.querySelector('#buyProductsRow').addEventListener('click', event => buyProduct(event))
 
@@ -211,16 +213,27 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
       //Converto l'oggetto in JSON e lo carico du IPFS
       const stringObj = JSON.stringify(product)
       console.log('Adding product to IPFS')
-      const cid = await IPFS.addData(stringObj)
-      console.log('Product\'s cid:', cid)
+
+
+      fetch('/click', { method: 'POST', body: stringObj })
+        .then(function (response) {
+          if (response.ok) {
+            console.log('Click was recorded');
+            return;
+          }
+          throw new Error('Request failed.');
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
       // Carico i dati su MongoDB
-      console.log('Adding product to MongoDB')
+      //console.log('Adding product to MongoDB')
       //await _MongoDB.addProduct(window.account, cid)
 
       // Chiamo il contratto di caricamento
-      console.log('Adding product to Blockchian')
-      WEB3.createProduct(cid, product.price)
+      //console.log('Adding product to Blockchian')
+      //WEB3.createProduct(cid, product.price)
     }
   }
 });
