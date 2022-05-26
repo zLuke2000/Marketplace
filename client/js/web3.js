@@ -98,8 +98,8 @@ const contract_abi = [
 async function loadWeb3() {
   if (window.ethereum) {
     try {
-      let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       window.web3 = new Web3(window.ethereum)
+      let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       window.account = web3.utils.toChecksumAddress(accounts[0])
       console.log('Selected account is:', window.account)
     
@@ -138,6 +138,7 @@ export async function buyProduct(cid, owner, price) {
   console.log('going to buy the product...')
   // calling the smart contract method
   contract.methods.purchaseProduct(cid, owner).send({from: window.account, value: web3.utils.toWei(price)})
+  .catch(e => console.log('ERROR', e))
   .on("receipt", (receipt) => console.log("Transaction completed here's the receipt:", receipt))
   .on("error", function(error, receipt) {
     console.error("An error occurred:\n" + error.message, error)
@@ -160,6 +161,7 @@ async function load() {
   await loadWeb3()
   if (window.account != undefined) {
     window.contract = await loadContract()
+    console.log('Contract', contract)
   }
 }
 

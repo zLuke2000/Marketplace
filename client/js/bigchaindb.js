@@ -7,14 +7,14 @@ const conn = new BigchainDB.Connection('https://test.ipdb.io/api/v1/', {
 
 const alice = new BigchainDB.Ed25519Keypair()
 
-export function createProduct(cid, address) {
+export function createProduct(cid) {
 
     const asset = {
-        'ref': 'marketplace_prova_blockchain',
+        'ref': 'marketplace_prova_metadata',
         'cid': cid
     }
     const metadata = {
-        'owner': address,
+        'owner': window.account,
         'purchased': 'false'
     }
 
@@ -38,9 +38,8 @@ export function createProduct(cid, address) {
 
 export async function searchProducts() {
     try {
-        return await conn.searchAssets('marketplace_prova_blockchain') 
+        return await conn.searchAsset('marketplace_prova_metadata') 
     } catch (error) {
         console.error('Error while searching products', error)
     }
 }
-
