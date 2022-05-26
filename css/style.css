@@ -93,12 +93,21 @@ div.box {
 }
 
 /* Stile per gli spinner dei box */
-.box .spinner-border{
+.spinner-border{
 	width: 4rem !important; 
     height: 4rem !important;
 	position: absolute;
 	top: 45%;
 	left: 48%;
+}
+
+/* Stile per gli spinner delle card */
+.buy-product {
+	width: 2rem !important;
+	height: 2rem !important;
+	position: absolute;
+	top: 15%;
+	left: 2%;
 }
 
 .text-warn-no-product{

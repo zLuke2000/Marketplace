@@ -118,14 +118,19 @@ document.querySelector('#buyProductsRow').addEventListener('click', event => buy
 //listener per l'acquisto di un prodotto
 async function buyProduct(event) {
   if (event.target.tagName === 'BUTTON') {
+    event.target.disabled = true
+    event.target.classList.add("disabled-button");
+    const spinner = '<span class="spinner-border spinner-border-sm buy-product" role="status" aria-hidden="true"></span>'
+    event.target.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
+    
     let parent = event.target.parentElement
     let owner = parent.querySelector('#owner').innerHTML
     let name = parent.querySelector('#name').innerHTML
     let price = parent.querySelector('#price').innerHTML.replace(/\D/g, '')
     let cid = parent.querySelector('#cid').innerHTML
     console.log('Going to buy', name, 'for', price, 'ETH')
-    
     WEB3.buyProduct(cid, owner, price)
+    document.location.reload()
   }
 }
 

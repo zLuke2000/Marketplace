@@ -91,6 +91,10 @@
     background-color: #3666FF;
 }
 
+.disabled-button {
+    background-color: #7a7a7a !important;
+}
+
 /* Effetto per il click sul bottone */
 .ripple {
     position: relative;
