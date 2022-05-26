@@ -1,6 +1,6 @@
 import * as IPFS from "./ipfs.js"
 import * as input from "./inputChecker.js"
-import * as BigChain from './bigchaindb.js'
+//import * as _MongoDB from '../server/mongodb.js'
 import * as WEB3 from './web3.js'
 
 caricaProdotti()
@@ -17,6 +17,7 @@ async function caricaProdotti() {
 
     let i = 1
     for(let pr of products) {
+      //TODO: gestire cambio di proprietario
       let cid = pr.data.cid
       console.log('CID elemento (', i++, ') :', cid)
       let stringObj = await IPFS.readData(cid)
@@ -193,24 +194,27 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
       let productDescriptionEl =  document.querySelector('#inputProductDescription')
       let prodDescription = productDescriptionEl.value.trim() === '' ? 'This product has no description' : productDescriptionEl.value.trim()
 
-      const product = {
-        owner: window.account,
+      var product = {
         name: productNameEl.value.trim(),
         price:productPriceEl.value.trim(),
         description: prodDescription,
-        image: image.src,
-        purchased: 'false'
+        image: image.src
       }
 
-      let stringObj = JSON.stringify(product)
+      //TODO: gestione in caso di errori con IPFS e Mongodb
 
+      //Converto l'oggetto in JSON e lo carico du IPFS
+      const stringObj = JSON.stringify(product)
       console.log('Adding product to IPFS')
-      let cid = await IPFS.addData(stringObj)
+      const cid = await IPFS.addData(stringObj)
       console.log('Product\'s cid:', cid)
 
-      console.log('Adding product to BigChainDB')
-      BigChain.createProduct(cid, window.account)
+      // Carico i dati su MongoDB
+      console.log('Adding product to MongoDB')
+      //await _MongoDB.addProduct(window.account, cid)
 
+      // Chiamo il contratto di caricamento
+      console.log('Adding product to Blockchian')
       WEB3.createProduct(cid, product.price)
     }
   }
