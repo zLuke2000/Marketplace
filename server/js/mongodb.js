@@ -3,13 +3,13 @@ import { MongoClient } from 'mongodb'
 // Connection URL
 const url = 'mongodb://localhost:27017';
 
-const db = await connectToDB()
-const dbo = db.db('marketplace')
+const client = await connectToDB()
+const dbo = client.db('marketplace')
 const collection = dbo.collection('products')
 
 async function connectToDB() {
     try {
-        return await MongoClient.connect(url)
+        return MongoClient.connect(url)
     } catch (error) {
         console.error('Connection error', error)
         return null

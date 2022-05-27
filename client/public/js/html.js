@@ -177,7 +177,9 @@ function compressImage(imgToCompress) {
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function(event) {
+
   event.preventDefault()
+  
   if (!window.ethereum) {
 
     console.error('Metamask is required')

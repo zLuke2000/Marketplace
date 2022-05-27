@@ -3,21 +3,24 @@ import path from 'path'
 import fs from 'fs'
 //import * as myipfs from './server/js/myipfs.js'
 import * as myDB from './server/js/mongodb.js'
+import bodyParser from 'body-parser'
 
 const app = express()
 
 //Imposto la cartella public - non è necessario specificare un metodo per l'index.html se quest'ultimo viene messo nella cartella public
 app.use(express.static('./client/public'))
-app.use(express.urlencoded({ extended: true }))
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
 
 // Gestione dei click del pulsante
-app.post('/click', express.json({ type: '*/*' }), async (req, res) => {
-
-    //const buf = Buffer.from(req.body.toString())
-    //const cid = await myipfs.addData(buf)
-    //const result = await myipfs.readData(cid)
-
-    myDB.addProduct("LUCA", "CID")
+app.post('/click', async function(req, res) {
+    const buf = Buffer.from(JSON.stringify(req.body))
+    console.log('BODY', req.body)
+    console.log('BUF', buf)
+    const json = JSON.parse(buf.toString())
+    console.log('json', json)
 
     res.sendStatus(201)
 })
@@ -29,6 +32,5 @@ app.all('*', (req, res) => {
 
 //app.listen
 app.listen(5000, () => { 
-    console.log('server is listening on port 5000...')
-    
+    console.log('server is listening on port 5000...') 
  })
