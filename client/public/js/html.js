@@ -1,13 +1,11 @@
-//import * as IPFS from "./ipfs.js"
-import * as input from "./inputChecker.js"
 //import * as WEB3 from './web3.js'
 
-/*
-
-caricaProdotti()
+// caricaProdotti()
 // setTimeout(() => {
 //   caricaProdotti()
 // }, 3000);
+
+//TODO lasciare soltanto funzioni per la generazione delle card
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -114,7 +112,7 @@ async function generaCard(divID, obj, cid) {
 
   div.insertAdjacentHTML('beforeend', cardTemplate)
 }
-*/
+
 
 document.querySelector('#buyProductsRow').addEventListener('click', event => buyProduct(event))
 
@@ -177,7 +175,9 @@ function compressImage(imgToCompress) {
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function(event) {
+  
   event.preventDefault()
+
   if (!window.ethereum) {
 
     console.error('Metamask is required')
@@ -190,51 +190,32 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
     let productPriceEl = document.querySelector("#inputProductPrice")
     let image = document.querySelector('#inputProductImage')
 
-    if (input.checkProductName(productNameEl) & input.checkProductPrice(productPriceEl) & input.checkProductImage(image)) {
-      console.log("All inputs are valid!");
-      console.log("Going to create a product");
+    this.disabled = true
+    const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
+    this.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
 
-      this.disabled = true
-      const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
-      this.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
+    let productDescriptionEl =  document.querySelector('#inputProductDescription')
+    let prodDescription = productDescriptionEl.value.trim() === '' ? 'This product has no description' : productDescriptionEl.value.trim()
 
-      let productDescriptionEl =  document.querySelector('#inputProductDescription')
-      let prodDescription = productDescriptionEl.value.trim() === '' ? 'This product has no description' : productDescriptionEl.value.trim()
-
-      var product = {
-        name: productNameEl.value.trim(),
-        price:productPriceEl.value.trim(),
-        description: prodDescription,
-        image: image.src
-      }
-
-      //TODO: gestione in caso di errori con IPFS e Mongodb
-
-      //Converto l'oggetto in JSON e lo carico du IPFS
-      const stringObj = JSON.stringify(product)
-      console.log('Adding product to IPFS')
-
-
-      fetch('/click', { method: 'POST', body: stringObj })
-        .then(function (response) {
-          if (response.ok) {
-            console.log('Click was recorded');
-            return;
-          }
-          throw new Error('Request failed.');
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-      // Carico i dati su MongoDB
-      //console.log('Adding product to MongoDB')
-      //await _MongoDB.addProduct(window.account, cid)
-
-      // Chiamo il contratto di caricamento
-      //console.log('Adding product to Blockchian')
-      //WEB3.createProduct(cid, product.price)
+    const product = {
+      name: productNameEl.value.trim(),
+      price:productPriceEl.value.trim(),
+      description: prodDescription,
+      image: image.src
     }
+
+    const request = {
+      owner: window.account,
+      product: product
+    }
+
+    fetch('/sell-product', { 
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(request)
+  })
+
+    
   }
 });
 

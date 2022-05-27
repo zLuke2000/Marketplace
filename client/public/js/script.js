@@ -1,3 +1,5 @@
+//TODO funzioni per gestione input da interfaccia web e comunicazione con backend
+
 const button = document.getElementById('myButton');
 button.addEventListener('click', function (e) {
     e.preventDefault()

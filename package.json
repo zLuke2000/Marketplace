@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "body-parser": "^1.20.0",
     "electron": "^19.0.1",
     "electron-eval": "^0.9.7",
     "express": "^4.18.1",
@@ -13,7 +14,6 @@
   "type": "module",
   "scripts": {
     "start": "nodemon app.js",
-    "dev": "jsipfs daemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
