@@ -1,24 +1,90 @@
-//TODO funzioni per gestione input da interfaccia web e comunicazione con backend
+import * as WEB3 from './web3.js'
+import * as HTML from './html.js'
 
-const button = document.getElementById('btn_createProduct');
-button.addEventListener('click', function (e) {
-    e.preventDefault()
-    console.log('button was clicked');
-    const prod = {
-        'name': 'prova',
-        'price': '10'
-    }
-    fetch('/click', {
-        method: 'POST',
-        body: JSON.stringify(prod),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(function (response) {
-        if (response.ok) {
-            console.log('Click was recorded');
-            return;
+document.querySelector('#inputProductDescription').onkeyup = function () {
+    let formField = this.parentElement
+    let counter = formField.querySelector('small')
+    counter.textContent = this.value.length + ' / 512'  
+}
+
+//listener evento aggiunta immagine per nuovo prodotto
+document.querySelector('#inputImage').addEventListener('change', function () {
+    let timestampImage = []
+    timestampImage.push(Date.now())
+    let file = this.files[0]
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+        let imgTemp = document.createElement('img')
+        imgTemp.src = reader.result
+        imgTemp.onload = () => {
+            timestampImage.push(Date.now())
+            compressImage(imgTemp)
+            timestampImage.push(Date.now())
+            console.log(timestampImage, " Tempo totale caricamneto: ", timestampImage[1] - timestampImage[0], "ms e compressione: ", timestampImage[2] - timestampImage[1], "ms")
         }
-        throw new Error('Request failed.');
+    }
+});
+
+function compressImage(imgToCompress) {
+
+    const canvas = document.createElement("canvas")
+    const context = canvas.getContext("2d")
+    canvas.width = 280
+    canvas.height = 280
+
+    context.drawImage(
+        imgToCompress,
+        0, 0, imgToCompress.width, imgToCompress.height,
+        0, 0, canvas.width, canvas.height
+    )
+
+    let dataURI = canvas.toDataURL('image/jpeg', 0.5)
+    let img = document.querySelector('#inputProductImage')
+    img.src = dataURI
+}
+
+document.querySelector('#btn_createProduct').addEventListener('click', function (e) {
+    
+    e.preventDefault()
+
+    // nome, prezzo, immagine e descrizione
+    const productNameEl = document.querySelector("#inputProductName")
+    const productPriceEl = document.querySelector("#inputProductPrice")
+    const image = document.querySelector('#inputProductImage').src
+    const description = document.querySelector('#inputProductDescription')
+
+    console.log(image);
+
+    //TODO: controllo se window.account e' undefined
+    const request = {
+        'owner': window.account,
+        'product': {
+            'name': productNameEl.value.trim(),
+            'price': productPriceEl.valueAsNumber,
+            'image': image,
+            'description': description.value.trim()
+        }
+    }
+
+    fetch('/sell-product', 
+    { method: 'POST',
+        body: JSON.stringify(request), 
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+     }
+    })
+    .then(res => res.json())
+    .then((data, res) => {
+        if (res.ok) {
+            WEB3.buyProduct(data.cid, window.account, productPriceEl.valueAsNumber)
+        } else {
+            //TODO: controllo errore
+            if (data.name === false) {
+                HTML.showError(productNameEl, 'The ')
+            }
+        }
     })
     .catch(function (error) {
         console.log(error);

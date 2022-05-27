@@ -20,9 +20,11 @@ export async function addProduct(owner, cid) {
     try {
         const res = await collection.insertOne({owner: owner, cid: cid})
         console.log('Result', res)
+        return res.acknowledged
     } catch (error) {
         console.error('Error while trying to insert the product', error)
     }
+    return false
 }
 
 export async function readAll() {

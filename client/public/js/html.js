@@ -172,6 +172,7 @@ function compressImage(imgToCompress) {
   let img = document.querySelector('#inputProductImage')
   img.src = dataURI
 }
+/*
 
 // evento click per creare un nuovo prodotto
 document.querySelector("#btn_createProduct").addEventListener("click", async function(event) {
@@ -214,12 +215,15 @@ document.querySelector("#btn_createProduct").addEventListener("click", async fun
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(request)
   })
+  .then(res => )
 
     
   }
 });
+*/
 
 //resetta il form di caricamento di un prodotto
+/*
 export function resetForm() {
   document.querySelector('.form-group').reset()
   let btn = document.querySelector('#btn_createProduct')
@@ -227,4 +231,20 @@ export function resetForm() {
   btn.innerHTML = 'Salva prodotto'
   document.querySelector('#inputProductImage').src = ''
   alert('The product is now available to purchase!')
+}
+*/
+
+
+export function showError(input, message) {
+  let formField = input.parentElement
+  formField.classList.add('error')
+  let error = formField.querySelector('small')
+  error.textContent = message
+}
+
+export function removeError(input) {
+  let formField = input.parentElement
+  formField.classList.remove('error')
+  let error = formField.querySelector('small')
+  error.textContent = ''
 }

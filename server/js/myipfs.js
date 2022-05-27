@@ -1,9 +1,9 @@
-import * as IPFS from 'ipfs'
+import * as IPFS from 'ipfs-http-client'
 
-const node = await IPFS.create()
+const client = IPFS.create('http://127.0.0.1:5002')
 
 export async function addData(data) {
-    if (node == undefined) {
+    if (client == undefined) {
         console.error('node is still undefined...')
         return new Promise(resolve => {
             setTimeout(function () {
@@ -11,13 +11,13 @@ export async function addData(data) {
             }, 5000)
         })
     } else {
-        let result = await node.add(data)
+        let result = await client.add(data)
         return result.path
     }
 }
 
 export async function readData(cid) {
-    if (node == undefined) {
+    if (client == undefined) {
         console.error('node is still undefined...')
         return new Promise(resolve => {
             setTimeout(function () {
@@ -26,7 +26,7 @@ export async function readData(cid) {
         })
     } else {
         try {
-            const stream = await node.cat(cid)
+            const stream = client.cat(cid)
             let data = ''
             for await (const chunck of stream) {
                 data += new TextDecoder().decode(chunck)
