@@ -3,9 +3,9 @@ import { MongoClient } from 'mongodb'
 // Connection URL
 const url = 'mongodb://localhost:27017';
 
-const client = await connectToDB()
-const dbo = client.db('marketplace')
-const collection = dbo.collection('products')
+// const client = await connectToDB()
+// const dbo = client.db('marketplace')
+// const collection = dbo.collection('products')
 
 async function connectToDB() {
     try {

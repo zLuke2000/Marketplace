@@ -49,21 +49,20 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
     e.preventDefault()
 
     // nome, prezzo, immagine e descrizione
-    const productNameEl = document.querySelector("#inputProductName")
-    const productPriceEl = document.querySelector("#inputProductPrice")
-    const image = document.querySelector('#inputProductImage').src
-    const description = document.querySelector('#inputProductDescription')
+    const nameEl = document.querySelector("#inputProductName")
+    const priceEl = document.querySelector("#inputProductPrice")
+    const imageEl = document.querySelector('#inputProductImage')
+    const descriptionEl = document.querySelector('#inputProductDescription')
 
-    console.log(image);
 
     //TODO: controllo se window.account e' undefined
     const request = {
         'owner': window.account,
         'product': {
-            'name': productNameEl.value.trim(),
-            'price': productPriceEl.valueAsNumber,
-            'image': image,
-            'description': description.value.trim()
+            'name': nameEl.value.trim(),
+            'price': priceEl.valueAsNumber,
+            'image': imageEl.src,
+            'description': descriptionEl.value.trim()
         }
     }
 
@@ -78,11 +77,17 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
     .then(res => res.json())
     .then((data, res) => {
         if (res.ok) {
-            WEB3.buyProduct(data.cid, window.account, productPriceEl.valueAsNumber)
+            WEB3.buyProduct(data.cid, window.account, priceEl.valueAsNumber)
         } else {
             //TODO: controllo errore
             if (data.name === false) {
-                HTML.showError(productNameEl, 'The ')
+                HTML.showError(nameEl, 'The name of this product is not valid')
+            }
+            if (data.price === false) {
+                HTML.showError(priceEl, 'This price is not valid')
+            }
+            if (data.image === false) {
+                HTML.showError(imageEl, 'Image is not valid')
             }
         }
     })

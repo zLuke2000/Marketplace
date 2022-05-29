@@ -27,6 +27,7 @@ app.post('/sell-product', async function(req, res) {
     /* Struttura
      * req.body { owner, product { name, price, image, description}}
      */
+    console.log('json', req.body)
     const seller = req.body.owner
     const product = req.body.product
     
@@ -42,10 +43,10 @@ app.post('/sell-product', async function(req, res) {
 
     if(nameStatus && priceStatus && imageStatus) {
         // Aggiungo il prodotto su ifps e metto il cid nella risposta
-        response.cid = await myipfs.addData(Buffer.from(JSON.stringify(product)))
+        // response.cid = await myipfs.addData(Buffer.from(JSON.stringify(product)))
 
         // Aggiungo cid e ownder su mongodb e metto l'id nella risposta
-        response.mongo = await myDB.addProduct(seller, response.cid)
+        // response.mongo = await myDB.addProduct(seller, response.cid)
         res.status(201).json(response)
     } else {
         res.sendStatus(500)
