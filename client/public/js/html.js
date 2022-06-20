@@ -1,11 +1,8 @@
 //import * as WEB3 from './web3.js'
 
-// caricaProdotti()
 // setTimeout(() => {
 //   caricaProdotti()
 // }, 3000);
-
-//TODO lasciare soltanto funzioni per la generazione delle card
 
 async function caricaProdotti() {
   var products = await BigChain.searchProducts()
@@ -172,58 +169,8 @@ function compressImage(imgToCompress) {
   let img = document.querySelector('#inputProductImage')
   img.src = dataURI
 }
-/*
-
-// evento click per creare un nuovo prodotto
-document.querySelector("#btn_createProduct").addEventListener("click", async function(event) {
-  
-  event.preventDefault()
-
-  if (!window.ethereum) {
-
-    console.error('Metamask is required')
-    alert('Please install Metamkas')
-
-  } else {
-
-    // Controllo che nome, prezzo e descrizione rispettino determinati parametri
-    let productNameEl = document.querySelector("#inputProductName")
-    let productPriceEl = document.querySelector("#inputProductPrice")
-    let image = document.querySelector('#inputProductImage')
-
-    this.disabled = true
-    const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
-    this.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
-
-    let productDescriptionEl =  document.querySelector('#inputProductDescription')
-    let prodDescription = productDescriptionEl.value.trim() === '' ? 'This product has no description' : productDescriptionEl.value.trim()
-
-    const product = {
-      name: productNameEl.value.trim(),
-      price:productPriceEl.value.trim(),
-      description: prodDescription,
-      image: image.src
-    }
-
-    const request = {
-      owner: window.account,
-      product: product
-    }
-
-    fetch('/sell-product', { 
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(request)
-  })
-  .then(res => )
-
-    
-  }
-});
-*/
 
 //resetta il form di caricamento di un prodotto
-/*
 export function resetForm() {
   document.querySelector('.form-group').reset()
   let btn = document.querySelector('#btn_createProduct')
@@ -232,8 +179,6 @@ export function resetForm() {
   document.querySelector('#inputProductImage').src = ''
   alert('The product is now available to purchase!')
 }
-*/
-
 
 export function showError(input, message) {
   let formField = input.parentElement

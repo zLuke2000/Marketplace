@@ -31,27 +31,22 @@ app.post('/sell-product', async function(req, res) {
     const seller = req.body.owner
     const product = req.body.product
     
-    const nameStatus = ic.checkProductName(product.name)
-    const priceStatus = ic.checkProductPrice(product.price)
-    const imageStatus = ic.checkProductImage(product.image)
+    const response = {}
 
-    const response = {
-        'name': nameStatus,
-        'price': priceStatus,
-        'image': imageStatus
-    }
+    ic.checkProductName(product.name, response)
+    ic.checkProductPrice(product.price, response)
+    ic.checkProductImage(product.image, response)
 
-    if(nameStatus && priceStatus && imageStatus) {
+    if(response.name.status && response.price.status && response.image.status) {
         // Aggiungo il prodotto su ifps e metto il cid nella risposta
-        // response.cid = await myipfs.addData(Buffer.from(JSON.stringify(product)))
+        response.cid = await myipfs.addData(Buffer.from(JSON.stringify(product)))
 
         // Aggiungo cid e ownder su mongodb e metto l'id nella risposta
-        // response.mongo = await myDB.addProduct(seller, response.cid)
+        response.mongo = await myDB.addProduct(seller, response.cid)
         res.status(201).json(response)
     } else {
         res.sendStatus(500)
     }
-        //JSON.parse(buffer.toString())
 })
 
 

@@ -1,38 +1,44 @@
-export function checkProductName(name) {
+export function checkProductName(name, json) {
     if (name === "") {
+        json.name.status = false
+        json.name.message = 'Product\'s name is not valid!'
         console.error("Name is blank")
-        return false;
     } else {
+        json.name.status = true
         console.log("Product name is ok!")
-        return true;
     }
 }
 
-export function checkProductPrice(price) {
+export function checkProductPrice(price, json) {
     const re = /\d/; 
     if (re.test(price)) {
-        console.log("Price is ok!");
-        return true;
+        console.log("Price is ok!")
+        json.price.status = true
     } else {
         console.error("Product price is not valid!")
-        return false;
+        json.price.status = false
+        json.price.message = 'Product price is not valid!'
     }
 }
 
-export function checkProductImage(image) {
+export function checkProductImage(image, json) {
+    
     const pattern = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/
     const imgStr = JSON.stringify(image)
+    
     if (imgStr === '') {
         console.error('Must select an image!')
-        return false
+        json.image.status = false
+        json.image.message = 'Please select an image'
     } else {
         const base64 = imgStr.split('base64,')[1] 
         if(pattern.test(base64)) {
             console.log('Image is ok!')
-            return true 
+            json.image.status = true
         } else {
             console.log('The image is not a valid base64 string!')
-            return false
+            json.image.status = false
+            json.image.message = 'The image is not valid!'
         }
     }
 }

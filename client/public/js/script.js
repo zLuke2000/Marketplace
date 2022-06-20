@@ -48,50 +48,76 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
     
     e.preventDefault()
 
-    // nome, prezzo, immagine e descrizione
-    const nameEl = document.querySelector("#inputProductName")
-    const priceEl = document.querySelector("#inputProductPrice")
-    const imageEl = document.querySelector('#inputProductImage')
-    const descriptionEl = document.querySelector('#inputProductDescription')
+    if (!window.ethereum) {
+
+        console.error('Metamask is required')
+        alert('Please install Metamkas')
+         
+    } else {
+
+        // nome, prezzo, immagine e descrizione
+        const nameEl = document.querySelector("#inputProductName")
+        const priceEl = document.querySelector("#inputProductPrice")
+        const imageEl = document.querySelector('#inputProductImage')
+        const descriptionEl = document.querySelector('#inputProductDescription')
+        let prodDescription = descriptionEl.value.trim() === '' ? 'This product has no description' : descriptionEl.value.trim()
 
 
-    //TODO: controllo se window.account e' undefined
-    const request = {
-        'owner': window.account,
-        'product': {
-            'name': nameEl.value.trim(),
-            'price': priceEl.valueAsNumber,
-            'image': imageEl.src,
-            'description': descriptionEl.value.trim()
+        HTML.removeError(nameEl)
+        HTML.removeError(priceEl)
+        HTML.removeError(imageEl)
+
+        this.disabled = true
+        const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
+        this.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
+
+
+        //TODO: controllo se window.account e' undefined
+        const request = {
+            'owner': window.account,
+            'product': {
+                'name': nameEl.value.trim(),
+                'price': priceEl.valueAsNumber,
+                'image': imageEl.src,
+                'description': prodDescription
+            }
         }
+
+        console.log(request);
+
+        fetch('/sell-product', 
+        { method: 'POST',
+            body: JSON.stringify(request), 
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+        }
+        })
+        .then(res => res.json())
+        .then((data, res) => {
+
+            if (res.ok) {
+                WEB3.buyProduct(data.cid, window.account, priceEl.valueAsNumber)
+                HTML.resetForm()
+            } else {
+                if (data.name === false) {
+                    HTML.showError(nameEl, 'The name of this product is not valid')
+                }
+                if (data.price === false) {
+                    HTML.showError(priceEl, 'This price is not valid')
+                }
+                if (data.image === false) {
+                    HTML.showError(imageEl, 'Image is not valid')
+                }
+
+                let btn = document.querySelector('#btn_createProduct')
+                btn.disabled = false
+                btn.innerHTML = 'Salva prodotto'
+            }
+        })
+        .catch(function (error) {
+            console.error('Error during fetch!', error);
+        });
+
     }
-
-    fetch('/sell-product', 
-    { method: 'POST',
-        body: JSON.stringify(request), 
-        headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-     }
-    })
-    .then(res => res.json())
-    .then((data, res) => {
-        if (res.ok) {
-            WEB3.buyProduct(data.cid, window.account, priceEl.valueAsNumber)
-        } else {
-            //TODO: controllo errore
-            if (data.name === false) {
-                HTML.showError(nameEl, 'The name of this product is not valid')
-            }
-            if (data.price === false) {
-                HTML.showError(priceEl, 'This price is not valid')
-            }
-            if (data.image === false) {
-                HTML.showError(imageEl, 'Image is not valid')
-            }
-        }
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
 });
