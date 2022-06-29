@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb'
 
 // Connection URL
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://localhost:27017'
 
-// const client = await connectToDB()
-// const dbo = client.db('marketplace')
-// const collection = dbo.collection('products')
+const client = await connectToDB()
+const dbo = client.db('marketplace')
+const collection = dbo.collection('products')
 
 async function connectToDB() {
     try {
@@ -16,10 +16,9 @@ async function connectToDB() {
     }
 }
 
-export async function addProduct(owner, cid) {
+export async function addProduct(owner, name, cid) {
     try {
-        const res = await collection.insertOne({owner: owner, cid: cid})
-        console.log('Result', res)
+        const res = await collection.insertOne({owner: owner, name: name, cid: cid, purchased: false})
         return res.acknowledged
     } catch (error) {
         console.error('Error while trying to insert the product', error)
@@ -27,31 +26,41 @@ export async function addProduct(owner, cid) {
     return false
 }
 
-export async function readAll() {
+export async function readAll(user, skip) {
     try {
-        console.log("Cerco per tutti")
-        var counter = 0
-        await collection.find().forEach(element => {
-            console.log(++counter, ": ", element);
-        })
+        const regex = new RegExp('^(?!.*' + user + ').*')
+        const query = { owner: regex, purchased: false }
+        const result = await collection.find(query).skip(skip).limit(1).toArray()
+        return result
     } catch (error) {
         console.error('1 - Error while trying to read the product', error)
+        return null
     }
 }
 
-async function readOwner(owner) {
+export async function readByOwner(owner) {
     try {
-        console.log("Cerco per: ", owner)
-        var counter = 0
-        await collection.find({ owner: owner }).forEach(element => {
-            console.log(++counter, ": ", element);
-        })
+        //FIXME: ritornare solo prodotti non acquistati?
+        const result = await collection.find({ owner: owner }).toArray()
+        return result
     } catch (error) {
         console.error('2 - Error while trying to read the product', error)
+        return null
     }
 }
 
-
+export async function searchProducts(user, string, skip) {
+    try {
+        const reUser = new RegExp('^(?!.*' + user + ').*')
+        const reProduct = new RegExp('^' + string + '.*')
+        const query = { owner: reUser, name: reProduct, purchased: false }
+        const result = await collection.find(query).skip(skip).limit(1).sort({ name: 1 }).toArray()
+        return result
+    } catch (error) {
+        console.error('Error while searching for specific products!', error)
+        return null
+    }
+}
 
 function closeConnection() {
     db.close()

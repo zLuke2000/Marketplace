@@ -21,13 +21,26 @@ textarea {
 /* Box esterno card */
 div.box {
 	height: 520px !important; 
-	align-items: center;
+	text-align: center;
 	background: var(--lightblue50);
 	overflow: auto;
 	margin:25px;
+	margin-top: 5px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
 	position: relative;
+}
+
+.loadBtn {
+	border-radius: 10px;
+	color: black;
+	background-color: #98A4E9;
+	display: none;
+	cursor: pointer;
+	text-align: center;
+	padding: 8px 50px 8px 50px;
+	margin-bottom: 20px;
+	font-size: 18px;
 }
 
 /* Stile per i campi del form di creazione di un nuovo prodotto */
@@ -112,12 +125,40 @@ div.box {
 
 .text-warn-no-product{
 	position: absolute;
-	top: 47%;
-	left: 34%;
+	/* top: 47%;
+	left: 34%; */
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%);
 	display: none;
 }
 
 .row {
-	margin-left: 0px !important;
-	margin-right: 0px !important;
+	/* FIXME: sistemare i margini per le row */
+	/* margin-left: 0px !important;
+	margin-right: 0px !important; */
+	margin: 0px !important;
+}
+
+/* Stile per la barra di ricerca */
+.search-bar-container {
+	margin: 25px 25px 0px 25px !important;
+}
+
+.search-bar-container input[type="search"] {
+	background-color: var(--opaco50);
+	border-radius: 10px;
+	border-width: 2px;
+	font-size: 18px;
+	padding: 5px 20px 5px 50px;
+}
+
+.search-bar-container  span {
+	/* position: absolute; */
+	position: relative;
+	float: left;
+	margin-top: -40px;
+	margin-left: 8px;
+	font-size: 36px;
+	cursor: pointer;
 }

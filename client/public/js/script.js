@@ -1,6 +1,51 @@
 import * as WEB3 from './web3.js'
 import * as HTML from './html.js'
 
+export async function getMyProducts() {
+    fetch('/my-products',
+    { method: 'POST',
+        body: JSON.stringify({ user: window.account }),
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json' 
+        }
+    })
+    .then(async (res) => {
+        if (res.ok) {
+            const data = await res.json()
+            console.log('You have', data.products.length, 'products available on the market')
+            data.products.forEach(element => {
+                console.log('my product:', element)
+                HTML.generaCard('myProductsRow', element)
+            })
+        } else {
+            console.error('Error occurred during fetch', res.status)
+        }
+    })
+    .catch(function (error) {
+        console.error('Error occurred while trying to read the products!', error);
+    })
+    .finally(() => { hideSpinner('#myProductsRow') })
+}
+
+export async function getAllProducts(skip) {
+    getProducts('/all-products', { "skip": skip })
+}
+
+document.querySelector('#loadMoreBtn').addEventListener('click', async function() {
+    const row = document.querySelector('#buyProductsRow')
+    const searchbar = document.querySelector('#searchbar')
+    const state = searchbar.getAttribute('state')
+    showSpinner('#buyProductsRow')
+    if (state === 'inactive') {
+        getAllProducts(row.childElementCount)
+    } else {
+        const searchbar = document.querySelector('#searchbar')
+        const text = searchbar.getAttribute('lastSearch')
+        searchProducts(text, row.childElementCount)
+    }
+})
+
 document.querySelector('#inputProductDescription').onkeyup = function () {
     let formField = this.parentElement
     let counter = formField.querySelector('small')
@@ -53,7 +98,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
         console.error('Metamask is required')
         alert('Please install Metamkas')
          
-    } else {
+    } else if(window.account) {
 
         // nome, prezzo, immagine e descrizione
         const nameEl = document.querySelector("#inputProductName")
@@ -71,8 +116,6 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
         const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
         this.innerHTML = spinner + '&nbsp;&nbsp;Processing...'
 
-
-        //TODO: controllo se window.account e' undefined
         const request = {
             'owner': window.account,
             'product': {
@@ -97,6 +140,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
         .then((data, res) => {
 
             if (res.ok) {
+                //TODO: gestire caso in cui utente rifiuta il pagamento
                 WEB3.buyProduct(data.cid, window.account, priceEl.valueAsNumber)
                 HTML.resetForm()
             } else {
@@ -116,8 +160,106 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
             }
         })
         .catch(function (error) {
-            console.error('Error during fetch!', error);
+            console.error('Error occurred while trying to add a product!', error);
         });
 
+    } else {
+        console.error('User is not logged');
+        alert('Please login or create an account before adding a product')
     }
-});
+})
+
+//event handler per la ricerca di un prodotto
+document.querySelector('#searchIcon').addEventListener('click', function () {
+    const searchbar = document.querySelector('#searchbar')
+    const text = searchbar.value.trim()
+    if (text != '') {
+        searchbar.setAttribute('state', 'active')
+        //rimuove tutti gli elementi della row e mostra lo spinner
+        const row = document.querySelector('#buyProductsRow')
+        row.replaceChildren()
+        showSpinner('#buyProductsRow')
+        searchProducts(text, 0)
+        searchbar.setAttribute('lastSearch', text)
+    } 
+    //annulla la ricerca precendentemente eseguita
+    else if (searchbar.getAttribute('state') === 'active') {
+        //rimuove dalla row i risultati della ricerca eseguita
+        const row = document.querySelector('#buyProductsRow')
+        row.replaceChildren()
+        showSpinner('#buyProductsRow')
+        getAllProducts(0)
+        searchbar.setAttribute('state', 'inactive')
+        searchbar.removeAttribute('lastSearch')
+    }
+})
+
+function searchProducts(text, skip) {
+    getProducts('/search-products', 
+        {
+            "search": text,
+            "skip": skip
+        })
+}
+
+//rimuove spinner e mostra messaggio se la row non ha figli
+function hideSpinner(id) {
+    const row = document.querySelector(id)
+    const parent = row.parentElement
+    const spinner = parent.querySelector('.spinner-border')
+    if (spinner.style.display != 'none') {
+        spinner.style.display = 'none'
+        if(row.childElementCount == 0) {
+            const no_elem_text = parent.querySelector('.text-warn-no-product')
+            no_elem_text.style.display = 'unset'
+        }
+    }
+}
+
+function showSpinner(id) {
+    const row = document.querySelector(id)
+    const parent = row.parentElement
+    //rende visibile solo lo spinner
+    row.style.visibility = 'hidden'
+    const loadBtn = parent.querySelector('#loadMoreBtn')
+    loadBtn.style.display = 'none'
+    const no_elem_text = parent.querySelector('.text-warn-no-product')
+    no_elem_text.style.display = 'none'
+    const spinner = parent.querySelector('.spinner-border')
+    spinner.style.display = 'unset'
+}
+
+function getProducts(url, obj) {
+    obj.user = window.account
+    fetch(url,
+        { 
+            method: 'POST',
+            body: JSON.stringify(obj),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(async (res) => {
+            const row = document.querySelector('#buyProductsRow')
+            row.style.visibility = 'visible'
+            if (res.ok) {
+                const data = await res.json()
+                if (data.products.length > 0) {
+                    console.log('Found', data.products.length, 'products')
+                    data.products.forEach(element => {
+                        HTML.generaCard('#buyProductsRow', element)
+                    })
+                    //mostra bottone 'carica altro' solo se sono stati letti n prodotti
+                    if (row.childElementCount % 1 == 0) {
+                        const loadBtn = row.parentElement.querySelector('#loadMoreBtn')
+                        loadBtn.style.display = 'unset'
+                    }
+                }
+            } else {
+                console.error('Error during fetch', res.status)
+            }
+        })
+        .catch(e => { console.error('An error occurred during the search!', e) })
+        .finally(() => { hideSpinner('#buyProductsRow') })
+}

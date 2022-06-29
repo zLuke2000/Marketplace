@@ -26,9 +26,9 @@ async function caricaProdotti() {
       let obj = JSON.parse(stringObj)
 
       if(obj.owner == window.account) {
-        await generaCard('myProductsRow', obj, cid)
+        await generaCard('myProductsRow', obj)
       } else {
-        await generaCard('buyProductsRow', obj, cid)
+        await generaCard('buyProductsRow', obj)
       }
     } 
 
@@ -49,14 +49,15 @@ async function caricaProdotti() {
   }
 }
 
-async function generaCard(divID, obj, cid) {
+export function generaCard(id, obj) {
 
-  let div = document.getElementById(divID)
+
+  let div = document.querySelector(id)
   let cardTemplate
 
-  switch (divID) {
+  switch (id) {
 
-    case 'buyProductsRow': 
+    case '#buyProductsRow': 
 
       cardTemplate = 
       `<div class="col-md-2">
@@ -69,17 +70,17 @@ async function generaCard(divID, obj, cid) {
               </div>
           </div>
           <div class="card-body">
-              <h5 id="name" class="card-title" cid=${cid}>${obj.name}</h5>
+              <h5 id="name" class="card-title" cid=${obj.cid}>${obj.name}</h5>
               <p id="owner">${obj.owner}</p>
               <h6 id="price">${obj.price} ETH</h6>
-              <p id="cid" style="display:none">${cid}</p>
+              <p id="cid" style="display:none">${obj.cid}</p>
           </div>
           <button class="ripple">Buy now</button>
         </div>
       </div>`
       break;
   
-    case 'myProductsRow':
+    case '#myProductsRow':
 
       cardTemplate = 
       `<div class="col-md-2">
@@ -92,9 +93,9 @@ async function generaCard(divID, obj, cid) {
               </div>
           </div>
           <div class="card-body">
-              <h5 id="name" class="card-title" cid=${cid}>${obj.name}</h5>
+              <h5 id="name" class="card-title" cid=${obj.cid}>${obj.name}</h5>
               <h6 id="price">${obj.price} ETH</h6>
-              <p id="cid" style="display:none">${cid}</p>
+              <p id="cid" style="display:none">${obj.cid}</p>
           </div>
           <button class="ripple">RESELL</button>
         </div>
@@ -104,7 +105,7 @@ async function generaCard(divID, obj, cid) {
 
   //nascondi lo spinner prima di inserire il primo prodotto
   if (div.childNodes.length == 0) {
-    div.parentElement.querySelector('.spinner-border').remove()
+    div.parentElement.querySelector('.spinner-border').style.display = 'none'
   }
 
   div.insertAdjacentHTML('beforeend', cardTemplate)

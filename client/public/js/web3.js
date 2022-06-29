@@ -1,3 +1,5 @@
+import { getAllProducts, getMyProducts } from "./script.js"
+
 const contract_address = '0xd422E816F46a503F51a45215Ec74e498bcdfa90A'
 const contract_abi = [
   {
@@ -115,6 +117,9 @@ async function loadWeb3() {
     window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en')
     alert("Please install Metamaks")
   }
+  //leggi tutti i prodotti in base all'account attuale (anche se non definito)
+  getAllProducts(0)
+  getMyProducts()
 }
 
 async function loadContract() {
@@ -148,7 +153,7 @@ export async function buyProduct(cid, owner, price) {
   })
 }
 
-async function getAllProducts() {
+async function getAllEvents() {
   contract.getPastEvents("productCreated", { fromBlock: 0, toBlock: "latest"})
     .then( (events) => {
       for (let event of events) {
@@ -161,7 +166,6 @@ async function load() {
   await loadWeb3()
   if (window.account != undefined) {
     window.contract = await loadContract()
-    console.log('Contract', contract)
   }
 }
 
