@@ -167,12 +167,29 @@ export async function createProduct(product) {
 export async function buyProduct(cid, owner, price) {
 	console.log('Going to buy the product:', cid);
 	// calling the smart contract method
+	//`${price}`
 	contract.methods
 		.purchaseProduct(cid, owner)
-		.send({ from: window.account, value: web3.utils.toWei(`${price}`) })
+		.send({ from: window.account, value: web3.utils.toWei('1') })
 		.on('receipt', (receipt) => {
 			console.log("Transaction completed here's the receipt:", receipt);
 			console.log('going to fetch...');
+			//chiedo al server di aggiornare il prodotto sul database
+			fetch('/buy-product', {
+				method: 'POST',
+				body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+				.then((res) => {
+					if (res.ok) {
+						alert('You have successfully purchased the product!');
+					} else {
+						console.error('Something went wrong while fetching!', res.status);
+					}
+				})
+				.catch((error) => console.error('An error occurred while fetching', error));
 		})
 		.on('error', function (error, receipt) {
 			console.error('An error occurred:\n' + error.message, error);

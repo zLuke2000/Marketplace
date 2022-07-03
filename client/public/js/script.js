@@ -15,8 +15,7 @@ export async function getMyProducts() {
 				const data = await res.json();
 				console.log('You have', data.products.length, 'products available on the market');
 				data.products.forEach((element) => {
-					console.log('my product:', element);
-					HTML.generaCard('myProductsRow', element);
+					HTML.generaCard('#myProductsRow', element);
 				});
 			} else {
 				console.error('Error occurred during fetch', res.status);

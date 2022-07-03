@@ -1,4 +1,4 @@
-//import * as WEB3 from './web3.js'
+import * as WEB3 from './web3.js';
 
 // setTimeout(() => {
 //   caricaProdotti()
@@ -102,7 +102,9 @@ export function generaCard(id, obj) {
 	div.insertAdjacentHTML('beforeend', cardTemplate);
 }
 
-document.querySelector('#buyProductsRow').addEventListener('click', (event) => buyProduct(event));
+document.querySelector('#buyProductsRow').addEventListener('click', (event) => {
+	buyProduct(event);
+});
 
 //listener per l'acquisto di un prodotto
 async function buyProduct(event) {
@@ -118,8 +120,7 @@ async function buyProduct(event) {
 		const price = parent.querySelector('#price').innerHTML.replace(/\D/g, '');
 		const cid = parent.querySelector('#cid').innerHTML;
 		console.log('Going to buy', name, 'for', price, 'ETH');
-		WEB3.buyProduct(cid, owner, price);
-		document.location.reload();
+		await WEB3.buyProduct(cid, owner, price);
 	}
 }
 
@@ -178,7 +179,6 @@ export function resetForm() {
 	btn.disabled = false;
 	btn.innerHTML = 'Salva prodotto';
 	document.querySelector('#inputProductImage').src = '';
-	// alert('The product is now available to purchase!');
 }
 
 export function showError(input, message) {
