@@ -185,6 +185,7 @@ export async function buyProduct(cid, owner, price) {
 				.then((res) => {
 					if (res.ok) {
 						alert('You have successfully purchased the product!');
+						document.location.reload();
 					} else {
 						console.error('Something went wrong while fetching!', res.status);
 					}

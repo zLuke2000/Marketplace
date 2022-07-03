@@ -116,7 +116,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 		this.innerHTML = spinner + '&nbsp;&nbsp;Processing...';
 
 		const request = {
-			owner: window.account,
+			user: window.account,
 			product: {
 				name: nameEl.value.trim(),
 				price: priceEl.valueAsNumber,

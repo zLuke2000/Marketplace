@@ -88,7 +88,7 @@ export function generaCard(id, obj) {
               <h6 id="price">${obj.price} ETH</h6>
               <p id="cid" style="display:none">${obj.cid}</p>
           </div>
-          <button class="ripple">RESELL</button>
+          <button class="ripple" ${obj.purchased ? '' : 'disabled'}>${obj.purchased ? 'RESELL' : 'ON THE MARKET'}</button>
         </div>
       </div>`;
 			break;

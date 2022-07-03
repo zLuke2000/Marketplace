@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 
 // permette di recuperare tutti i prodotti in vendita
 app.post('/all-products', async function (req, res) {
-	console.log('Request from user', req.body.user, 'to read all products');
+	console.log(`[${req.body.user}] read available products`);
 	const result = await db.readAll(req.body.user, req.body.skip);
 	var response = { products: [] };
 	for await (const el of result) {
@@ -37,13 +37,13 @@ app.post('/all-products', async function (req, res) {
 		product.cid = el.cid;
 		response.products.push(product);
 	}
-	console.log('Finished to read all products for', req.body.user);
+	console.log(`[${req.body.user}] finished reading available products`);
 	res.status(201).json(response);
 });
 
 // permette ad un utente di recuperare i propri prodotti attualmente in vendita
 app.post('/my-products', async function (req, res) {
-	console.log('Request from user', req.body.user, 'to read his products');
+	console.log(`[${req.body.user}] request to read own product`);
 	const result = await db.readByOwner(req.body.user);
 	var response = { products: [] };
 	for await (const el of result) {
@@ -51,9 +51,10 @@ app.post('/my-products', async function (req, res) {
 		var product = JSON.parse(str);
 		//aggiungo il cid al prodotto
 		product.cid = el.cid;
+		product.purchased = el.purchased;
 		response.products.push(product);
 	}
-	console.log('Finished to read own products for', req.body.user);
+	console.log(`[${req.body.user}] finished reading own product`);
 	res.status(201).json(response);
 });
 
@@ -62,7 +63,7 @@ app.post('/sell-product', async function (req, res) {
 	/* Struttura
 	 * req.body { owner, product { name, price, image, description}}
 	 */
-	const seller = req.body.owner;
+	console.log(`[${req.body.user}] checking if inputs are valid`);
 	const product = req.body.product;
 
 	const response = {};
@@ -73,18 +74,20 @@ app.post('/sell-product', async function (req, res) {
 
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
-		response.cid = await ipfs.addData(Buffer.from(JSON.stringify(product)));
+		//FIXME: buffer non funziona correttamente
+		// response.cid = await ipfs.addData(Buffer.from(JSON.stringify(product)));
+		//per recuperare il json: JSON.parse(buffer.toString())
+		response.cid = await ipfs.addData(JSON.stringify(product));
 		res.status(201).json(response);
 	} else {
 		res.sendStatus(500);
 	}
 	console.log('Server response', response);
-	//JSON.parse(buffer.toString())
 });
 
 // aggiunge un prodotto al marketplace
 app.post('/add-product', async (req, res) => {
-	console.log('Adding a new product to the marketplace');
+	console.log(`[${req.body.user}] adding a new product to the marketplace`);
 	const result = await db.addProduct(req.body.user, req.body.name, req.body.cid);
 	if (result) {
 		res.sendStatus(201);

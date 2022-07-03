@@ -1,139 +1,144 @@
 /* Stile per la colonna della card */
 .col-md-2 {
-    padding: 10px !important;
-    width: 300px !important;
-    height: 480px !important;
-} 
- 
+	padding: 10px !important;
+	width: 300px !important;
+	height: 480px !important;
+}
+
 /* Stile per la card dei prodotti */
 .card {
-    text-align: center;
-    height: 100%;                   
-    width: 100%;                    
-    position: relative;
+	text-align: center;
+	height: 100%;
+	width: 100%;
+	position: relative;
 }
 
 .card-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 /* Stile della row contenente i prodotti */
 .box .row {
-    margin: 15px;
+	margin: 15px;
 }
 
 /* Stile per la scrollbar dei box */
 .box::-webkit-scrollbar {
-    width: 15px;              
-  }
-  
-.box::-webkit-scrollbar-track {
-    background: var(--box-scrollbar-track) !important;        
+	width: 15px;
 }
-  
+
+.box::-webkit-scrollbar-track {
+	background: var(--box-scrollbar-track) !important;
+}
+
 .box::-webkit-scrollbar-thumb {
-    background-color: var(--box-scrollbar-thumb);  
-    border-radius: 20px; 
+	background-color: var(--box-scrollbar-thumb);
+	border-radius: 20px;
 }
 
 /* Stile per l'immagine della card */
 .card-img-top {
-    border: solid 1px;
+	border: solid 1px;
 }
 
-.card .container { 
-    padding: 0px;
-    position: relative;
+.card .container {
+	padding: 0px;
+	position: relative;
 }
 
 /* Permette di offuscare l'immagine */
 .overlay {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    color: transparent;
-    word-wrap: break-word;
-    overflow: scroll;
-    padding: 10px;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	color: transparent;
+	word-wrap: break-word;
+	overflow: scroll;
+	padding: 10px;
 }
 
 .container:hover .overlay {
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease-in-out;
-    background-color: rgba(144, 202, 249, 0.6);
-    color: black;
+	backdrop-filter: blur(10px);
+	transition: all 0.3s ease-in-out;
+	background-color: rgba(144, 202, 249, 0.6);
+	color: black;
 }
 
 /* Stile della scrollbar della card */
 .overlay::-webkit-scrollbar {
-    display: none;
+	display: none;
 }
 
 /* Stile per la descrizione del prodotto nella card */
 .overlay p {
-    font-size: 12px;
-    text-align: left;
+	font-size: 12px;
+	text-align: left;
 }
 
 /* Stile per il bottone della card */
 .card button {
-    border: none;
-    text-align: center;
-    cursor: pointer;
-    width: 100%;
-    padding: 10px;
-    color: white;
-    background-color: #3666FF;
+	border: none;
+	text-align: center;
+	cursor: pointer;
+	width: 100%;
+	padding: 10px;
+	color: white;
+	background-color: #3666ff;
+}
+
+.card button:disabled {
+	background-color: rgba(54, 102, 255, 0.65);
+	cursor: default;
 }
 
 .disabled-button {
-    background-color: #7a7a7a !important;
+	background-color: #7a7a7a !important;
 }
 
 /* Effetto per il click sul bottone */
 .ripple {
-    position: relative;
-    overflow: hidden;
-    transform: translate3d(0, 0, 0);
+	position: relative;
+	overflow: hidden;
+	transform: translate3d(0, 0, 0);
 }
 
 .ripple:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background-image: radial-gradient(circle, black 10%, transparent 10%);
-    background-repeat: no-repeat;
-    background-position: 50%;
-    transform: scale(10, 10);
-    opacity: 0;
-    transition: transform .5s, opacity 1s;  
+	content: '';
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	background-image: radial-gradient(circle, black 10%, transparent 10%);
+	background-repeat: no-repeat;
+	background-position: 50%;
+	transform: scale(10, 10);
+	opacity: 0;
+	transition: transform 0.5s, opacity 1s;
 }
 
 .ripple:active:after {
-    transform: scale(0, 0);
-    opacity: .2;
-    transition: 0s;
+	transform: scale(0, 0);
+	opacity: 0.2;
+	transition: 0s;
 }
 
 /* Stile per il campo contenente l'indirizzo */
 .card-body p {
-    font-size: 11px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+	font-size: 11px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 /* Stile per il campo contenente il nome del prodotto */
 .card-title {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }

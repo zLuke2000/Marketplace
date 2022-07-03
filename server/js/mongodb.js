@@ -29,7 +29,6 @@ export async function addProduct(owner, name, cid) {
 export async function buyProduct(user, owner, cid) {
 	try {
 		const filter = { owner: owner, cid: cid };
-		console.log('filter =', filter);
 		const update = {
 			$set: {
 				owner: user,
