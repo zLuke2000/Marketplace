@@ -139,7 +139,12 @@ export async function createProduct(product) {
 			// chiedo al server di aggiungere sul database il prodotto
 			fetch('/add-product', {
 				method: 'POST',
-				body: JSON.stringify({ user: window.account, name: product.name, cid: product.cid }),
+				body: JSON.stringify({
+					user: window.account,
+					name: product.name,
+					cid: product.cid,
+					price: product.price,
+				}),
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -198,7 +203,11 @@ export async function buyProduct(cid, owner, price) {
 				console.log('Transaction receipt:', receipt);
 			}
 		})
-		.catch((error) => console.error('An error occurred during the transaction!', error));
+		.catch((error) => {
+			console.error('An error occurred during the transaction!', error);
+			//FIXME: riabilitare il bottone e cambiare il testo contenuto invece di ricaricare la pagina
+			document.location.reload();
+		});
 }
 
 async function getAllEvents() {

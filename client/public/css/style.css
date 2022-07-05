@@ -1,11 +1,11 @@
 :root {
-	--background: #90CAF9;
-	--error-color: #DC3545;
-	--success-color: #28A745;
+	--background: #90caf9;
+	--error-color: #dc3545;
+	--success-color: #28a745;
 	--opaco50: rgba(255, 255, 255, 0.5);
 	--lightblue50: rgba(159, 168, 218, 0.5);
-	--box-scrollbar-track: #98A4E9;
-	--box-scrollbar-thumb: #8A90DE;
+	--box-scrollbar-track: #98a4e9;
+	--box-scrollbar-thumb: #8a90de;
 }
 
 /* Colore background */
@@ -15,16 +15,16 @@ body {
 
 /* Rimuove il triangolo resize in basso a destra per la resize */
 textarea {
-    resize: none !important;
+	resize: none !important;
 }
 
 /* Box esterno card */
 div.box {
-	height: 520px !important; 
+	height: 520px !important;
 	text-align: center;
 	background: var(--lightblue50);
 	overflow: auto;
-	margin:25px;
+	margin: 25px;
 	margin-top: 5px;
 	border-radius: 10px;
 	scroll-behavior: smooth;
@@ -34,7 +34,7 @@ div.box {
 .loadBtn {
 	border-radius: 10px;
 	color: black;
-	background-color: #98A4E9;
+	background-color: #98a4e9;
 	display: none;
 	cursor: pointer;
 	text-align: center;
@@ -43,46 +43,54 @@ div.box {
 	font-size: 18px;
 }
 
+/* Stile per il form di creazione prodotto */
+form {
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
 /* Stile per i campi del form di creazione di un nuovo prodotto */
-.form-field input,
-.form-field textarea,
-.form-field button {
+.input-field input,
+.input-field textarea,
+.input-field button {
 	border-radius: 10px;
 	border-width: 2px;
 	background-color: var(--opaco50);
 }
 
 /* Rimozione spinner da input type="number" */
-.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Rimozione spinner da input type="number" */
 .no-spin {
-    -moz-appearance:textfield;
+	-moz-appearance: textfield;
 }
 
 /* Stile di errore per input del form */
-.form-field.error input {
+.input-field.error input {
 	border-color: var(--error-color);
 }
 
 /* Stile per scritta di errore degli input del form */
-.form-field input + small, .form-field label + small {
+.input-field input + small,
+.input-field label + small {
 	color: var(--error-color);
 }
 
 /* Stile per Input file */
-.form-field input[type=file] {
+.input-field input[type='file'] {
 	display: none;
 }
 
 /* Stile per Input file */
-.form-field input[type=file] + label{
+.input-field input[type='file'] + label {
 	background-color: var(--opaco50);
 	border: 2px solid;
-	border-color: #CED4DA;
+	border-color: #ced4da;
 	border-radius: 8px;
 	padding: 5px;
 	margin-top: 15px;
@@ -90,25 +98,25 @@ div.box {
 }
 
 /* Stile per Input file */
-.form-field input[type=file] + label:hover{
+.input-field input[type='file'] + label:hover {
 	background-color: white;
-	border-color: #6FB3FA;
+	border-color: #6fb3fa;
 	cursor: pointer;
 }
 
 /* Stile di errore per Input file */
-.form-field.error input[type=file] + label{
+.input-field.error input[type='file'] + label {
 	border-color: var(--error-color);
 }
 
-.form-field button {
+.input-field button {
 	margin-top: 10px;
 }
 
 /* Stile per gli spinner dei box */
-.spinner-border{
-	width: 4rem !important; 
-    height: 4rem !important;
+.spinner-border {
+	width: 4rem !important;
+	height: 4rem !important;
 	position: absolute;
 	top: 45%;
 	left: 48%;
@@ -123,7 +131,7 @@ div.box {
 	left: 2%;
 }
 
-.text-warn-no-product{
+.text-warn-no-product {
 	position: absolute;
 	/* top: 47%;
 	left: 34%; */
@@ -145,7 +153,7 @@ div.box {
 	margin: 25px 25px 0px 25px !important;
 }
 
-.search-bar-container input[type="search"] {
+.search-bar-container input[type='search'] {
 	background-color: var(--opaco50);
 	border-radius: 10px;
 	border-width: 2px;
@@ -153,7 +161,7 @@ div.box {
 	padding: 5px 20px 5px 50px;
 }
 
-.search-bar-container  span {
+.search-bar-container span {
 	/* position: absolute; */
 	position: relative;
 	float: left;

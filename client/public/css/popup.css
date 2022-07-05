@@ -1,0 +1,38 @@
+.popup-container {
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	z-index: 1;
+	background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.popup {
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px;
+	background-color: var(--background);
+	padding: 20px;
+	width: 40%;
+}
+
+.popup .btn-container {
+	margin-top: 10px;
+	text-align: right;
+}
+
+.popup button {
+	border-radius: 10px;
+	background-color: var(--opaco50);
+	border-color: grey;
+	font-size: 18px;
+	width: 15%;
+	margin: 5px;
+	padding: 5px;
+}
+
+.popup h3 {
+	padding: 15px;
+	text-align: center;
+}

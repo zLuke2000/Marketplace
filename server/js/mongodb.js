@@ -16,9 +16,16 @@ async function connectToDB() {
 	}
 }
 
-export async function addProduct(owner, name, cid) {
+// aggiunge un nuovo prodotto
+export async function addProduct(owner, name, cid, price) {
 	try {
-		const res = await collection.insertOne({ owner: owner, name: name, cid: cid, purchased: false });
+		const res = await collection.insertOne({
+			owner: owner,
+			name: name,
+			cid: cid,
+			price: price,
+			purchased: false,
+		});
 		return res.acknowledged;
 	} catch (error) {
 		console.error('Error while trying to insert the product', error);
@@ -26,6 +33,7 @@ export async function addProduct(owner, name, cid) {
 	return false;
 }
 
+// permette l'acquisto di un prodotto modificando il proprietario e lo stato del prodotto
 export async function buyProduct(user, owner, cid) {
 	try {
 		const filter = { owner: owner, cid: cid };
@@ -44,6 +52,25 @@ export async function buyProduct(user, owner, cid) {
 	return false;
 }
 
+export async function resellProduct(user, cid, price) {
+	try {
+		const filter = { owner: user, cid: cid };
+		const update = {
+			$set: {
+				price: price,
+				purchased: false,
+			},
+		};
+		const result = await collection.updateOne(filter, update);
+		console.log(`Updated ${result.modifiedCount} document`);
+		return result.acknowledged;
+	} catch (error) {
+		console.error('Error while trying to update data!', error);
+	}
+	return false;
+}
+
+// legge tutti i prodotti disponibili tranne quelli dell'utente
 export async function readAll(user, skip) {
 	try {
 		const regex = new RegExp('^(?!.*' + user + ').*');
@@ -56,6 +83,7 @@ export async function readAll(user, skip) {
 	}
 }
 
+// legge tutti i prodotti dell'utente
 export async function readByOwner(owner) {
 	try {
 		//FIXME: ritornare solo prodotti non acquistati?
@@ -69,6 +97,7 @@ export async function readByOwner(owner) {
 	}
 }
 
+// permette la ricerca di un prodotto tramite stringa
 export async function searchProducts(user, string, skip) {
 	try {
 		const reUser = new RegExp('^(?!.*' + user + ').*');

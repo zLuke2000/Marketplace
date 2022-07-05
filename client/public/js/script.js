@@ -119,9 +119,9 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 			user: window.account,
 			product: {
 				name: nameEl.value.trim(),
-				price: priceEl.valueAsNumber,
 				image: imageEl.src,
 				description: prodDescription,
+				price: priceEl.valueAsNumber,
 			},
 		};
 
@@ -138,19 +138,19 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 			.then(async (res) => {
 				const data = await res.json();
 				if (res.ok) {
-					//TODO: gestire caso in cui utente rifiuta il pagamento
 					request.product.cid = data.cid;
 					WEB3.createProduct(request.product);
 					HTML.resetForm();
 				} else {
 					if (data.name === false) {
-						HTML.showError(nameEl, 'The name of this product is not valid');
+						HTML.showError(nameEl, "Il nome di questo prodotto non e' valido!");
 					}
+					//FIXME: sistemare il controllo sul prezzo come per la rivendita
 					if (data.price === false) {
-						HTML.showError(priceEl, 'This price is not valid');
+						HTML.showError(priceEl, "Il prezzo inserito non e' valido!");
 					}
 					if (data.image === false) {
-						HTML.showError(imageEl, 'Image is not valid');
+						HTML.showError(imageEl, "L'immagine non e' valida!");
 					}
 
 					let btn = document.querySelector('#btn_createProduct');
@@ -264,3 +264,12 @@ function getProducts(url, obj) {
 			hideSpinner('#buyProductsRow');
 		});
 }
+
+//FIXME: rimuovere
+document.querySelectorAll('input[type="number"]').forEach((element) => {
+	element.addEventListener('keydown', function (e) {
+		if (!((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode == 8 || e.keyCode == 190)) {
+			e.preventDefault();
+		}
+	});
+});
