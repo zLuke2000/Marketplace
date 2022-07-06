@@ -1,3 +1,4 @@
+/* Stile per il container del popup (effetto sfocatura della schermata) */
 .popup-container {
 	height: 100%;
 	width: 100%;
@@ -6,6 +7,7 @@
 	background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Stile per il popup */
 .popup {
 	position: fixed;
 	top: 30%;
@@ -17,11 +19,13 @@
 	width: 40%;
 }
 
+/* Stile per il container dei due bottoni */
 .popup .btn-container {
 	margin-top: 10px;
 	text-align: right;
 }
 
+/* Stile dei bottoni */
 .popup button {
 	border-radius: 10px;
 	background-color: var(--opaco50);
@@ -32,6 +36,7 @@
 	padding: 5px;
 }
 
+/* Stile per la scritta del popup */
 .popup h3 {
 	padding: 15px;
 	text-align: center;

@@ -1,8 +1,7 @@
 /* Stile per la colonna della card */
 .col-md-2 {
-	padding: 10px !important;
-	width: 300px !important;
-	height: 480px !important;
+	padding: 10px;
+	width: 16.66666667% !important;
 }
 
 /* Stile per la card dei prodotti */
@@ -132,12 +131,15 @@
 /* Stile per il campo contenente l'indirizzo */
 .card-body p {
 	font-size: 11px;
-	white-space: nowrap;
+	width: 100%;
 	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow-x: hidden;
 }
 
 /* Stile per il campo contenente il nome del prodotto */
 .card-title {
+	width: 100%;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

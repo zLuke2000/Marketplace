@@ -3,7 +3,16 @@ import * as db from '../js/mongodb.js';
 import * as fs from 'fs';
 
 const user = '0x00f2923Ede246d46164Ee8476351F6098bF19bEA';
-
+const userArr = [
+	'0x00f2923Ede246d46164Ee8476351F6098bF19bEA',
+	'0x05c68A56c63D066BA1895279B01bc2982B40bB19',
+	'0x252116ae7610BE9e3bc8c67257deBd47955A97fF',
+	'0xcDaAE5F888b1A587F817b704Bd31FBe56d5FB26A',
+	'0xca503Fdc146857c6E92fB38b208dba1Cc9d7faD4',
+	'0x2D360b5FE53E3EcB102cc440CA8Ac2AA20Ef5597',
+	'0x582Ea5dfd733464A887D26c6d7C35C5093e7Af85',
+	'0xCcd641bc3FD7a7103101a7456F94233C38823326',
+];
 //var xmlhttp = new XMLHttpRequest();
 var lorem;
 var items;
@@ -67,6 +76,7 @@ async function addProducts(num) {
 			image: image,
 		};
 		const price = Math.floor(Math.random() * 100) + 1;
+		const owner = userArr[Math.floor(Math.random() * 100) % (userArr.length - 1)];
 
 		let stringObj = JSON.stringify(product);
 
@@ -83,7 +93,7 @@ async function addProducts(num) {
 		console.log('Product uploaded to ipfs in:', tsIpfs - tsJson, 'ms');
 
 		//Inizio caricamneto su MongoDB
-		db.addProduct(user, product.name, cid, price);
+		db.addProduct(owner, product.name, cid, price);
 
 		//Fine caricamento su MongoDB
 		const tsMongo = Date.now();

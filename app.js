@@ -31,13 +31,13 @@ app.post('/all-products', async function (req, res) {
 	const result = await db.readAll(req.body.user, req.body.skip);
 	var response = { products: [] };
 	for await (const el of result) {
+		console.log('product =', product);
 		console.log('cid =', el.cid);
 		const str = await ipfs.readData(el.cid);
 		var product = JSON.parse(str);
 		product.owner = el.owner;
 		product.price = el.price;
 		//aggiungo il cid al prodotto
-		console.log('product =', product);
 		product.cid = el.cid;
 		response.products.push(product);
 	}

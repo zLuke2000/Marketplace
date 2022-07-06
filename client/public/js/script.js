@@ -13,7 +13,7 @@ export async function getMyProducts() {
 		.then(async (res) => {
 			if (res.ok) {
 				const data = await res.json();
-				console.log('You have', data.products.length, 'products available on the market');
+				console.log('You have', data.products.length, 'products');
 				data.products.forEach((element) => {
 					HTML.generaCard('#myProductsRow', element);
 				});
@@ -248,7 +248,7 @@ function getProducts(url, obj) {
 						HTML.generaCard('#buyProductsRow', element);
 					});
 					//mostra bottone 'carica altro' solo se sono stati letti n prodotti
-					if (row.childElementCount % 1 == 0) {
+					if (row.childElementCount % 36 == 0) {
 						const loadBtn = row.parentElement.querySelector('#loadMoreBtn');
 						loadBtn.style.display = 'unset';
 					}
@@ -264,12 +264,3 @@ function getProducts(url, obj) {
 			hideSpinner('#buyProductsRow');
 		});
 }
-
-//FIXME: rimuovere
-document.querySelectorAll('input[type="number"]').forEach((element) => {
-	element.addEventListener('keydown', function (e) {
-		if (!((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode == 8 || e.keyCode == 190)) {
-			e.preventDefault();
-		}
-	});
-});
