@@ -75,7 +75,7 @@ export async function readAll(user, skip) {
 	try {
 		const regex = new RegExp('^(?!.*' + user + ').*');
 		const query = { owner: regex, purchased: false };
-		const result = await collection.find(query).skip(skip).limit(1).toArray();
+		const result = await collection.find(query).skip(skip).limit(36).toArray();
 		return result;
 	} catch (error) {
 		console.error('1 - Error while trying to read the product', error);
@@ -103,7 +103,7 @@ export async function searchProducts(user, string, skip) {
 		const reUser = new RegExp('^(?!.*' + user + ').*');
 		const reProduct = new RegExp('^' + string + '.*');
 		const query = { owner: reUser, name: reProduct, purchased: false };
-		const result = await collection.find(query).skip(skip).limit(1).sort({ name: 1 }).toArray();
+		const result = await collection.find(query).skip(skip).limit(36).sort({ name: 1 }).toArray();
 		return result;
 	} catch (error) {
 		console.error('Error while searching for specific products!', error);
