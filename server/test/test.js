@@ -2,8 +2,9 @@ import * as IPFS from '../js/myipfs.js';
 import * as db from '../js/mongodb.js';
 import * as fs from 'fs';
 
-const user = '0x00f2923Ede246d46164Ee8476351F6098bF19bEA';
+const user = '0xFe35c19B11a675d010Eb0FdeC03c47e3d830A9fB';
 const userArr = [
+	'0x8deE4919338bCB678635A69fa4CF4067020DF15a',
 	'0x00f2923Ede246d46164Ee8476351F6098bF19bEA',
 	'0x05c68A56c63D066BA1895279B01bc2982B40bB19',
 	'0x252116ae7610BE9e3bc8c67257deBd47955A97fF',
@@ -39,22 +40,6 @@ try {
 	console.error('Error reading items', error);
 }
 
-/* xmlhttp.open("GET", "test/lorem.txt", false);
-xmlhttp.send();
-if (xmlhttp.status == 200) {
-    lorem = xmlhttp.responseText;
-}
-xmlhttp.open("GET", "test/items.txt", false);
-xmlhttp.send();
-if (xmlhttp.status == 200) {
-    items = xmlhttp.responseText.split(/\r?\n/);
-}
-xmlhttp.open("GET", "test/dataBase64.txt", false);
-xmlhttp.send();
-if (xmlhttp.status == 200) {
-    image = xmlhttp.responseText;
-} */
-
 addProducts(1);
 
 async function addProducts(num) {
@@ -85,7 +70,6 @@ async function addProducts(num) {
 		console.log('Product json created in:', tsJson - tsStart, 'ms');
 
 		//Inizio caricamneto su IPFS
-		//FIXME: non funziona piu' il buffer...
 		let cid = await IPFS.addData(stringObj);
 
 		//Fine caricamneto su IPFS
@@ -104,8 +88,6 @@ async function addProducts(num) {
 	let end = Date.now();
 	console.log('Elapsed time:', end - start, 'ms');
 }
-
-//window.addProducts = addProducts
 
 function saveTemplateAsFile(filename, dataObj, timestamp) {
 	const blob = new Blob([JSON.stringify(dataObj)], { type: 'text/json' });

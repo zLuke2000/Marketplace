@@ -86,9 +86,6 @@ export async function readAll(user, skip) {
 // legge tutti i prodotti dell'utente
 export async function readByOwner(owner) {
 	try {
-		//FIXME: ritornare solo prodotti non acquistati?
-		// i prodotti con "purchased: true" hanno a disposizione il tasto "resell"
-		// per rimettere in vendita lo stesso prodotto (con un prezzo differente)
 		const result = await collection.find({ owner: owner }).toArray();
 		return result;
 	} catch (error) {

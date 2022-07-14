@@ -97,37 +97,39 @@ const contract_abi = [
 	},
 ];
 
+// permette il login tramite metamask
 async function loadWeb3() {
 	if (window.ethereum) {
-		try {
-			window.web3 = new Web3(window.ethereum);
-			let accounts = await window.ethereum.request({
-				method: 'eth_requestAccounts',
-			});
-			window.account = web3.utils.toChecksumAddress(accounts[0]);
-			console.log('Selected account is:', window.account);
-
-			window.ethereum.on('accountsChanged', function (accounts) {
+		window.web3 = new Web3(window.ethereum);
+		window.ethereum
+			.request({ method: 'eth_requestAccounts' })
+			.then((accounts) => {
 				window.account = web3.utils.toChecksumAddress(accounts[0]);
-				document.location.reload();
+				console.log('Selected account is:', window.account);
+				getMyProducts();
+				getAllProducts(0);
+			})
+			.catch((error) => {
+				console.error('Error occurred while requesting the account!', error);
 			});
-		} catch (error) {
-			console.error('User denied access', error);
-		}
+		// listener per il cambio di account tramite metamask
+		window.ethereum.on('accountsChanged', function (accounts) {
+			window.account = web3.utils.toChecksumAddress(accounts[0]);
+			document.location.reload();
+		});
 	} else {
 		console.error('Metamask is required!');
 		window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en');
 		alert('Please install Metamaks');
 	}
-	//leggi tutti i prodotti in base all'account attuale (anche se non definito)
-	getAllProducts(0);
-	getMyProducts();
 }
 
+// recupera il riferimento allo smart contract
 async function loadContract() {
 	return await new window.web3.eth.Contract(contract_abi, contract_address);
 }
 
+// permette la creazione di un prodotto
 export async function createProduct(product) {
 	console.log('creating the new product...');
 	// calling the smart contract method
@@ -152,6 +154,7 @@ export async function createProduct(product) {
 				.then((res) => {
 					if (res.ok) {
 						alert('Your product has been added to the marketplace!');
+						document.location.reload();
 					} else {
 						console.error('An error occured during fetch', res.status);
 					}
@@ -169,10 +172,11 @@ export async function createProduct(product) {
 		.catch((e) => console.error('An error occurred during the transaction!', e));
 }
 
+// permette l'acquisto di un prodotto
 export async function buyProduct(cid, owner, price) {
 	console.log('Going to buy the product:', cid);
 	// calling the smart contract method
-	//`${price}`
+	//FIXME: usare `${price}`
 	contract.methods
 		.purchaseProduct(cid, owner)
 		.send({ from: window.account, value: web3.utils.toWei('1') })
@@ -205,7 +209,6 @@ export async function buyProduct(cid, owner, price) {
 		})
 		.catch((error) => {
 			console.error('An error occurred during the transaction!', error);
-			//FIXME: riabilitare il bottone e cambiare il testo contenuto invece di ricaricare la pagina
 			document.location.reload();
 		});
 }
@@ -220,9 +223,7 @@ async function getAllEvents() {
 
 async function load() {
 	await loadWeb3();
-	if (window.account != undefined) {
-		window.contract = await loadContract();
-	}
+	window.contract = await loadContract();
 }
 
 load();

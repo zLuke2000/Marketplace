@@ -1,19 +1,26 @@
 import * as WEB3 from './web3.js';
 import * as HTML from './html.js';
 
+getAllProducts(0);
+getMyProducts();
+
 export async function getMyProducts() {
+	if (!window.account) {
+		hideSpinner('#myProductsRow');
+		return;
+	}
 	fetch('/my-products', {
 		method: 'POST',
 		body: JSON.stringify({ user: window.account }),
 		headers: {
 			'Content-Type': 'application/json',
-			Accept: 'application/json',
+			'Accept': 'application/json',
 		},
 	})
 		.then(async (res) => {
 			if (res.ok) {
 				const data = await res.json();
-				console.log('You have', data.products.length, 'products');
+				console.log(`You have ${data.products.length} products`);
 				data.products.forEach((element) => {
 					HTML.generaCard('#myProductsRow', element);
 				});
@@ -30,6 +37,7 @@ export async function getMyProducts() {
 }
 
 export async function getAllProducts(skip) {
+	showSpinner('#buyProductsRow');
 	getProducts('/all-products', { skip: skip });
 }
 
@@ -53,53 +61,12 @@ document.querySelector('#inputProductDescription').onkeyup = function () {
 	counter.textContent = this.value.length + ' / 512';
 };
 
-//listener evento aggiunta immagine per nuovo prodotto
-//FIXME: duplicata in html.js
-document.querySelector('#inputImage').addEventListener('change', function () {
-	let timestampImage = [];
-	timestampImage.push(Date.now());
-	let file = this.files[0];
-	let reader = new FileReader();
-	reader.readAsDataURL(file);
-	reader.onload = () => {
-		let imgTemp = document.createElement('img');
-		imgTemp.src = reader.result;
-		imgTemp.onload = () => {
-			timestampImage.push(Date.now());
-			compressImage(imgTemp);
-			timestampImage.push(Date.now());
-			console.log(
-				timestampImage,
-				' Tempo totale caricamneto: ',
-				timestampImage[1] - timestampImage[0],
-				'ms e compressione: ',
-				timestampImage[2] - timestampImage[1],
-				'ms'
-			);
-		};
-	};
-});
-
-function compressImage(imgToCompress) {
-	const canvas = document.createElement('canvas');
-	const context = canvas.getContext('2d');
-	canvas.width = 280;
-	canvas.height = 280;
-
-	context.drawImage(imgToCompress, 0, 0, imgToCompress.width, imgToCompress.height, 0, 0, canvas.width, canvas.height);
-
-	let dataURI = canvas.toDataURL('image/jpeg', 0.5);
-	let img = document.querySelector('#inputProductImage');
-	img.src = dataURI;
-}
-
 document.querySelector('#btn_createProduct').addEventListener('click', function (e) {
 	e.preventDefault();
 
-	if (!window.ethereum) {
-		console.error('Metamask is required');
-		alert('Please install Metamkas');
-	} else if (window.account) {
+	if (!window.account) {
+		alert('You are not logged in! Please login with MetaMask before creating an account');
+	} else {
 		// nome, prezzo, immagine e descrizione
 		const nameEl = document.querySelector('#inputProductName');
 		const priceEl = document.querySelector('#inputProductPrice');
@@ -145,7 +112,6 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 					if (data.name === false) {
 						HTML.showError(nameEl, "Il nome di questo prodotto non e' valido!");
 					}
-					//FIXME: sistemare il controllo sul prezzo come per la rivendita
 					if (data.price === false) {
 						HTML.showError(priceEl, "Il prezzo inserito non e' valido!");
 					}
@@ -161,9 +127,6 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 			.catch(function (error) {
 				console.error('Error occurred while trying to add a product!', error);
 			});
-	} else {
-		console.error('User is not logged');
-		alert('Please login or create an account before adding a product');
 	}
 });
 
@@ -219,8 +182,10 @@ function showSpinner(id) {
 	const parent = row.parentElement;
 	//rende visibile solo lo spinner
 	row.style.visibility = 'hidden';
-	const loadBtn = parent.querySelector('#loadMoreBtn');
-	loadBtn.style.display = 'none';
+	if (id === '#buyProductsRow') {
+		const loadBtn = parent.querySelector('#loadMoreBtn');
+		loadBtn.style.display = 'none';
+	}
 	const no_elem_text = parent.querySelector('.text-warn-no-product');
 	no_elem_text.style.display = 'none';
 	const spinner = parent.querySelector('.spinner-border');

@@ -1,52 +1,5 @@
 import * as WEB3 from './web3.js';
 
-// setTimeout(() => {
-//   caricaProdotti()
-// }, 3000);
-
-async function caricaProdotti() {
-	var products = await BigChain.searchProducts();
-	if (products != undefined) {
-		console.log('Products found: ', products.length);
-
-		let i = 1;
-		for (let pr of products) {
-			//TODO: gestire cambio di proprietario
-			let cid = pr.data.cid;
-			console.log('CID elemento (', i++, ') :', cid);
-			let stringObj = await IPFS.readData(cid);
-
-			//se IPFS genera un errore allora salta questo prodotto
-			if (stringObj == null) {
-				continue;
-			}
-
-			let obj = JSON.parse(stringObj);
-
-			if (obj.owner == window.account) {
-				await generaCard('myProductsRow', obj);
-			} else {
-				await generaCard('buyProductsRow', obj);
-			}
-		}
-
-		console.log('Finished to read products from BigChainDB');
-
-		//mostra un messaggio se non ci sono prodotti in un box
-		document.querySelectorAll('.box .row').forEach((element) => {
-			if (element.childNodes.length == 0) {
-				let parent = element.parentElement;
-				let spinner = parent.querySelector('.spinner-border');
-				if (spinner != null) {
-					spinner.remove();
-				}
-				let no_elem_text = parent.querySelector('.text-warn-no-product');
-				no_elem_text.style.display = 'unset';
-			}
-		});
-	}
-}
-
 export function generaCard(id, obj) {
 	let div = document.querySelector(id);
 	let cardTemplate;
@@ -68,7 +21,7 @@ export function generaCard(id, obj) {
               <h6 id="price">${obj.price} ETH</h6>
               <p id="cid" style="display:none">${obj.cid}</p>
           </div>
-          <button class="ripple">Buy now</button>
+          <button class="ripple">ACQUISTA</button>
         </div>
       </div>`;
 			break;
@@ -94,9 +47,10 @@ export function generaCard(id, obj) {
 			break;
 	}
 
-	//nascondi lo spinner prima di inserire il primo prodotto
+	//nascondi elementi prima di inserire il primo prodotto
 	if (div.childNodes.length == 0) {
 		div.parentElement.querySelector('.spinner-border').style.display = 'none';
+		div.parentElement.querySelector('.text-warn-no-product').style.display = 'none';
 	}
 
 	div.insertAdjacentHTML('beforeend', cardTemplate);
@@ -105,7 +59,11 @@ export function generaCard(id, obj) {
 //listener per l'acquisto di un prodotto
 document.querySelector('#buyProductsRow').addEventListener('click', (event) => {
 	if (event.target.tagName === 'BUTTON') {
-		buyProduct(event.target);
+		if (!window.account) {
+			alert('You are not logged in with MetaMask! Please login before buying any products');
+		} else {
+			buyProduct(event.target);
+		}
 	}
 });
 
@@ -230,7 +188,6 @@ document.querySelector('#inputImage').addEventListener('change', function () {
 	};
 });
 
-//FIXME: funzione duplicata...
 function compressImage(imgToCompress) {
 	const canvas = document.createElement('canvas');
 	const context = canvas.getContext('2d');

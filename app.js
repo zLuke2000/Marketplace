@@ -31,8 +31,6 @@ app.post('/all-products', async function (req, res) {
 	const result = await db.readAll(req.body.user, req.body.skip);
 	var response = { products: [] };
 	for await (const el of result) {
-		console.log('product =', product);
-		console.log('cid =', el.cid);
 		const str = await ipfs.readData(el.cid);
 		var product = JSON.parse(str);
 		product.owner = el.owner;
@@ -91,7 +89,7 @@ app.post('/sell-product', async function (req, res) {
 		);
 		res.status(201).json(response);
 	} else {
-		res.sendStatus(500);
+		res.status(500).json(response);
 	}
 	console.log('Server response', response);
 });
@@ -146,7 +144,7 @@ app.post('/search-products', async (req, res) => {
 
 // Gestione 404 not found - deve essere messo in fono al file perchè i metodi vengono controllati in ordine
 app.all('*', (req, res) => {
-	console.log('Eccomi nel 404');
+	console.error('404');
 	//TODO: sistemare la schermata per errore 404
 	// res.status(404).sendFile(path.resolve(__dirname, 'client/html/404.html'));
 	res.status(404).send('404 not found');
