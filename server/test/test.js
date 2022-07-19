@@ -1,6 +1,8 @@
 import * as IPFS from '../js/myipfs.js';
 import * as db from '../js/mongodb.js';
 import * as fs from 'fs';
+import { faker } from '@faker-js/faker';
+import axios from 'axios';
 
 const user = '0xFe35c19B11a675d010Eb0FdeC03c47e3d830A9fB';
 const userArr = [
@@ -14,17 +16,8 @@ const userArr = [
 	'0x582Ea5dfd733464A887D26c6d7C35C5093e7Af85',
 	'0xCcd641bc3FD7a7103101a7456F94233C38823326',
 ];
-//var xmlhttp = new XMLHttpRequest();
-var lorem;
-var items;
-var image;
 
-try {
-	let data = fs.readFileSync('lorem.txt', 'utf-8');
-	lorem = data;
-} catch (error) {
-	console.error('Error reading lorem', error);
-}
+var image;
 
 try {
 	let data = fs.readFileSync('imageBase64.txt', 'utf-8');
@@ -33,21 +26,21 @@ try {
 	console.error('Error reading image', error);
 }
 
-try {
-	let data = fs.readFileSync('items.txt', 'utf-8');
-	items = data.split(/\r?\n/);
-} catch (error) {
-	console.error('Error reading items', error);
-}
-
 addProducts(1);
 
-async function addProducts(num) {
-	if (!items || !image || !lorem) {
-		console.log('something is not defined');
-		return;
-	}
+async function generateImage() {
+	const imageURL = faker.image.abstract(280, 280);
+	console.log('url =', imageURL);
+	const raw = await axios.get(imageURL, {
+		responseType: 'arraybuffer',
+	});
+	const base64 = Buffer.from(raw.data, 'binary').toString('base64');
+	const image = `data:${raw.headers['content-type']};base64,${base64}`;
+	return image;
+}
 
+async function addProducts(num) {
+	const image = await generateImage();
 	console.log('Starting to add the products!');
 	let start = Date.now();
 
@@ -56,37 +49,38 @@ async function addProducts(num) {
 		const tsStart = Date.now();
 
 		const product = {
-			name: items[i % (items.length - 1)],
-			description: lorem.substring(0, Math.floor(Math.random() * (lorem.length - 1))),
+			name: faker.commerce.product(),
+			description: faker.commerce.productDescription(),
 			image: image,
 		};
-		const price = Math.floor(Math.random() * 100) + 1;
+		const price = faker.commerce.price(1, 100, 0);
 		const owner = userArr[Math.floor(Math.random() * 100) % (userArr.length - 1)];
 
 		let stringObj = JSON.stringify(product);
+		console.log(stringObj);
 
-		//Fine creazione del prodotto
-		const tsJson = Date.now();
-		console.log('Product json created in:', tsJson - tsStart, 'ms');
+		// //Fine creazione del prodotto
+		// const tsJson = Date.now();
+		// console.log('Product json created in:', tsJson - tsStart, 'ms');
 
-		//Inizio caricamneto su IPFS
-		let cid = await IPFS.addData(stringObj);
+		// //Inizio caricamneto su IPFS
+		// let cid = await IPFS.addData(stringObj);
 
-		//Fine caricamneto su IPFS
-		const tsIpfs = Date.now();
-		console.log('Product uploaded to ipfs in:', tsIpfs - tsJson, 'ms');
+		// //Fine caricamneto su IPFS
+		// const tsIpfs = Date.now();
+		// console.log('Product uploaded to ipfs in:', tsIpfs - tsJson, 'ms');
 
-		//Inizio caricamneto su MongoDB
-		db.addProduct(owner, product.name, cid, price);
+		// //Inizio caricamneto su MongoDB
+		// db.addProduct(owner, product.name, cid, price);
 
-		//Fine caricamento su MongoDB
-		const tsMongo = Date.now();
-		console.log('Product saved to MongoDB in:', tsMongo - tsIpfs, 'ms');
+		// //Fine caricamento su MongoDB
+		// const tsMongo = Date.now();
+		// console.log('Product saved to MongoDB in:', tsMongo - tsIpfs, 'ms');
 	}
 
-	console.log('Finished to add the products!');
-	let end = Date.now();
-	console.log('Elapsed time:', end - start, 'ms');
+	// console.log('Finished to add the products!');
+	// let end = Date.now();
+	// console.log('Elapsed time:', end - start, 'ms');
 }
 
 function saveTemplateAsFile(filename, dataObj, timestamp) {
