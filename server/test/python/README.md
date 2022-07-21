@@ -1,4 +1,6 @@
-Lo script python csv.py consente di organizzare i dati ricavati dal server rendendoli leggibili da applicazioni di terze parti per ricavare grafici
+# Lo script python csv.py consente di organizzare i dati ricavati dal server rendendoli leggibili da applicazioni di terze parti per ricavare grafici
+
+## Per eseguire lo script è necessario aver installato **[numpy](https://numpy.org/)**
 
 Il file di input deve essere nella stessa direcory del file python e deve rispettare le seguenti caratteristiche:
 - deve avere nome: **raw.csv**
