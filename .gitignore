@@ -1,2 +1,4 @@
 /node_modules
 /server/test/python/*.csv
+/server/test/python/.venv
+/server/test/python/__pycache__
