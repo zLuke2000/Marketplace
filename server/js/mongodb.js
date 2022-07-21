@@ -98,7 +98,7 @@ export async function readByOwner(owner) {
 export async function searchProducts(user, string, skip) {
 	try {
 		const reUser = new RegExp('^(?!.*' + user + ').*');
-		const reProduct = new RegExp('^' + string + '.*');
+		const reProduct = new RegExp('^' + string + '.*', 'i');
 		const query = { owner: reUser, name: reProduct, purchased: false };
 		const result = await collection.find(query).skip(skip).limit(36).sort({ name: 1 }).toArray();
 		return result;

@@ -1,29 +1,41 @@
 config:
     target: 'http://localhost:5000'
     phases:
-        - duration: 5
-          arrivalRate: 1
+        - duration: 10
+          arrivalRate: 5
           name: 'Warm up'
-        # - duration: 60
-        #   arrivalRate: 5
-        #   rumpTo: 10
-        #   name: 'Ramp up'
-        # - duration: 40
-        #   arrivalRate: 10
-        #   name: 'Sustained load'
+        - duration: 30
+          arrivalRate: 5
+          rumpTo: 10
+          name: 'Ramp up'
+        - duration: 20
+          arrivalRate: 10
+          name: 'Sustained load'
     payload:
         path: 'user.csv'
         fields:
             - 'user'
+    processor: './processor.cjs'
 scenarios:
-    - name: 'Test'
+    - name: 'test-add-product'
       flow:
           - log: 'Request from 0x{{user}}'
           - post:
-                url: '/my-products'
+                url: '/sell-product'
+                beforeRequest: generateProduct
                 json:
                     user: '0x{{user}}'
+                    product: '{{ product }}'
                 capture:
-                    - json: '$.products.length'
-                      as: 'res'
-          - log: 'User 0x{{user}} has {{res}} product/s'
+                    - json: '$.cid'
+                      as: 'cid'
+          - log: '[0x{{ user }}] created cid: {{ cid }}'
+          - think: 5
+          - post:
+                url: '/add-product'
+                json:
+                    user: '0x{{ user }}'
+                    name: '{{ name }}'
+                    cid: '{{ cid }}'
+                    price: '{{ price }}'
+          - log: '[0x{{ user }}] Added cid {{ cid }} to db'

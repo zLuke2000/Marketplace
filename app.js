@@ -63,7 +63,7 @@ app.post('/my-products', async function (req, res) {
 	console.log(`[${req.body.user}] finished reading own product`);
 	res.status(201).json(response);
 	time += `,${Date.now()}`;
-	fs.appendFile('my-products.csv', time + '\n', function (err, data) {
+	fs.appendFile('server\\test\\python\\raw.csv', time + '\n', function (err, data) {
 		if (err) throw err;
 	});
 });
@@ -84,9 +84,6 @@ app.post('/sell-product', async function (req, res) {
 
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
-		//FIXME: buffer non funziona correttamente
-		// response.cid = await ipfs.addData(Buffer.from(JSON.stringify(product)));
-		//per recuperare il json: JSON.parse(buffer.toString())
 		response.cid = await ipfs.addData(
 			JSON.stringify({
 				name: product.name,
