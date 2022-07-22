@@ -1,8 +1,11 @@
 import * as WEB3 from './web3.js';
 import * as HTML from './html.js';
-
-getAllProducts(0);
-getMyProducts();
+setTimeout( () => {
+	if (!window.account) {
+		getAllProducts(0);
+		getMyProducts();
+	}
+}, 500)
 
 export async function getMyProducts() {
 	if (!window.account) {
