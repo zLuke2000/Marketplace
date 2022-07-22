@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
-
+import * as fs from 'fs';
 import * as ic from './server/js/inputChecker.js';
 import * as ipfs from './server/js/myipfs.js';
 import * as db from './server/js/mongodb.js';
@@ -46,7 +46,9 @@ app.post('/all-products', async function (req, res) {
 // permette ad un utente di recuperare i propri prodotti attualmente in vendita
 app.post('/my-products', async function (req, res) {
 	console.log(`[${req.body.user}] request to read own product`);
+	var time = `${req.body.user},${Date.now()}`;
 	const result = await db.readByOwner(req.body.user);
+	time += `,${Date.now()}`;
 	var response = { products: [] };
 	for await (const el of result) {
 		const str = await ipfs.readData(el.cid);
@@ -56,9 +58,14 @@ app.post('/my-products', async function (req, res) {
 		product.cid = el.cid;
 		product.purchased = el.purchased;
 		response.products.push(product);
+		time += `,${Date.now()}`;
 	}
 	console.log(`[${req.body.user}] finished reading own product`);
 	res.status(201).json(response);
+	time += `,${Date.now()}`;
+	fs.appendFile('server\\test\\python\\raw.csv', time + '\n', function (err, data) {
+		if (err) throw err;
+	});
 });
 
 // permette di vendere un prodotto
@@ -77,9 +84,6 @@ app.post('/sell-product', async function (req, res) {
 
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
-		//FIXME: buffer non funziona correttamente
-		// response.cid = await ipfs.addData(Buffer.from(JSON.stringify(product)));
-		//per recuperare il json: JSON.parse(buffer.toString())
 		response.cid = await ipfs.addData(
 			JSON.stringify({
 				name: product.name,
