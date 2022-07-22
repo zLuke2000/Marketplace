@@ -2,6 +2,7 @@ import { MongoClient } from 'mongodb';
 
 // Connection URL
 const url = 'mongodb://admin:avcu7p1g5JCL4hpfHOmYbsjgruVSd7uS@localhost:27017';
+// const url = 'mongodb://localhost:27017';
 
 const client = await connectToDB();
 const dbo = client.db('marketplace');

@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as ic from './server/js/inputChecker.js';
 import * as ipfs from './server/js/myipfs.js';
 import * as db from './server/js/mongodb.js';
+import * as util from './server/util/util.js';
 
 const app = express();
 const __dirname = path.resolve();
@@ -15,13 +16,6 @@ app.use(express.static('./client/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-
-/* Gestione dei click del pulsante
- * /sell-product => metodo POST per mettere in vedita un prodotto
- * /search => metodo POST per cercare i prodotti in base al nome
- * /my-products => metodo POST richiedere i miei prodotti
- * /available-products => metodo POST richiedere i prodotti disponibili all'acquisto
- */
 
 //TODO: sistemare i log
 
@@ -74,6 +68,7 @@ app.post('/sell-product', async function (req, res) {
 	 * req.body { owner, product { name, price, image, description}}
 	 */
 	console.log(`[${req.body.user}] checking if inputs are valid`);
+	util.init(req.body.user);
 	const product = req.body.product;
 
 	const response = {};
@@ -81,7 +76,7 @@ app.post('/sell-product', async function (req, res) {
 	ic.checkProductName(product.name, response);
 	ic.checkProductPrice(product.price, response);
 	ic.checkProductImage(product.image, response);
-
+	util.add(req.body.user);
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
 		response.cid = await ipfs.addData(
@@ -91,17 +86,21 @@ app.post('/sell-product', async function (req, res) {
 				image: product.image,
 			})
 		);
+		util.add(req.body.user);
 		res.status(201).json(response);
 	} else {
 		res.status(500).json(response);
 	}
 	console.log('Server response', response);
+	util.add(req.body.user);
 });
 
 // aggiunge un prodotto al marketplace
 app.post('/add-product', async (req, res) => {
 	console.log(`[${req.body.user}] adding a new product to the marketplace`);
+	util.add(req.body.user);
 	const result = await db.addProduct(req.body.user, req.body.name, req.body.cid, req.body.price);
+	util.end(req.body.user, 'raw_sell');
 	if (result) {
 		res.sendStatus(201);
 	} else {
