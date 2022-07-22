@@ -1,6 +1,6 @@
 import { getAllProducts, getMyProducts } from './script.js';
 
-const contract_address = '0xd422E816F46a503F51a45215Ec74e498bcdfa90A';
+const contract_address = '0xb05Bb91d3cD8CDE9Ce2f0f7F8055Fa949Eab12E9';
 const contract_abi = [
 	{
 		anonymous: false,
@@ -107,6 +107,7 @@ async function loadWeb3() {
 				window.account = web3.utils.toChecksumAddress(accounts[0]);
 				console.log('Selected account is:', window.account);
 				getMyProducts();
+				document.querySelector('#buyProductsRow').replaceChildren();
 				getAllProducts(0);
 			})
 			.catch((error) => {
