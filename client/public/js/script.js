@@ -65,7 +65,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 	e.preventDefault();
 
 	if (!window.account) {
-		alert('You are not logged in! Please login with MetaMask before creating an account');
+		alert('You are not logged in! Please login with MetaMask before selling a product');
 	} else {
 		// nome, prezzo, immagine e descrizione
 		const nameEl = document.querySelector('#inputProductName');

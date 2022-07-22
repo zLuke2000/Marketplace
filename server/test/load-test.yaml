@@ -1,5 +1,5 @@
 config:
-    target: 'http://localhost:5000'
+    target: 'http://93.70.38.50:5000'
     phases:
         - duration: 10
           arrivalRate: 5
