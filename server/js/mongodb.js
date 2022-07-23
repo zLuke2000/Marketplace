@@ -1,8 +1,8 @@
 import { MongoClient } from 'mongodb';
 
 // Connection URL
-const url = 'mongodb://admin:avcu7p1g5JCL4hpfHOmYbsjgruVSd7uS@localhost:27017';
-// const url = 'mongodb://localhost:27017';
+// const url = 'mongodb://admin:avcu7p1g5JCL4hpfHOmYbsjgruVSd7uS@localhost:27017';
+const url = 'mongodb://localhost:27017';
 
 const client = await connectToDB();
 const dbo = client.db('marketplace');
@@ -25,13 +25,29 @@ export async function addProduct(owner, name, cid, price) {
 			name: name,
 			cid: cid,
 			price: price,
-			purchased: false,
+			status: 'available',
 		});
 		return res.acknowledged;
 	} catch (error) {
 		console.error('Error while trying to insert the product', error);
 	}
 	return false;
+}
+
+export async function processProduct(owner, cid) {
+	try {
+		const filter = { owner: owner, cid: cid, status: 'available' };
+		const update = {
+			$set: {
+				status: 'processing',
+			},
+		};
+		const result = await collection.updateOne(filter, update);
+		console.log(`Updated ${result.modifiedCount} document`);
+		return result.modifiedCount == 1;
+	} catch (error) {
+		console.error('Error while trying to process a product!', error);
+	}
 }
 
 // permette l'acquisto di un prodotto modificando il proprietario e lo stato del prodotto
@@ -41,7 +57,7 @@ export async function buyProduct(user, owner, cid) {
 		const update = {
 			$set: {
 				owner: user,
-				purchased: true,
+				status: 'purchased',
 			},
 		};
 		const result = await collection.updateOne(filter, update);
@@ -53,13 +69,29 @@ export async function buyProduct(user, owner, cid) {
 	return false;
 }
 
+export async function cancelBuy(owner, cid) {
+	try {
+		const filter = { owner: owner, cid: cid };
+		const update = {
+			$set: {
+				status: 'available',
+			},
+		};
+		const result = await collection.updateOne(filter, update);
+		console.log(`Updated ${result.modifiedCount} document`);
+		return result.acknowledged;
+	} catch (error) {
+		console.error('Error while trying to update data!', error);
+	}
+}
+
 export async function resellProduct(user, cid, price) {
 	try {
 		const filter = { owner: user, cid: cid };
 		const update = {
 			$set: {
 				price: price,
-				purchased: false,
+				status: 'available',
 			},
 		};
 		const result = await collection.updateOne(filter, update);
@@ -75,7 +107,7 @@ export async function resellProduct(user, cid, price) {
 export async function readAll(user, skip) {
 	try {
 		const regex = new RegExp('^(?!.*' + user + ').*');
-		const query = { owner: regex, purchased: false };
+		const query = { owner: regex, status: 'available' };
 		const result = await collection.find(query).skip(skip).limit(36).toArray();
 		return result;
 	} catch (error) {
@@ -100,7 +132,7 @@ export async function searchProducts(user, string, skip) {
 	try {
 		const reUser = new RegExp('^(?!.*' + user + ').*');
 		const reProduct = new RegExp('^' + string + '.*', 'i');
-		const query = { owner: reUser, name: reProduct, purchased: false };
+		const query = { owner: reUser, name: reProduct, status: 'available' };
 		const result = await collection.find(query).skip(skip).limit(36).sort({ name: 1 }).toArray();
 		return result;
 	} catch (error) {

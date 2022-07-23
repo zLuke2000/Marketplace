@@ -108,9 +108,29 @@ app.post('/add-product', async (req, res) => {
 	}
 });
 
+app.post('/process-product', async (req, res) => {
+	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
+	const result = await db.processProduct(req.body.owner, req.body.cid);
+	if (result) {
+		res.sendStatus(201);
+	} else {
+		res.status(500).send('product is already processing!');
+	}
+});
+
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
+	if (result) {
+		res.sendStatus(201);
+	} else {
+		res.sendStatus(500);
+	}
+});
+
+app.post('/cancel-buy', async (req, res) => {
+	console.log(`[${req.body.user}] denied transaction to buy product ${req.body.cid}`);
+	const result = await db.cancelBuy(req.body.owner, req.body.cid);
 	if (result) {
 		res.sendStatus(201);
 	} else {

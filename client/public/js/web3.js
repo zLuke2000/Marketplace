@@ -1,6 +1,6 @@
 import { getAllProducts, getMyProducts } from './script.js';
 
-const contract_address = '0xb05Bb91d3cD8CDE9Ce2f0f7F8055Fa949Eab12E9';
+const contract_address = '0x3F730C6668Bab4565f375C8ea5b73f66b260E050';
 const contract_abi = [
 	{
 		anonymous: false,
@@ -210,6 +210,16 @@ export async function buyProduct(cid, owner, price) {
 		})
 		.catch((error) => {
 			console.error('An error occurred during the transaction!', error);
+			if (error.code === 4001) {
+				//sblocca il prodotto se l'utente annulla la transazione
+				fetch('/cancel-buy', {
+					method: 'POST',
+					body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+			}
 			document.location.reload();
 		});
 }

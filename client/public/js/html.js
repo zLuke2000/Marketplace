@@ -78,8 +78,29 @@ async function buyProduct(btn) {
 	const name = parent.querySelector('#name').innerHTML;
 	const price = parent.querySelector('#price').innerHTML.replace(/\D/g, '');
 	const cid = parent.querySelector('#cid').innerHTML;
-	console.log(`Going to buy ${name} for ${price} ETH`);
-	await WEB3.buyProduct(cid, owner, price);
+	console.log(`${window.account} going to process ${name} with cid ${cid}`);
+	//blocca il prodotto
+	fetch('/process-product', {
+		method: 'POST',
+		body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
+		.then(async (res) => {
+			if (res.ok) {
+				console.log(`Going to buy ${name} for ${price} ETH`);
+				await WEB3.buyProduct(cid, owner, price);
+			} else {
+				if (res.status === 500) {
+					alert('Unable to buy the product!');
+					document.location.reload();
+				}
+				console.error('Something went wrong while fetching!', res.status);
+			}
+		})
+		.catch((error) => console.error('An error occurred while fetching', error));
+	// await WEB3.buyProduct(cid, owner, price);
 }
 
 //listener per la rivendita di un prodotto

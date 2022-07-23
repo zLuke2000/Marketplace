@@ -3,11 +3,11 @@ import * as fs from 'fs';
 const map = new Map();
 
 export function init(user) {
-	map.set(user, [Date.now()]);
+	map.set(user, [Date.now().toString()]);
 }
 
 export function add(user) {
-	map.get(user).push(Date.now());
+	map.get(user).push(Date.now().toString());
 }
 
 export function end(user, name) {
