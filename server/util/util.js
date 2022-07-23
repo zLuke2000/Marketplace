@@ -1,19 +1,19 @@
 import * as fs from 'fs';
 
-const map = new Map();
+const mapUser = new Map();
 
-export function init(user) {
-	map.set(user, [Date.now()]);
+export function init(user, id) {
+	mapUser.set(user+id, [Date.now()]);
 }
 
-export function add(user) {
-	map.get(user).push(Date.now());
+export function add(user, id) {
+	mapUser.get(user+id).push(Date.now());
 }
 
-export function end(user, name) {
-	add(user);
-	fs.appendFile(`server\\test\\python\\${name}.csv`, user + ',' + map.get(user).join(',') + '\n', function (err, data) {
-		map.delete(user);
+export function end(user, id, name) {
+	add(user, id);
+	fs.appendFile(`server\\test\\python\\${name}.csv`, user + ',' + map.get(user).join(',') + '\n', function (err, _data) {
+		map.delete(user+id);
 		if (err) throw err;
 	});
 }

@@ -143,6 +143,7 @@ export async function createProduct(product) {
 			fetch('/add-product', {
 				method: 'POST',
 				body: JSON.stringify({
+					id: product.requestId,
 					user: window.account,
 					name: product.name,
 					cid: product.cid,

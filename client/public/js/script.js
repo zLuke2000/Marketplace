@@ -85,7 +85,13 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 		const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 		this.innerHTML = spinner + '&nbsp;&nbsp;Processing...';
 
+		let id = Date.now();
+		for (const c of nameEl.value.trim()) {
+			id += c.charCodeAt(0);
+		}
+
 		const request = {
+			id: id,
 			user: window.account,
 			product: {
 				name: nameEl.value.trim(),
@@ -109,7 +115,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 				const data = await res.json();
 				if (res.ok) {
 					request.product.cid = data.cid;
-					WEB3.createProduct(request.product);
+					WEB3.createProduct(request.product, data.requestId);
 					HTML.resetForm();
 				} else {
 					if (data.name === false) {
