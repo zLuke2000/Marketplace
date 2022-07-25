@@ -65,18 +65,26 @@ app.post('/my-products', async function (req, res) {
 // permette di vendere un prodotto
 app.post('/sell-product', async function (req, res) {
 	/* Struttura
-	 * req.body { owner, product { name, price, image, description}}
+	 * req.body { id, owner, product { name, price, image, description}}
 	 */
 	console.log(`[${req.body.user}] checking if inputs are valid`);
-	util.init(req.body.user);
-	const product = req.body.product;
 
-	const response = {};
+	// ---- PerformanceTest ----
+	util.init(req.body.user, req.body.id)
+
+	const body = req.body;
+	const product = body.product;
+	const response = {
+		requestid: body.id,
+	};
 
 	ic.checkProductName(product.name, response);
 	ic.checkProductPrice(product.price, response);
 	ic.checkProductImage(product.image, response);
-	util.add(req.body.user);
+
+	// ---- PerformanceTest ----
+	util.add(body.user, body.id);
+
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
 		response.cid = await ipfs.addData(
@@ -86,21 +94,33 @@ app.post('/sell-product', async function (req, res) {
 				image: product.image,
 			})
 		);
-		util.add(req.body.user);
+
+		// ---- PerformanceTest ----
+		util.add(body.user, body.id);
+
 		res.status(201).json(response);
 	} else {
 		res.status(500).json(response);
 	}
 	console.log('Server response', response);
-	util.add(req.body.user);
+
+	// ---- PerformanceTest ----
+	util.add(body.user, body.id);
 });
 
 // aggiunge un prodotto al marketplace
 app.post('/add-product', async (req, res) => {
-	console.log(`[${req.body.user}] adding a new product to the marketplace`);
-	util.add(req.body.user);
-	const result = await db.addProduct(req.body.user, req.body.name, req.body.cid, req.body.price);
-	util.end(req.body.user, 'raw_sell');
+	const body = req.body;
+	console.log(`[${body.user}] adding a new product to the marketplace`);
+
+	// ---- PerformanceTest ----
+	util.add(body.user, body.id);
+
+	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
+
+	// ---- PerformanceTest ----
+	util.end(body.user, body.id, 'raw_sell');
+
 	if (result) {
 		res.sendStatus(201);
 	} else {

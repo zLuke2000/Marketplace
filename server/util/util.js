@@ -1,19 +1,21 @@
 import * as fs from 'fs';
 
-const map = new Map();
+const userMap = new Map();
 
-export function init(user) {
-	map.set(user, [Date.now().toString()]);
+export function init(user, id) {
+	console.log("Creo timestamp per l'utente: " + user  + " con id operazione: " + id)
+	userMap.set(user+id, [Date.now().toString()]);
 }
 
-export function add(user) {
-	map.get(user).push(Date.now().toString());
+export function add(user, id) {
+	console.log("utente: " + user  + " id operazione: " + id)
+	userMap.get(user+id).push(Date.now().toString());
 }
 
-export function end(user, name) {
-	add(user);
-	fs.appendFile(`server\\test\\python\\${name}.csv`, user + ',' + map.get(user).join(',') + '\n', function (err, data) {
-		map.delete(user);
+export function end(user, id, name) {
+	add(user, id);
+	fs.appendFile(`/marketplace/server/test/python/${name}.csv`, user + ',' + userMap.get(user+id).join(',') + '\n', function (err, _data) {
+		userMap.delete(user+id);
 		if (err) throw err;
 	});
 }

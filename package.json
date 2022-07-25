@@ -13,7 +13,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "nodemon app.js",
-		"ganache": "ganache -a 100 -b 0 -g 0x4A817C800 -l 0x6691B7 -h 0.0.0.0 -m \"live apple key economy faint mask gaze enjoy alley evolve enjoy already\"",
+		"ganache": "ganache -a 100 -b 0 -g 0x4A817C800 -l 0x6691B7 -h 192.168.1.56 -m \"live apple key economy faint mask gaze enjoy alley evolve enjoy already\"",
 		"ipfs": "jsipfs daemon",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -29,6 +29,7 @@
 	"homepage": "https://github.com/zLuke2000/marketplace#readme",
 	"devDependencies": {
 		"@faker-js/faker": "^7.3.0",
+		"ganache": "^7.0.1",
 		"nodemon": "^2.0.19"
 	}
 }
