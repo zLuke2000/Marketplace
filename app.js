@@ -75,7 +75,7 @@ app.post('/sell-product', async function (req, res) {
 	const body = req.body;
 	const product = body.product;
 	const response = {
-		requestId: body.id,
+		requestid: body.id,
 	};
 
 	ic.checkProductName(product.name, response);
@@ -111,7 +111,7 @@ app.post('/sell-product', async function (req, res) {
 // aggiunge un prodotto al marketplace
 app.post('/add-product', async (req, res) => {
 	const body = req.body;
-	console.log(`[${req.body.user}] adding a new product to the marketplace`);
+	console.log(`[${body.user}] adding a new product to the marketplace`);
 
 	// ---- PerformanceTest ----
 	util.add(body.user, body.id);
@@ -119,7 +119,7 @@ app.post('/add-product', async (req, res) => {
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
 
 	// ---- PerformanceTest ----
-	util.end(body.user, user.id, 'raw_sell');
+	util.end(body.user, body.id, 'raw_sell');
 
 	if (result) {
 		res.sendStatus(201);

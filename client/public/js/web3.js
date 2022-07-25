@@ -1,6 +1,6 @@
 import { getAllProducts, getMyProducts } from './script.js';
 
-const contract_address = '0x3F730C6668Bab4565f375C8ea5b73f66b260E050';
+const contract_address = '0xd4887C4E8B3B928fe5c12404FC3DE05b7eb22Ac9';
 const contract_abi = [
 	{
 		anonymous: false,
@@ -131,8 +131,8 @@ async function loadContract() {
 }
 
 // permette la creazione di un prodotto
-export async function createProduct(product) {
-	console.log('creating the new product...');
+export async function createProduct(product, requestId) {
+	console.log('creating the new product... ');
 	// calling the smart contract method
 	contract.methods
 		.createProduct(product.cid, product.price)
@@ -143,7 +143,7 @@ export async function createProduct(product) {
 			fetch('/add-product', {
 				method: 'POST',
 				body: JSON.stringify({
-					id: product.requestId,
+					id: requestId,
 					user: window.account,
 					name: product.name,
 					cid: product.cid,

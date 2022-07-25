@@ -115,7 +115,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 				const data = await res.json();
 				if (res.ok) {
 					request.product.cid = data.cid;
-					WEB3.createProduct(request.product, data.requestId);
+					WEB3.createProduct(request.product, data.requestid);
 					HTML.resetForm();
 				} else {
 					if (data.name === false) {
