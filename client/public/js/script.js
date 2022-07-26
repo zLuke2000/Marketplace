@@ -1,11 +1,11 @@
 import * as WEB3 from './web3.js';
 import * as HTML from './html.js';
-setTimeout( () => {
+setTimeout(() => {
 	if (!window.account) {
 		getAllProducts(0);
 		getMyProducts();
 	}
-}, 500)
+}, 500);
 
 export async function getMyProducts() {
 	if (!window.account) {
@@ -75,7 +75,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 		const priceEl = document.querySelector('#inputProductPrice');
 		const imageEl = document.querySelector('#inputProductImage');
 		const descriptionEl = document.querySelector('#inputProductDescription');
-		let prodDescription = descriptionEl.value.trim() === '' ? 'This product has no description' : descriptionEl.value.trim();
+		let prodDescription = descriptionEl.value.trim() === '' ? 'Questo prodotto non ha nessuna descrizione' : descriptionEl.value.trim();
 
 		HTML.removeError(nameEl);
 		HTML.removeError(priceEl);
