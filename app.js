@@ -68,6 +68,7 @@ app.post('/sell-product', async function (req, res) {
 	 * req.body { id, owner, product { name, price, image, description}}
 	 */
 	console.log(`[${req.body.user}] checking if inputs are valid`);
+	console.log('ID', req.body.id);
 
 	// ---- PerformanceTest ----
 	util.init(req.body.user, req.body.id)

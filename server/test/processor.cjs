@@ -18,7 +18,7 @@ async function generateImage() {
 async function generateProduct(requestParams, context, ee, next) {
 	const name = faker.commerce.product();
 	const desc = faker.commerce.productDescription();
-	const price = faker.commerce.price(1, 100);
+	const price = faker.commerce.price(1, 100, 0);
 	const image = await generateImage();
 	const product = {
 		name: name,
@@ -26,6 +26,8 @@ async function generateProduct(requestParams, context, ee, next) {
 		price: price,
 		image: image,
 	};
+	const id = faker.random.numeric(5);
+	context.vars['id'] = id;
 	context.vars['product'] = product;
 	context.vars['name'] = name;
 	context.vars['price'] = price;
