@@ -1,0 +1,53 @@
+config:
+    target: 'http://37.183.6.61:5000'
+    http:
+        timeout: 60
+    phases:
+        - duration: 10
+          arrivalRate: 5
+          name: 'Warm up'
+        - duration: 30
+          arrivalRate: 5
+          rumpTo: 10
+          name: 'Ramp up'
+        - duration: 20
+          arrivalRate: 10
+          name: 'Sustained load'
+    payload:
+        - path: 'user.csv'
+          fields:
+              - 'user'
+        - path: 'products.csv'
+          fields:
+              - 'cid'
+              - 'owner'
+              - 'price'
+    processor: './processor.cjs'
+    plugins:
+        expect: {}
+scenarios:
+    - name: 'test-buy-product'
+      flow:
+          - log: '[0x{{user}}] request to buy {{ cid }}'
+          - post:
+                beforeRequest: generateProduct
+                url: '/process-product'
+                json:
+                    user: '0x{{user}}'
+                    owner: '{{ owner }}'
+                    cid: '{{ cid }}'
+                    # id: '{{id}}'
+                afterRequest: printStatus
+                expect:
+                    - statusCode: 201
+          - think: 5
+          - post:
+                beforeRequest: contractPurchase
+                url: '/buy-product'
+                json:
+                    # id: '{{id}}'
+                    user: '0x{{ user }}'
+                    cid: '{{ cid }}'
+                    owner: '{{ owner }}'
+                ifTrue: 'status'
+          - log: '[0x{{ user }}] Added cid {{ cid }} to db'
