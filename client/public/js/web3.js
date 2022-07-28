@@ -1,6 +1,6 @@
 import { getAllProducts, getMyProducts } from './script.js';
 
-const contract_address = '0xd4887C4E8B3B928fe5c12404FC3DE05b7eb22Ac9';
+const contract_address = '0xF861c4cb0fD9e3A52Ab88c0E1157656248dDb7F9';
 const contract_abi = [
 	{
 		anonymous: false,
