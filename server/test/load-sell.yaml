@@ -1,7 +1,7 @@
 config:
-    target: 'http://37.183.6.61:5000'
+    target: 'http://31.156.147.189:5000'
     http:
-        timeout: 30
+        timeout: 60
     phases:
         - duration: 10
           arrivalRate: 5
@@ -18,26 +18,35 @@ config:
         fields:
             - 'user'
     processor: './processor.cjs'
+    plugins:
+        expect: {}
 scenarios:
-    - name: 'test-add-product'
+    - name: 'test-sell-product'
       flow:
-          - log: 'Request from 0x{{user}}'
+          - log: '[0x{{user}}] request to sell product'
           - post:
-                url: '/sell-product'
                 beforeRequest: generateProduct
+                url: '/sell-product'
                 json:
                     user: '0x{{user}}'
                     product: '{{ product }}'
+                    id: '{{id}}'
                 capture:
                     - json: '$.cid'
                       as: 'cid'
+                expect:
+                    - statusCode: 201
           - log: '[0x{{ user }}] created cid: {{ cid }}'
           - think: 5
           - post:
+                beforeRequest: contractBuy
                 url: '/add-product'
                 json:
+                    id: '{{id}}'
                     user: '0x{{ user }}'
                     name: '{{ name }}'
                     cid: '{{ cid }}'
                     price: '{{ price }}'
+                expect:
+                    - statusCode: 201
           - log: '[0x{{ user }}] Added cid {{ cid }} to db'
