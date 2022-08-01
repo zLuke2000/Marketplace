@@ -17,7 +17,7 @@ contract Marketplace {
     );
 
     function createProduct(string memory cid, uint price) public {
-        emit productCreated(cid, msg.sender, price);
+        emit productCreated(cid, msg.sender, price / 1 ether);
     }
 
     function purchaseProduct(string memory cid, address payable owner) public payable {

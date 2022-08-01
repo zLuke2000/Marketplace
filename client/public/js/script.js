@@ -118,13 +118,13 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 					WEB3.createProduct(request.product, data.requestid);
 					HTML.resetForm();
 				} else {
-					if (data.name === false) {
+					if (!data.name.status) {
 						HTML.showError(nameEl, "Il nome di questo prodotto non e' valido!");
 					}
-					if (data.price === false) {
+					if (!data.price.status) {
 						HTML.showError(priceEl, "Il prezzo inserito non e' valido!");
 					}
-					if (data.image === false) {
+					if (!data.image.status) {
 						HTML.showError(imageEl, "L'immagine non e' valida!");
 					}
 
