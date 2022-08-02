@@ -132,7 +132,7 @@ async function loadContract() {
 
 // permette la creazione di un prodotto
 export async function createProduct(product, requestId) {
-	console.log('creating the new product... ');
+	console.log('creating the new product...');
 	// calling the smart contract method
 	contract.methods
 		.createProduct(product.cid, web3.utils.toWei(product.price.toString()))
