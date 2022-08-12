@@ -30,7 +30,7 @@
 	"homepage": "https://github.com/zLuke2000/marketplace#readme",
 	"devDependencies": {
 		"@faker-js/faker": "^7.3.0",
-		"ganache": "^7.3.2",
+		"ganache": "^7.4.0",
 		"nodemon": "^2.0.19"
 	}
 }
