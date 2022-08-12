@@ -4,7 +4,7 @@
 	width: 100%;
 	position: fixed;
 	z-index: 1;
-	background-color: rgba(0, 0, 0, 0.3) !important;
+	background-color: #0000004d !important;
 }
 
 /* Stile per il popup */
@@ -29,7 +29,7 @@
 .popup button {
 	border-radius: 10px;
 	background-color: var(--opaco50);
-	border-color: grey;
+	border-color: #808080;
 	font-size: 18px;
 	width: 15%;
 	margin: 5px;

@@ -23,10 +23,10 @@ app.use(bodyParser.json());
 app.post('/all-products', async function (req, res) {
 	console.log(`[${req.body.user}] read available products`);
 	const result = await db.readAll(req.body.user, req.body.skip);
-	var response = { products: [] };
+	const response = { products: [] };
 	for await (const el of result) {
 		const str = await ipfs.readData(el.cid);
-		var product = JSON.parse(str);
+		const product = JSON.parse(str);
 		product.owner = el.owner;
 		product.price = el.price;
 		//aggiungo il cid al prodotto
@@ -40,13 +40,13 @@ app.post('/all-products', async function (req, res) {
 // permette ad un utente di recuperare i propri prodotti attualmente in vendita
 app.post('/my-products', async function (req, res) {
 	console.log(`[${req.body.user}] request to read own product`);
-	var time = `${req.body.user},${Date.now()}`;
+	let time = `${req.body.user},${Date.now()}`;
 	const result = await db.readByOwner(req.body.user);
 	time += `,${Date.now()}`;
-	var response = { products: [] };
+	const response = { products: [] };
 	for await (const el of result) {
 		const str = await ipfs.readData(el.cid);
-		var product = JSON.parse(str);
+		const product = JSON.parse(str);
 		product.price = el.price;
 		//aggiungo il cid al prodotto
 		product.cid = el.cid;
@@ -65,18 +65,23 @@ app.post('/my-products', async function (req, res) {
 // permette di vendere un prodotto
 app.post('/sell-product', async function (req, res) {
 	/* Struttura
-	 * req.body { id, owner, product { name, price, image, description}}
+	 * req.body {owner, product { name, price, image, description}}
 	 */
 	console.log(`[${req.body.user}] checking if inputs are valid`);
-	console.log('ID', req.body.id);
+
+	// Generazione id richiesta
+	let id = Date.now();
+	for (const c of req.body.product.name.trim()) {
+		id += c.charCodeAt(0);
+	}
+	console.log('ID', id);
 
 	// ---- PerformanceTest ----
-	util.init(req.body.user, req.body.id)
+	util.init(req.body.user + id)
 
-	const body = req.body;
-	const product = body.product;
+	const product = req.body.product;
 	const response = {
-		requestid: body.id,
+		requestid: id,
 	};
 
 	ic.checkProductName(product.name, response);
@@ -84,7 +89,7 @@ app.post('/sell-product', async function (req, res) {
 	ic.checkProductImage(product.image, response);
 
 	// ---- PerformanceTest ----
-	util.add(body.user, body.id);
+	util.add(req.body.user + id);
 
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
@@ -97,7 +102,7 @@ app.post('/sell-product', async function (req, res) {
 		);
 
 		// ---- PerformanceTest ----
-		util.add(body.user, body.id);
+		util.add(req.body.user + id);
 
 		res.status(201).json(response);
 	} else {
@@ -106,7 +111,7 @@ app.post('/sell-product', async function (req, res) {
 	console.log('Server response', response);
 
 	// ---- PerformanceTest ----
-	util.add(body.user, body.id);
+	util.add(req.body.user + id);
 });
 
 // aggiunge un prodotto al marketplace
@@ -115,12 +120,12 @@ app.post('/add-product', async (req, res) => {
 	console.log(`[${body.user}] adding a new product to the marketplace`);
 
 	// ---- PerformanceTest ----
-	util.add(body.user, body.id);
+	util.add(body.user + body.id);
 
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
 
 	// ---- PerformanceTest ----
-	util.end(body.user, body.id, 'raw_sell');
+	util.end(body.user + body.id, 'raw_sell');
 
 	if (result) {
 		res.sendStatus(201);
@@ -130,10 +135,21 @@ app.post('/add-product', async (req, res) => {
 });
 
 app.post('/process-product', async (req, res) => {
+
+	// Generazione id richiesta
+	let id = Date.now();
+	for (const c of req.body.product.name.trim()) {
+		id += c.charCodeAt(0);
+	}
+	console.log('ID', id);
+
+	util.init(req.body.user + id)
+
 	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
 	const result = await db.processProduct(req.body.owner, req.body.cid);
+	util.add(req.body.user + id)
 	if (result) {
-		res.sendStatus(201);
+		res.sendStatus(201).json({requestId: id});
 	} else {
 		res.status(500).send('product is already processing!');
 	}
@@ -141,7 +157,9 @@ app.post('/process-product', async (req, res) => {
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
+	util.add(req.body.user + req.body.id)
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
+	util.end(req.body.user + req.body.id, 'raw_buy')
 	if (result) {
 		res.sendStatus(201);
 	} else {
@@ -173,10 +191,10 @@ app.post('/resell-product', async (req, res) => {
 app.post('/search-products', async (req, res) => {
 	console.log('Searching for product');
 	const result = await db.searchProducts(req.body.user, req.body.search, req.body.skip);
-	var response = { products: [] };
+	const response = { products: [] };
 	for await (const el of result) {
 		const str = await ipfs.readData(el.cid);
-		var product = JSON.parse(str);
+		const product = JSON.parse(str);
 		product.owner = el.owner;
 		product.price = el.price;
 		product.cid = el.cid;
@@ -187,7 +205,7 @@ app.post('/search-products', async (req, res) => {
 });
 
 // Gestione 404 not found - deve essere messo in fono al file perchè i metodi vengono controllati in ordine
-app.all('*', (req, res) => {
+app.all('*', (_req, res) => {
 	console.error('404');
 	//TODO: sistemare la schermata per errore 404
 	// res.status(404).sendFile(path.resolve(__dirname, 'client/html/404.html'));

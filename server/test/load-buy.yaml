@@ -36,7 +36,7 @@ scenarios:
                     user: '0x{{user}}'
                     owner: '{{ owner }}'
                     cid: '{{ cid }}'
-                    # id: '{{id}}'
+                    #id: '{{id}}'
                 afterRequest: printStatus
                 expect:
                     - statusCode: 201
@@ -45,7 +45,7 @@ scenarios:
                 beforeRequest: contractPurchase
                 url: '/buy-product'
                 json:
-                    # id: '{{id}}'
+                    #id: '{{id}}'
                     user: '0x{{ user }}'
                     cid: '{{ cid }}'
                     owner: '{{ owner }}'
