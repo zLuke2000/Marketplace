@@ -1,5 +1,5 @@
 import * as WEB3 from './web3.js';
-import * as SCRIPT from './script.js'
+import * as SCRIPT from './script.js';
 
 /*
  * funzioni esportate
@@ -89,7 +89,7 @@ export function hideSpinner(id) {
 }
 
 /*
- * listner 
+ * listner
  */
 
 // listener per l'acquisto di un prodotto
@@ -273,7 +273,6 @@ async function buyProduct(btn) {
 			}
 		})
 		.catch((error) => console.error('An error occurred while fetching', error));
-	// await WEB3.buyProduct(cid, owner, price);
 }
 
 function showPopup(btn) {

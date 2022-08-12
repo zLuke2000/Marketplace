@@ -77,11 +77,11 @@ app.post('/sell-product', async function (req, res) {
 	console.log('ID', id);
 
 	// ---- PerformanceTest ----
-	util.init(req.body.user + id)
+	util.init(req.body.user + id);
 
 	const product = req.body.product;
 	const response = {
-		requestid: id,
+		requestId: id,
 	};
 
 	ic.checkProductName(product.name, response);
@@ -135,7 +135,6 @@ app.post('/add-product', async (req, res) => {
 });
 
 app.post('/process-product', async (req, res) => {
-
 	// Generazione id richiesta
 	let id = Date.now();
 	for (const c of req.body.product.name.trim()) {
@@ -143,13 +142,13 @@ app.post('/process-product', async (req, res) => {
 	}
 	console.log('ID', id);
 
-	util.init(req.body.user + id)
+	util.init(req.body.user + id);
 
 	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
 	const result = await db.processProduct(req.body.owner, req.body.cid);
-	util.add(req.body.user + id)
+	util.add(req.body.user + id);
 	if (result) {
-		res.sendStatus(201).json({requestId: id});
+		res.sendStatus(201).json({ requestId: id });
 	} else {
 		res.status(500).send('product is already processing!');
 	}
@@ -157,9 +156,9 @@ app.post('/process-product', async (req, res) => {
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
-	util.add(req.body.user + req.body.id)
+	util.add(req.body.user + req.body.id);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
-	util.end(req.body.user + req.body.id, 'raw_buy')
+	util.end(req.body.user + req.body.id, 'raw_buy');
 	if (result) {
 		res.sendStatus(201);
 	} else {

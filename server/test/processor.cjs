@@ -11,10 +11,9 @@ const address = '0xF861c4cb0fD9e3A52Ab88c0E1157656248dDb7F9';
 const contract = new web3.eth.Contract(abi, address);
 
 // interazione con smart contact per la creazione del prodotto
-async function contractBuy(requestParams, context, ee, next) {
+async function buyProduct(requestParams, context, ee, next) {
 	try {
-		await contract.methods.createProduct(context.vars['cid'], context.vars['price'])
-			.send({ from: '0x' + context.vars['user'] });
+		await contract.methods.createProduct(context.vars['cid'], context.vars['price']).send({ from: '0x' + context.vars['user'] });
 		console.log(`0x${context.vars['user']} got receipt`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
@@ -45,8 +44,6 @@ async function generateProduct(requestParams, context, ee, next) {
 		price: price,
 		image: image,
 	};
-	const id = faker.random.numeric(5);
-	context.vars['id'] = id;
 	context.vars['product'] = product;
 	context.vars['name'] = name;
 	context.vars['price'] = price;
@@ -54,9 +51,9 @@ async function generateProduct(requestParams, context, ee, next) {
 	return next();
 }
 
-function contractPurchase(requestParams, context, ee, next) {
+function purchaseProduct(requestParams, context, ee, next) {
 	contract.methods
-		.purchaseProduct(context.vars['cid'], context.vars['owner'])
+		.purchaseProduct(context.vars['cid'], '0x' + context.vars['owner'])
 		.send({ from: '0x' + context.vars['user'], value: web3.utils.toWei(context.vars['price']) })
 		.on('receipt', (receipt) => {
 			console.log(`[0x${context.vars['user']}] got receipt`);
@@ -72,13 +69,15 @@ function printStatus(requestParams, response, context, ee, next) {
 	console.log(`[${context.vars['user']}] got: ${response.statusCode}`);
 	if (response.statusCode === 201) {
 		context.vars['status'] = true;
+	} else {
+		console.log(`[${context.vars['user']}] unable to buy product ${context.vars['cid']}`);
 	}
 	return next();
 }
 
 module.exports = {
 	generateProduct,
-	contractBuy,
-	contractPurchase,
+	contractBuy: buyProduct,
+	contractPurchase: purchaseProduct,
 	printStatus,
 };

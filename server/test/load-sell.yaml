@@ -8,10 +8,10 @@ config:
           name: 'Warm up'
         - duration: 30
           arrivalRate: 5
-          rumpTo: 10
+          rumpTo: 7
           name: 'Ramp up'
         - duration: 20
-          arrivalRate: 10
+          arrivalRate: 7
           name: 'Sustained load'
     payload:
         path: 'user.csv'
@@ -30,16 +30,17 @@ scenarios:
                 json:
                     user: '0x{{user}}'
                     product: '{{ product }}'
-                    id: '{{id}}'
                 capture:
                     - json: '$.cid'
                       as: 'cid'
+                    - json: '$.requestId'
+                      as: 'id'
                 expect:
                     - statusCode: 201
           - log: '[0x{{ user }}] created cid: {{ cid }}'
           - think: 5
           - post:
-                beforeRequest: contractBuy
+                beforeRequest: buyProduct
                 url: '/add-product'
                 json:
                     id: '{{id}}'
