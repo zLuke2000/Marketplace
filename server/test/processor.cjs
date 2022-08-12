@@ -13,7 +13,8 @@ const contract = new web3.eth.Contract(abi, address);
 // interazione con smart contact per la creazione del prodotto
 async function contractBuy(requestParams, context, ee, next) {
 	try {
-		const receipt = await contract.methods.createProduct(context.vars['cid'], context.vars['price']).send({ from: '0x' + context.vars['user'] });
+		await contract.methods.createProduct(context.vars['cid'], context.vars['price'])
+			.send({ from: '0x' + context.vars['user'] });
 		console.log(`0x${context.vars['user']} got receipt`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
