@@ -1,16 +1,39 @@
 :root {
-	--background: #90caf9;
+	--background: #202740;
+	--box-background: #384A8C;
+	--box-background-focus: hsl(227, 43%, 60%);
+	--defaultTextColor: #eeeeee;
 	--error-color: #dc3545;
 	--success-color: #28a745;
-	--opaco50: rgba(255, 255, 255, 0.5);
-	--lightblue50: rgba(159, 168, 218, 0.5);
-	--box-scrollbar-track: #98a4e9;
-	--box-scrollbar-thumb: #8a90de;
+	--opaco50: hsla(0, 0%, 100%, 0.1);
+	--lightblue50: #9fa8da80;
+	--box-scrollbar-track: hsla(0, 0%, 100%, 0.2);
+	--box-scrollbar-thumb: hsla(0, 0%, 100%, 0.2);
 }
 
 /* Colore background */
 body {
 	background-color: var(--background) !important;
+}
+
+.input-field input,
+.input-field textarea,
+.search-bar-container input {
+	color: var(--defaultTextColor);
+}
+
+.default-text,
+.input-field input::placeholder,
+.input-field textarea::placeholder,
+.search-bar-container input::placeholder,
+.search-bar-container span {
+	color: var(--defaultTextColor);
+}
+
+.input-field input:focus,
+.input-field textarea:focus,
+.search-bar-container input[type='search']:focus {
+	background-color: var(--box-background-focus);
 }
 
 /* Rimuove il triangolo resize in basso a destra per la resize */
@@ -22,18 +45,20 @@ textarea {
 div.box {
 	height: 520px !important;
 	text-align: center;
-	background: var(--lightblue50);
+	background: var(--box-background);
+	border-style: solid;
+	border-color: var(--defaultTextColor);
+	border-radius: 10px;
 	overflow: auto;
 	margin: 25px;
 	margin-top: 5px;
-	border-radius: 10px;
 	scroll-behavior: smooth;
 	position: relative;
 }
 
 .loadBtn {
 	border-radius: 10px;
-	color: black;
+	color: #000000;
 	background-color: #98a4e9;
 	display: none;
 	cursor: pointer;
@@ -55,7 +80,8 @@ form {
 .input-field button {
 	border-radius: 10px;
 	border-width: 2px;
-	background-color: var(--opaco50);
+	border-style: solid;
+	background-color: var(--box-background);
 }
 
 /* Rimozione spinner da input type="number" */
@@ -88,19 +114,13 @@ form {
 
 /* Stile per Input file */
 .input-field input[type='file'] + label {
-	background-color: var(--opaco50);
+	background-color: var(--box-background);
 	border: 2px solid;
-	border-color: #ced4da;
+	border-color: var(--defaultTextColor);
 	border-radius: 8px;
 	padding: 5px;
 	margin-top: 15px;
 	margin-bottom: 10px;
-}
-
-/* Stile per Input file */
-.input-field input[type='file'] + label:hover {
-	background-color: white;
-	border-color: #6fb3fa;
 	cursor: pointer;
 }
 
@@ -137,6 +157,7 @@ form {
 
 .text-warn-no-product {
 	position: absolute;
+	color: var(--defaultTextColor);
 	/* top: 47%;
 	left: 34%; */
 	top: 50%;
@@ -155,7 +176,7 @@ form {
 }
 
 .search-bar-container input[type='search'] {
-	background-color: var(--opaco50);
+	background-color: var(--box-background);
 	border-radius: 10px;
 	border-width: 2px;
 	font-size: 18px;

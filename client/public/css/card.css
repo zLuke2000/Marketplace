@@ -63,8 +63,8 @@
 .container:hover .overlay {
 	backdrop-filter: blur(10px);
 	transition: all 0.3s ease-in-out;
-	background-color: rgba(144, 202, 249, 0.6);
-	color: black;
+	background-color: #90caf999;
+	color: #000000;
 }
 
 /* Stile della scrollbar della card */
@@ -85,12 +85,12 @@
 	cursor: pointer;
 	width: 100%;
 	padding: 10px;
-	color: white;
+	color: #ffffff;
 	background-color: #3666ff;
 }
 
 .card button:disabled {
-	background-color: rgba(54, 102, 255, 0.65);
+	background-color: #3666ffa6;
 	cursor: default;
 }
 
@@ -114,7 +114,7 @@
 	top: 0;
 	left: 0;
 	pointer-events: none;
-	background-image: radial-gradient(circle, black 10%, transparent 10%);
+	background-image: radial-gradient(circle, #000000 10%, transparent 10%);
 	background-repeat: no-repeat;
 	background-position: 50%;
 	transform: scale(10, 10);
