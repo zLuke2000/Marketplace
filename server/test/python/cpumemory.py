@@ -1,38 +1,40 @@
 def convert(lines, file_name):
     f_out = open("log_" + file_name.replace(".log", ".csv"), "w")
-    
-    key = []
-    timestamps = ["processo"]
-    data = {}
-    # per ogni elemento nella lista (riga del file)
-    for line in lines:
-        line = line.strip().split(" ")
-        # controllo che la linea abbia il numero minimo di campi per essere elabrotata
-        if len(line) < 4:
-            # salto al for successivo senza finire il seguente
-            continue
-        
-        # lettura timestamp
-        if line[0] == "%CPU" :
-            timestamps.append(line[7])
-        else:
-            process = line[3]
-            # lettura campo X per la colonna CPU (se non esiste lo inserisce in una riga nuova)
-            if (process + "_cpu") in key:
-                data[process + "_cpu"].append(line[0])
-            else:
-                key.append(process + "_cpu")
-                data[process + "_cpu"] = [line[0]]
-            # lettura campo X per la colonna MEM (se non esiste lo inserisce in una riga nuova)
-            if (process + "_mem") in key:
-                data[process + "_mem"].append(line[2])
-            else:
-                key.append(process + "_mem")
-                data[process + "_mem"] = [line[2]]
 
-    # scrivo su file i timestamp + intestazione colonna processo
-    f_out.writelines(','.join(timestamps) + "\n")
-    # scrivo su file l'utilizzo di CPU e MEM per ogni processo
-    for x in key:
-        f_out.writelines(x + ',' + ','.join(data[x]) + ",\n")
+    blocks = []
+    keys = []
+
+    # organizzio in una struttura i dati letti
+    for line in lines:
+        line = line.strip().split(' ')
+        if len(line) > 3:
+            if(line[0] == "%CPU"):
+                blocks.append({'timestamp': line[7]})
+            else:
+                blocks[-1][line[3] + '__cpu'] =  line[0]
+                blocks[-1][line[3] + '__mem'] =  line[2]
+
+                if line[3] + '__cpu' not in keys:
+                    keys.append(line[3] + '__cpu')
+                if line[3] + '__mem' not in keys:
+                    keys.append(line[3] + '__mem')
+
+    # imposto a null i dati non esistenti per processo
+    for block in blocks:
+        for key in keys:
+            if key not in block:
+                block[key] = '-.-'
+    
+    # scrivo su file i timestamp (prima riga)
+    f_out.writelines('processo/timestamp')
+    for b in blocks:
+        f_out.writelines(',' + b["timestamp"])
+    f_out.writelines('\n')
+
+    # scrivo su file i processi, riga per riga, con intestazione nome_cpu o nome_mem
+    for k in keys:
+        f_out.writelines(k)
+        for b in blocks:
+            f_out.writelines(',' + b[k])
+        f_out.writelines('\n')
     f_out.close()

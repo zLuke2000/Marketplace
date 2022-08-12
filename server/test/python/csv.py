@@ -15,9 +15,15 @@ for file in files:
         csv_lines = f_in.read().split("\n")
         sell.convert(csv_lines)
         f_in.close()
+
+    if file == 'raw_buy.csv':
+        f_in = open((path.dirname(__file__) + "\\" + file), 'r')
+        csv_lines = f_in.read().split("\n")
+        sell.convert(csv_lines)
+        f_in.close()
+
     if file.endswith('.log'):
         f_in = open((path.dirname(__file__) + "\\" + file), 'r')
         lines = f_in.read().split("\n")
-        
         cpumemory.convert(lines, file)
         f_in.close()
