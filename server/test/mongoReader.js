@@ -24,7 +24,15 @@ async function readAll() {
 		const result = await collection.find({ status: 'available' }).toArray();
 		let csvString = '';
 		result.forEach((product) => {
-			csvString += product['cid'].toString() + ',' + product['owner'].toString() + ',' + product['price'].toString() + ',' + product['name'].toString() + '\n';
+			csvString +=
+				product['cid'].toString() +
+				',' +
+				product['owner'].toString().slice(2) +
+				',' +
+				product['price'].toString() +
+				',' +
+				product['name'].toString() +
+				'\n';
 		});
 		fs.writeFileSync('products.csv', csvString);
 	} catch (error) {
