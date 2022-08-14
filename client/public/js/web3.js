@@ -137,7 +137,6 @@ export async function createProduct(product, requestId) {
 	contract.methods
 		.createProduct(product.cid, web3.utils.toWei(product.price.toString()))
 		.send({ from: window.account })
-		.on('sending')
 		.on('receipt', (receipt) => {
 			console.log("Transaction completed here's the receipt:", receipt);
 			// chiedo al server di aggiungere sul database il prodotto

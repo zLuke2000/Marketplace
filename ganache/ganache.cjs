@@ -2,7 +2,7 @@ const ganache = require('ganache');
 
 const options = {
 	wallet: { totalAccounts: '100', seed: 'marketplaceTest', accountKeysPath: 'keys.json' },
-	server: { host: '192.168.1.56' },
+	server: { host: '0.0.0.0' },
 	database: { dbPath: 'db' },
 };
 const server = ganache.server(options);

@@ -23,6 +23,17 @@ async function readAll() {
 	try {
 		const result = await collection.find({ status: 'available' }).toArray();
 
+<<<<<<< HEAD
+        let csvString = ""
+        result.forEach(product => {
+            csvString += product["cid"].toString() + "," + product["owner"].toString() + "," + product["price"].toString() + "," + product["name"].toString() + "\n"
+        });
+        fs.writeFileSync("products.csv", csvString);
+
+    } catch (error) {
+        console.error('Error while trying to read products: ', error);
+    }
+=======
 		let csvString = '';
 		result.forEach((product) => {
 			csvString +=
@@ -39,4 +50,5 @@ async function readAll() {
 	} catch (error) {
 		console.error('Error while trying to read products: ', error);
 	}
+>>>>>>> 56e3c05307ab53e0d3bae1f6bff4f8ec6152debc
 }
