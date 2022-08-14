@@ -4,13 +4,13 @@ config:
         timeout: 60
     phases:
         - duration: 10
-          arrivalRate: 5
+          arrivalRate: 4
           name: 'Warm up'
-        - duration: 30
-          arrivalRate: 5
-          rumpTo: 7
+        - duration: 10
+          arrivalRate: 4
+          rumpTo: 6
           name: 'Ramp up'
-        - duration: 20
+        - duration: 10
           arrivalRate: 7
           name: 'Sustained load'
     payload:
@@ -40,7 +40,7 @@ scenarios:
           - log: '[0x{{ user }}] created cid: {{ cid }}'
           - think: 5
           - post:
-                beforeRequest: buyProduct
+                beforeRequest: createProduct
                 url: '/add-product'
                 json:
                     id: '{{id}}'

@@ -8,10 +8,10 @@ config:
           name: 'Warm up'
         - duration: 30
           arrivalRate: 5
-          rumpTo: 10
+          rumpTo: 7
           name: 'Ramp up'
         - duration: 20
-          arrivalRate: 10
+          arrivalRate: 7
           name: 'Sustained load'
     payload:
         - path: 'user.csv'
