@@ -25,7 +25,7 @@ async function readAll() {
 
         let csvString = ""
         result.forEach(product => {
-            csvString += product["_id"].toString() + "\n"
+            csvString += product["cid"].toString() + "," + product["owner"].toString() + "," + product["price"].toString() + "," + product["name"].toString() + "\n"
         });
         fs.writeFileSync("products.csv", csvString);
 

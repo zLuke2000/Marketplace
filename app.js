@@ -71,7 +71,7 @@ app.post('/sell-product', async function (req, res) {
 
 	// Generazione id richiesta
 	let id = Date.now();
-	for (const c of req.body.product.name.trim()) {
+	for (const c of req.body.product.user.trim()) {
 		id += c.charCodeAt(0);
 	}
 	console.log('ID', id);
@@ -81,7 +81,7 @@ app.post('/sell-product', async function (req, res) {
 
 	const product = req.body.product;
 	const response = {
-		requestid: id,
+		requestId: id,
 	};
 
 	ic.checkProductName(product.name, response);
@@ -123,9 +123,9 @@ app.post('/add-product', async (req, res) => {
 	util.add(body.user + body.id);
 
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
-
+	console.log(result)
 	// ---- PerformanceTest ----
-	util.end(body.user + body.id, 'raw_sell');
+	util.end(body.user, body.id, 'raw_sell');
 
 	if (result) {
 		res.sendStatus(201);
@@ -138,7 +138,7 @@ app.post('/process-product', async (req, res) => {
 
 	// Generazione id richiesta
 	let id = Date.now();
-	for (const c of req.body.product.name.trim()) {
+	for (const c of req.body.user.trim()) {
 		id += c.charCodeAt(0);
 	}
 	console.log('ID', id);
@@ -159,7 +159,7 @@ app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	util.add(req.body.user + req.body.id)
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
-	util.end(req.body.user + req.body.id, 'raw_buy')
+	util.end(req.body.user, req.body.id, 'raw_buy')
 	if (result) {
 		res.sendStatus(201);
 	} else {

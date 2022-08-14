@@ -13,9 +13,9 @@ export function add(reqId) {
 	userMap.get(reqId).push(Date.now().toString());
 }
 
-export function end(reqId, name) {
+export function end(user, id, name) {
 	console.log(`USER: ${user} -- ID: ${id} -- NAME: ${name}`)
-	add(reqId);
+	add(user+id);
 	fs.appendFile(`server/test/python/${name}.csv`, user + ',' + userMap.get(user+id).join(',') + '\n', function (err, _data) {
  		userMap.delete(user+id);
 		if (err) throw err;
