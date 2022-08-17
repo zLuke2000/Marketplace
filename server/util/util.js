@@ -6,7 +6,13 @@ console.log(absolutePath);
 const userMap = new Map();
 
 export function init(reqId) {
+	// Generazione id richiesta
+	let id = Date.now();
+	for (const c of req.body.user) {
+		id += c.charCodeAt(0);
+	}
 	userMap.set(reqId, [Date.now().toString()]);
+	return id;
 }
 
 export function add(reqId) {
