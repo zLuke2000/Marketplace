@@ -50,7 +50,7 @@ app.post('/my-products', async function (req, res) {
 		product.price = el.price;
 		//aggiungo il cid al prodotto
 		product.cid = el.cid;
-		product.purchased = el.purchased;
+		product.purchased = el.status === 'purchased';
 		response.products.push(product);
 		time += `,${Date.now()}`;
 	}
@@ -148,7 +148,7 @@ app.post('/process-product', async (req, res) => {
 	const result = await db.processProduct(req.body.owner, req.body.cid);
 	util.add(req.body.user + id);
 	if (result) {
-		res.sendStatus(201).json({ requestId: id });
+		res.status(201).json({requestId: id});
 	} else {
 		res.status(500).send('product is already processing!');
 	}
@@ -156,6 +156,7 @@ app.post('/process-product', async (req, res) => {
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
+	console.log('ID', req.body.id);
 	util.add(req.body.user + req.body.id);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
 	util.end(req.body.user, req.body.id, 'raw_buy')
