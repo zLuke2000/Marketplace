@@ -11,7 +11,7 @@ export function generaCard(id, obj) {
 
 	switch (id) {
 		case '#buyProductsRow':
-			cardTemplate = `<div class="col-md-4">
+			cardTemplate = `<div class="col-md-2">
         		<div class="card">
         		<div class="container">
         			<img class="card-img-top" src="${obj.image}">
