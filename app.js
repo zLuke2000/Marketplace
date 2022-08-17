@@ -54,7 +54,7 @@ app.post('/my-products', async function (req, res) {
 		product.price = el.price;
 		//aggiungo il cid al prodotto
 		product.cid = el.cid;
-		product.purchased = el.purchased;
+		product.purchased = el.status === 'purchased';
 		response.products.push(product);
 		// ---- PerformanceTest ----
 		util.add(req.body.user + id)

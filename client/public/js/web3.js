@@ -179,6 +179,7 @@ export async function buyProduct(cid, owner, price, requestId) {
 	console.log('Going to buy the product:', cid);
 	// calling the smart contract method
 	//FIXME: usare `${price}`
+	console.log('ID', requestId);
 	contract.methods
 		.purchaseProduct(cid, owner)
 		.send({ from: window.account, value: web3.utils.toWei('1') })

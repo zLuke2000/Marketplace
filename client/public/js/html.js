@@ -32,7 +32,7 @@ export function generaCard(id, obj) {
 			break;
 
 		case '#myProductsRow':
-			cardTemplate = `<div class="col-md-4">
+			cardTemplate = `<div class="col-md-2">
 				<div class="card">
 				<div class="container">
 					<img class="card-img-top" src="${obj.image}">
@@ -54,7 +54,7 @@ export function generaCard(id, obj) {
 
 	//nascondi elementi prima di inserire il primo prodotto
 	if (div.childNodes.length == 0) {
-		div.parentElement.querySelector('.spinner-border').style.display = 'none';
+		div.parentElement.querySelector('.spinner-border').style.visibility = 'hidden';
 		div.parentElement.querySelector('.text-warn-no-product').style.display = 'none';
 	}
 
@@ -71,7 +71,7 @@ export function showSpinner(id) {
 		parent.querySelector('#loadMoreBtn').style.display = 'none';
 	}
 	parent.querySelector('.text-warn-no-product').style.display = 'none';
-	parent.querySelector('.spinner-border').style.display = 'unset';
+	parent.querySelector('.spinner-border').style.visibility = 'visible';
 }
 
 // rimuove spinner e mostra messaggio se la row non ha figli
@@ -79,8 +79,8 @@ export function hideSpinner(id) {
 	const row = document.querySelector(id);
 	const parent = row.parentElement;
 	const spinner = parent.querySelector('.spinner-border');
-	if (spinner.style.display != 'none') {
-		spinner.style.display = 'none';
+	if (spinner.style.visibility != 'hidden') {
+		spinner.style.visibility = 'hidden';
 		if (row.childElementCount == 0) {
 			const no_elem_text = parent.querySelector('.text-warn-no-product');
 			no_elem_text.style.display = 'unset';
@@ -261,9 +261,10 @@ async function buyProduct(btn) {
 		},
 	})
 		.then(async (res) => {
+			const data = await res.json()
 			if (res.ok) {
 				console.log(`Going to buy ${name} for ${price} ETH`);
-				await WEB3.buyProduct(cid, owner, price, res.body.requestId);
+				await WEB3.buyProduct(cid, owner, price, data.requestId);
 			} else {
 				if (res.status === 500) {
 					alert('Unable to buy the product!');
