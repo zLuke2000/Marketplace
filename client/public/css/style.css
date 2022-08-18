@@ -142,6 +142,7 @@ form {
 
 /* Stile per gli spinner dei box */
 .spinner-border {
+	color: var(--defaultTextColor);
 	width: 4rem !important;
 	height: 4rem !important;
 	position: sticky;

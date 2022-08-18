@@ -54,7 +54,7 @@ export function generaCard(id, obj) {
 
 	//nascondi elementi prima di inserire il primo prodotto
 	if (div.childNodes.length == 0) {
-		div.parentElement.querySelector('.spinner-border').style.visibility = 'hidden';
+		div.parentElement.querySelector('.spinner-border').style.display = 'none';
 		div.parentElement.querySelector('.text-warn-no-product').style.display = 'none';
 	}
 
@@ -71,7 +71,7 @@ export function showSpinner(id) {
 		parent.querySelector('#loadMoreBtn').style.display = 'none';
 	}
 	parent.querySelector('.text-warn-no-product').style.display = 'none';
-	parent.querySelector('.spinner-border').style.visibility = 'visible';
+	parent.querySelector('.spinner-border').style.display = null;
 }
 
 // rimuove spinner e mostra messaggio se la row non ha figli
@@ -79,8 +79,8 @@ export function hideSpinner(id) {
 	const row = document.querySelector(id);
 	const parent = row.parentElement;
 	const spinner = parent.querySelector('.spinner-border');
-	if (spinner.style.visibility != 'hidden') {
-		spinner.style.visibility = 'hidden';
+	if (spinner.style.display != null) {
+		spinner.style.display = 'none';
 		if (row.childElementCount == 0) {
 			const no_elem_text = parent.querySelector('.text-warn-no-product');
 			no_elem_text.style.display = 'unset';
@@ -164,7 +164,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 				const data = await res.json();
 				if (res.ok) {
 					request.product.cid = data.cid;
-					WEB3.createProduct(request.product, data.requestid);
+					WEB3.createProduct(request.product, data.requestId);
 					resetForm();
 				} else {
 					if (!data.name.status) {

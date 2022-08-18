@@ -108,11 +108,11 @@ app.post('/add-product', async (req, res) => {
 	const body = req.body;
 	console.log(`[${body.user}] adding a new product to the marketplace`);
 	// ---- PerformanceTest ----
-	util.add(body.user + body.id);
+	util.add(body.user + body.requestId);
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
 	console.log(result)
 	// ---- PerformanceTest ----
-	util.end(body.user, body.id, 'raw_sell');
+	util.end(body.user, body.requestId, 'raw_sell');
 	if (result) {
 		res.sendStatus(201);
 	} else {
