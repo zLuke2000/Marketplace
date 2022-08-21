@@ -1,3 +1,9 @@
+try:
+    from numpy import mean, around
+except ModuleNotFoundError:
+    print("numpy necessario per eseguire questo script, eseguire 'pip install numpy' nel terminale.\n--\nDigitare y per installare o qualsiasi altro tasto per terminare il programma")
+    _exit(0)
+
 def convert(lines):
     list_value = []
 

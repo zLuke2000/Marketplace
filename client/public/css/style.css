@@ -141,10 +141,8 @@ form {
 }
 
 /* Stile per gli spinner dei box */
-.spinner-border {
+.box .spinner-border {
 	color: var(--defaultTextColor);
-	width: 4rem !important;
-	height: 4rem !important;
 	position: sticky;
 	top: 45%;
 	left: 48%;

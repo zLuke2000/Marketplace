@@ -23,7 +23,7 @@ def convert(lines, file_name):
     for block in blocks:
         for key in keys:
             if key not in block:
-                block[key] = '-.-'
+                block[key] = 'NaN'
     
     # scrivo su file i timestamp (prima riga)
     f_out.writelines('processo/timestamp')
