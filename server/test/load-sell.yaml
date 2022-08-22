@@ -1,20 +1,20 @@
 config:
     target: 'http://31.156.147.189:5000'
     http:
-        timeout: 60
+        timeout: 120
     phases:
-        - duration: 10
-          arrivalRate: 4
-          name: 'Warm up'
-        - duration: 10
-          arrivalRate: 4
-          rumpTo: 6
-          name: 'Ramp up'
-        - duration: 10
-          arrivalRate: 7
-          name: 'Sustained load'
+        - duration: 30
+          arrivalRate: 60
+          # name: 'Warm up'
+        # - duration: 20
+        #   arrivalRate: 20
+        #   rumpTo: 40
+        #   name: 'Ramp up'
+        # - duration: 40
+        #   arrivalRate: 50
+        #   name: 'Sustained load'
     payload:
-        path: 'user.csv'
+        path: 'users.csv'
         fields:
             - 'user'
     processor: './processor.cjs'
@@ -43,11 +43,11 @@ scenarios:
                 beforeRequest: createProduct
                 url: '/add-product'
                 json:
-                    id: '{{id}}'
+                    requestId: '{{ id }}'
                     user: '0x{{ user }}'
                     name: '{{ name }}'
                     cid: '{{ cid }}'
                     price: '{{ price }}'
                 expect:
                     - statusCode: 201
-          - log: '[0x{{ user }}] Added cid {{ cid }} to db'
+          - log: '[0x{{ user }}] added {{ cid }} to db'

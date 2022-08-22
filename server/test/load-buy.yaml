@@ -6,15 +6,15 @@ config:
         - duration: 10
           arrivalRate: 5
           name: 'Warm up'
-        - duration: 30
+        - duration: 10
           arrivalRate: 5
-          rumpTo: 7
+          rumpTo: 10
           name: 'Ramp up'
         - duration: 20
-          arrivalRate: 7
+          arrivalRate: 15
           name: 'Sustained load'
     payload:
-        - path: 'user.csv'
+        - path: 'users.csv'
           fields:
               - 'user'
         - path: 'products.csv'
@@ -39,7 +39,7 @@ scenarios:
                 capture:
                     - json: '$.requestId'
                       as: 'id'
-                afterRequest: printStatus
+                afterResponse: printStatus
                 expect:
                     - statusCode: 201
           - think: 5
@@ -47,11 +47,11 @@ scenarios:
                 beforeRequest: purchaseProduct
                 url: '/buy-product'
                 json:
-                    id: '{{ id }}'
+                    requestId: '{{ id }}'
                     user: '0x{{ user }}'
                     cid: '{{ cid }}'
                     owner: '0x{{ owner }}'
                 ifTrue: 'status'
                 expect:
                     - statusCode: 201
-          - log: '[0x{{ user }}] Added cid {{ cid }} to db'
+          - log: '[0x{{ user }}] purchased product {{ cid }}'

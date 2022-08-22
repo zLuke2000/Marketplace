@@ -50,7 +50,7 @@ app.post('/my-products', async function (req, res) {
 		product.price = el.price;
 		//aggiungo il cid al prodotto
 		product.cid = el.cid;
-		product.purchased = el.purchased;
+		product.purchased = el.status === 'purchased';
 		response.products.push(product);
 		time += `,${Date.now()}`;
 	}
@@ -123,7 +123,7 @@ app.post('/add-product', async (req, res) => {
 	util.add(body.user + body.id);
 
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
-	console.log(result)
+	console.log(result);
 	// ---- PerformanceTest ----
 	util.end(body.user, body.id, 'raw_sell');
 
@@ -158,7 +158,7 @@ app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	util.add(req.body.user + req.body.id);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
-	util.end(req.body.user, req.body.id, 'raw_buy')
+	util.end(req.body.user, req.body.id, 'raw_buy');
 	if (result) {
 		res.sendStatus(201);
 	} else {
