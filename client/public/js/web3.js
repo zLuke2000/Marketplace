@@ -132,7 +132,7 @@ async function loadContract() {
 
 // permette la creazione di un prodotto
 export async function createProduct(product, requestId) {
-	console.log('creating the new product...');
+	console.log('creating the new product... ID: ', requestId);
 	// calling the smart contract method
 	contract.methods
 		.createProduct(product.cid, web3.utils.toWei(product.price.toString()))
@@ -143,7 +143,7 @@ export async function createProduct(product, requestId) {
 			fetch('/add-product', {
 				method: 'POST',
 				body: JSON.stringify({
-					id: requestId,
+					requestId: requestId,
 					user: window.account,
 					name: product.name,
 					cid: product.cid,
@@ -179,6 +179,7 @@ export async function buyProduct(cid, owner, price, requestId) {
 	console.log('Going to buy the product:', cid);
 	// calling the smart contract method
 	//FIXME: usare `${price}`
+	console.log('ID', requestId);
 	contract.methods
 		.purchaseProduct(cid, owner)
 		.send({ from: window.account, value: web3.utils.toWei('1') })

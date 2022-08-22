@@ -1,9 +1,9 @@
 const ganache = require('ganache');
 
 const options = {
-	wallet: { totalAccounts: '100', seed: 'marketplaceTest', accountKeysPath: 'keys.json' },
+	wallet: { totalAccounts: '100', seed: 'marketplaceTest', accountKeysPath: 'ganache/keys.json', defaultBalance: '10000' },
 	server: { host: '0.0.0.0' },
-	database: { dbPath: 'db' },
+	database: { dbPath: 'ganache/db' },
 };
 const server = ganache.server(options);
 const PORT = 8545;

@@ -1,16 +1,11 @@
 import * as HTML from './html.js';
 
-// timeout inizale
 setTimeout(() => {
 	if (!window.account) {
 		getAllProducts(0);
 		getMyProducts();
 	}
 }, 500);
-
-/*
- * funzioni esportate
- */
 
 export async function getMyProducts() {
 	if (!window.account) {
@@ -64,12 +59,12 @@ export async function resellProduct(btn, price) {
 			if (res.ok) {
 				btn.innerHTML = 'SUL MERCATO';
 				parent.querySelector('#price').innerHTML = `${price} ETH`;
-				alert('Your product is now available on the market!');
+				alert('Il suo prodotto e\' ora disponibile sul mercato!');
 			} else {
 				console.error('Something went wrong while fetching!', res.status);
 			}
 		})
-		.catch((error) => console.error('An error occurred while fetching!', error));
+		.catch((error) => console.error('Couldn\'t resell the product, an error occurred while fetching!', error));
 }
 
 export function searchProducts(text, skip) {
@@ -113,7 +108,7 @@ function getProducts(url, obj) {
 			}
 		})
 		.catch((e) => {
-			console.error('An error occurred during the search!', e);
+			console.error('An error occurred while fetching the products!', e);
 		})
 		.finally(() => {
 			HTML.hideSpinner('#buyProductsRow');

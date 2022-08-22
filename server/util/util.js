@@ -5,8 +5,14 @@ const absolutePath = resolve('');
 console.log(absolutePath);
 const userMap = new Map();
 
-export function init(reqId) {
-	userMap.set(reqId, [Date.now().toString()]);
+export function init(user) {
+	// Generazione id richiesta
+	let id = Date.now();
+	for (const c of user) {
+		id += c.charCodeAt(0);
+	}
+	userMap.set(user + id, [Date.now().toString()]);
+	return id;
 }
 
 export function add(reqId) {

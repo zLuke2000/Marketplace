@@ -34,6 +34,7 @@ body {
 .input-field textarea:focus,
 .search-bar-container input[type='search']:focus {
 	background-color: var(--box-background-focus);
+	color: var(--defaultTextColor);
 }
 
 /* Rimuove il triangolo resize in basso a destra per la resize */
@@ -58,8 +59,10 @@ div.box {
 
 .loadBtn {
 	border-radius: 10px;
-	color: #000000;
-	background-color: #98a4e9;
+	border-width: 2px
+	border-style: solid;
+	border-color: var(--default-text-color);
+	background-color: var(--background);
 	display: none;
 	cursor: pointer;
 	text-align: center;
@@ -138,10 +141,9 @@ form {
 }
 
 /* Stile per gli spinner dei box */
-.spinner-border {
-	width: 4rem !important;
-	height: 4rem !important;
-	position: absolute;
+.box .spinner-border {
+	color: var(--defaultTextColor);
+	position: sticky;
 	top: 45%;
 	left: 48%;
 }

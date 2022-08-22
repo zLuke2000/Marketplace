@@ -40,9 +40,13 @@ app.post('/all-products', async function (req, res) {
 // permette ad un utente di recuperare i propri prodotti attualmente in vendita
 app.post('/my-products', async function (req, res) {
 	console.log(`[${req.body.user}] request to read own product`);
-	let time = `${req.body.user},${Date.now()}`;
+
+	// ---- PerformanceTest ----
+	const id = util.init(req.body.user);
 	const result = await db.readByOwner(req.body.user);
-	time += `,${Date.now()}`;
+	// ---- PerformanceTest ----
+	util.add(req.body.user + id);
+
 	const response = { products: [] };
 	for await (const el of result) {
 		const str = await ipfs.readData(el.cid);
@@ -52,14 +56,13 @@ app.post('/my-products', async function (req, res) {
 		product.cid = el.cid;
 		product.purchased = el.status === 'purchased';
 		response.products.push(product);
-		time += `,${Date.now()}`;
+		// ---- PerformanceTest ----
+		util.add(req.body.user + id);
 	}
 	console.log(`[${req.body.user}] finished reading own product`);
 	res.status(201).json(response);
-	time += `,${Date.now()}`;
-	fs.appendFile('server\\test\\python\\raw.csv', time + '\n', function (err, data) {
-		if (err) throw err;
-	});
+	// ---- PerformanceTest ----
+	util.end(req.body.user, id, 'raw_read');
 });
 
 // permette di vendere un prodotto
@@ -69,20 +72,10 @@ app.post('/sell-product', async function (req, res) {
 	 */
 	console.log(`[${req.body.user}] checking if inputs are valid`);
 
-	// Generazione id richiesta
-	let id = Date.now();
-	for (const c of req.body.user) {
-		id += c.charCodeAt(0);
-	}
-	console.log('ID', id);
-
 	// ---- PerformanceTest ----
-	util.init(req.body.user + id);
-
+	const id = util.init(req.body.user);
 	const product = req.body.product;
-	const response = {
-		requestId: id,
-	};
+	const response = { requestId: id };
 
 	ic.checkProductName(product.name, response);
 	ic.checkProductPrice(product.price, response);
@@ -90,7 +83,6 @@ app.post('/sell-product', async function (req, res) {
 
 	// ---- PerformanceTest ----
 	util.add(req.body.user + id);
-
 	if (response.name.status && response.price.status && response.image.status) {
 		// Aggiungo il prodotto su ifps e metto il cid nella risposta
 		response.cid = await ipfs.addData(
@@ -100,16 +92,13 @@ app.post('/sell-product', async function (req, res) {
 				image: product.image,
 			})
 		);
-
 		// ---- PerformanceTest ----
 		util.add(req.body.user + id);
-
 		res.status(201).json(response);
 	} else {
 		res.status(500).json(response);
 	}
 	console.log('Server response', response);
-
 	// ---- PerformanceTest ----
 	util.add(req.body.user + id);
 });
@@ -118,15 +107,12 @@ app.post('/sell-product', async function (req, res) {
 app.post('/add-product', async (req, res) => {
 	const body = req.body;
 	console.log(`[${body.user}] adding a new product to the marketplace`);
-
 	// ---- PerformanceTest ----
-	util.add(body.user + body.id);
-
+	util.add(body.user + body.requestId);
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
 	console.log(result);
 	// ---- PerformanceTest ----
-	util.end(body.user, body.id, 'raw_sell');
-
+	util.end(body.user, body.requestId, 'raw_sell');
 	if (result) {
 		res.sendStatus(201);
 	} else {
@@ -135,20 +121,14 @@ app.post('/add-product', async (req, res) => {
 });
 
 app.post('/process-product', async (req, res) => {
-	// Generazione id richiesta
-	let id = Date.now();
-	for (const c of req.body.user) {
-		id += c.charCodeAt(0);
-	}
-	console.log('ID', id);
-
-	util.init(req.body.user + id);
-
+	// ---- PerformanceTest ----
+	const id = util.init(req.body.user);
 	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
 	const result = await db.processProduct(req.body.owner, req.body.cid);
+	// ---- PerformanceTest ----
 	util.add(req.body.user + id);
 	if (result) {
-		res.sendStatus(201).json({ requestId: id });
+		res.status(201).json({ requestId: id });
 	} else {
 		res.status(500).send('product is already processing!');
 	}
@@ -156,8 +136,10 @@ app.post('/process-product', async (req, res) => {
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
+	// ---- PerformanceTest ----
 	util.add(req.body.user + req.body.id);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
+	// ---- PerformanceTest ----
 	util.end(req.body.user, req.body.id, 'raw_buy');
 	if (result) {
 		res.sendStatus(201);

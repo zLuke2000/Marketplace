@@ -1,8 +1,14 @@
+try:
+    from numpy import mean, around
+except ModuleNotFoundError:
+    print("numpy necessario per eseguire questo script, eseguire 'pip install numpy' nel terminale.\n--\nDigitare y per installare o qualsiasi altro tasto per terminare il programma")
+    _exit(0)
+
 def convert(lines):
     list_value = []
 
     # per ogni elemento nella lista (riga del file)
-    for line in csv_lines:
+    for line in lines:
         # creo uno struttura dati a dizionario
         data = line.split(',')
         list_value.append({"owner": data[0], "mongoDB-start": int(data[1]), "mongoDB-end": int(data[2]), "ipfs-raw": [int(data[2])], "ipfs": [], "status-sent": int(data[-1])})
@@ -16,7 +22,7 @@ def convert(lines):
             list_value[-1]["ipfs"].append(list_value[-1]["ipfs-raw"][i]-list_value[-1]["ipfs-raw"][i-1])
 
     # creo un file (log.csv) e metto i dati elaborati dei soli account con almeno un elemento su ipfs
-    f_out = open("log.csv", "w")
+    f_out = open("log_read.csv", "w")
     for line in list_value:
         if len(line["ipfs"]) != 0: 
             #                --- owner ---         ------------------ mongo DB ------------------         -- numero  elementi --         ----------- media ipfs -----------         ---------------- http response ----------------         ----------- tempo totale  esecuzione -----------

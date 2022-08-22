@@ -4,7 +4,7 @@
 	width: 100%;
 	position: fixed;
 	z-index: 1;
-	background-color: #0000004d !important;
+	background-color: #6c757da1 !important;
 }
 
 /* Stile per il popup */
@@ -27,11 +27,14 @@
 
 /* Stile dei bottoni */
 .popup button {
+	border-style: solid;
+	border-color: var(--defaultTextColor);
 	border-radius: 10px;
-	background-color: var(--opaco50);
-	border-color: #808080;
+	background-color: var(--box-background);
+	color: var(--defaultTextColor);
 	font-size: 18px;
 	width: 15%;
+	min-width: 100px;
 	margin: 5px;
 	padding: 5px;
 }
@@ -40,4 +43,5 @@
 .popup h3 {
 	padding: 15px;
 	text-align: center;
+	color: var(--defaultTextColor)
 }

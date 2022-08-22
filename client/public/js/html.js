@@ -1,17 +1,13 @@
 import * as WEB3 from './web3.js';
 import * as SCRIPT from './script.js';
 
-/*
- * funzioni esportate
- */
-
 export function generaCard(id, obj) {
 	let div = document.querySelector(id);
 	let cardTemplate;
 
 	switch (id) {
 		case '#buyProductsRow':
-			cardTemplate = `<div class="col-md-4">
+			cardTemplate = `<div class="col-md-2">
         		<div class="card">
         		<div class="container">
         			<img class="card-img-top" src="${obj.image}">
@@ -32,7 +28,7 @@ export function generaCard(id, obj) {
 			break;
 
 		case '#myProductsRow':
-			cardTemplate = `<div class="col-md-4">
+			cardTemplate = `<div class="col-md-2">
 				<div class="card">
 				<div class="container">
 					<img class="card-img-top" src="${obj.image}">
@@ -71,7 +67,7 @@ export function showSpinner(id) {
 		parent.querySelector('#loadMoreBtn').style.display = 'none';
 	}
 	parent.querySelector('.text-warn-no-product').style.display = 'none';
-	parent.querySelector('.spinner-border').style.display = 'unset';
+	parent.querySelector('.spinner-border').style.display = null;
 }
 
 // rimuove spinner e mostra messaggio se la row non ha figli
@@ -79,7 +75,7 @@ export function hideSpinner(id) {
 	const row = document.querySelector(id);
 	const parent = row.parentElement;
 	const spinner = parent.querySelector('.spinner-border');
-	if (spinner.style.display != 'none') {
+	if (spinner.style.display != null) {
 		spinner.style.display = 'none';
 		if (row.childElementCount == 0) {
 			const no_elem_text = parent.querySelector('.text-warn-no-product');
@@ -96,7 +92,7 @@ export function hideSpinner(id) {
 document.querySelector('#buyProductsRow').addEventListener('click', (event) => {
 	if (event.target.tagName === 'BUTTON') {
 		if (!window.account) {
-			alert('You are not logged in with MetaMask! Please login before buying any products');
+			alert('Non hai effettuato l\'accesso a MetaMask! Accedi prima di poter acquistare un prodotto');
 		} else {
 			buyProduct(event.target);
 		}
@@ -125,22 +121,21 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 	e.preventDefault();
 
 	if (!window.account) {
-		alert('You are not logged in! Please login with MetaMask before selling a product');
+		alert('Non hai effettuato l\'accesso a MetaMask! Accedi prima di poter vendere un prodotto');
 	} else {
 		// nome, prezzo, immagine e descrizione
 		const nameEl = document.querySelector('#inputProductName');
 		const priceEl = document.querySelector('#inputProductPrice');
 		const imageEl = document.querySelector('#inputProductImage');
 		const descriptionEl = document.querySelector('#inputProductDescription');
-		let prodDescription = descriptionEl.value.trim() === '' ? 'Questo prodotto non ha nessuna descrizione' : descriptionEl.value.trim();
+		let prodDescription = descriptionEl.value.trim() === '' ? 'Questo prodotto non ha una descrizione' : descriptionEl.value.trim();
 
 		removeError(nameEl);
 		removeError(priceEl);
 		removeError(imageEl);
 
 		this.disabled = true;
-		const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-		this.innerHTML = spinner + '&nbsp;&nbsp;Processing...';
+		this.innerHTML = 'Attendi...';
 
 		const request = {
 			user: window.account,
@@ -164,7 +159,7 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 				const data = await res.json();
 				if (res.ok) {
 					request.product.cid = data.cid;
-					WEB3.createProduct(request.product, data.requestid);
+					WEB3.createProduct(request.product, data.requestId);
 					resetForm();
 				} else {
 					if (!data.name.status) {
@@ -236,15 +231,9 @@ document.querySelector('#inputImage').addEventListener('change', function () {
 	};
 });
 
-/*
- * funzioni
- */
-
 async function buyProduct(btn) {
 	btn.disabled = true;
-	// btn.classList.add('disabled-button');
-	const spinner = '<span class="spinner-border spinner-border-sm buy-product" role="status" aria-hidden="true"></span>';
-	btn.innerHTML = spinner + '&nbsp;&nbsp;Processing...';
+	btn.innerHTML = 'Attendi...';
 
 	const parent = btn.parentElement;
 	const owner = parent.querySelector('#owner').innerHTML;
@@ -261,12 +250,13 @@ async function buyProduct(btn) {
 		},
 	})
 		.then(async (res) => {
+			const data = await res.json()
 			if (res.ok) {
 				console.log(`Going to buy ${name} for ${price} ETH`);
-				await WEB3.buyProduct(cid, owner, price, res.body.requestId);
+				await WEB3.buyProduct(cid, owner, price, data.requestId);
 			} else {
 				if (res.status === 500) {
-					alert('Unable to buy the product!');
+					alert('Non e\' stato possibile acquistare il prodotto!');
 					document.location.reload();
 				}
 				console.error('Something went wrong while fetching!', res.status);
