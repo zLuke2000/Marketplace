@@ -2,32 +2,21 @@ const { faker } = require('@faker-js/faker');
 const Web3 = require('web3');
 const fs = require('fs');
 
-Web3.currentProvider = 'http://31.156.147.189:8545';
-const web3 = new Web3(Web3.currentProvider);
+const web3 = new Web3('http://31.156.147.189:8545');
 const json = fs.readFileSync('../../truffle/build/contracts/Marketplace.json');
 const abi = JSON.parse(json).abi;
 const address = '0xC8fB8841c585d9E504BE5aF153F2EcD2639EcE9a';
 const contract = new web3.eth.Contract(abi, address);
-let images = readImages();
 
 // interazione con smart contact per la creazione del prodotto
 async function createProduct(requestParams, context, ee, next) {
-	console.error(`Adding product ${context.vars['cid']}...`);
 	try {
 		await contract.methods.createProduct(context.vars['cid'], context.vars['price']).send({ from: '0x' + context.vars['user'] });
-		console.log(`============================================\t[0x${context.vars['user']}] got receipt\t===========================================`);
+		console.log(`============================================\t\t[0x${context.vars['user']}] got receipt\t\t===========================================`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
 	}
 	return next();
-}
-
-//leggo le immagini dal file
-function readImages() {
-	const data = fs.readFileSync('images.csv').toString();
-	const images = data.split(/\r?\n/);
-	images.pop();
-	return images;
 }
 
 //genera randomicamente un prodotto
@@ -35,8 +24,9 @@ async function generateProduct(requestParams, context, ee, next) {
 	const name = faker.commerce.product();
 	const desc = faker.commerce.productDescription();
 	const price = parseInt(faker.commerce.price(1, 100, 0));
-	const index = Math.floor(Math.random() * 500);
-	const image = images.at(index);
+	var image = fs.readFileSync('image.txt').toString();
+	console.log(image);
+
 	const product = {
 		name: name,
 		description: desc,
@@ -55,7 +45,7 @@ async function purchaseProduct(requestParams, context, ee, next) {
 		await contract.methods
 			.purchaseProduct(context.vars['cid'], '0x' + context.vars['owner'])
 			.send({ from: '0x' + context.vars['user'], value: web3.utils.toWei(context.vars['price'].toString()) });
-		console.log(`0x${context.vars['user']} got receipt`);
+		console.log(`============================================\t\t[0x${context.vars['user']}] got receipt\t\t===========================================`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
 	}

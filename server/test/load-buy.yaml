@@ -1,18 +1,11 @@
 config:
     target: 'http://31.156.147.189:5000'
     http:
-        timeout: 60
+        timeout: 120
     phases:
-        - duration: 10
-          arrivalRate: 5
-          name: 'Warm up'
-        - duration: 10
-          arrivalRate: 5
-          rumpTo: 10
-          name: 'Ramp up'
-        - duration: 20
-          arrivalRate: 15
-          name: 'Sustained load'
+        - duration: 30
+          arrivalRate: 50
+          name: 'Load Test Buy'
     payload:
         - path: 'users.csv'
           fields:
