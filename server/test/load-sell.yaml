@@ -3,16 +3,9 @@ config:
     http:
         timeout: 120
     phases:
-        - duration: 30
-          arrivalRate: 120
-          name: 'SELL'
-        # - duration: 20
-        #   arrivalRate: 20
-        #   rumpTo: 40
-        #   name: 'Ramp up'
-        # - duration: 40
-        #   arrivalRate: 50
-        #   name: 'Sustained load'
+        - duration: 1
+          arrivalRate: 1
+          name: 'Load Test Sell'
     payload:
         path: 'users.csv'
         fields:
@@ -28,7 +21,7 @@ scenarios:
                 beforeRequest: generateProduct
                 url: '/sell-product'
                 json:
-                    user: '0x{{user}}'
+                    user: '0x{{ user }}'
                     product: '{{ product }}'
                 capture:
                     - json: '$.cid'

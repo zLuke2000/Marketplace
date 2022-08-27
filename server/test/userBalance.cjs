@@ -1,7 +1,6 @@
 const Web3 = require('web3');
 
-Web3.currentProvider = 'http://31.156.147.189:8545';
-const web3 = new Web3(Web3.currentProvider);
+const web3 = new Web3('http://31.156.147.189:8545');
 
 web3.eth.getAccounts().then((accounts) => {
 	accounts.forEach((user) => {
@@ -10,7 +9,7 @@ web3.eth.getAccounts().then((accounts) => {
 			if (eth > 500) {
 				console.log(`${user} ---> ${eth} ETH`);
 			} else {
-				console.error(`${user} ---> ${eth} ETH\tWARNING!`);
+				console.error(`${user} ---> ${eth} ETH\t!!!!!!!!!!!!!!!!!!`);
 			}
 		});
 	});
