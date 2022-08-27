@@ -137,10 +137,11 @@ app.post('/process-product', async (req, res) => {
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	// ---- PerformanceTest ----
-	util.add(req.body.user + req.body.id);
+	console.log("USER: " + req.body.user + " ID: " + req.body.requestId)
+	util.add(req.body.user + req.body.requestId);
 	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
 	// ---- PerformanceTest ----
-	util.end(req.body.user, req.body.id, 'raw_buy')
+	util.end(req.body.user, req.body.requestId, 'raw_buy')
 	if (result) {
 		res.sendStatus(201);
 	} else {

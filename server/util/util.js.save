@@ -13,14 +13,14 @@ export function init(user) {
 	userMap.set(user + id, [Date.now().toString()]);
 	
 	// DEBUG
-	fs.appendFileSync(`server/util/debug.log`, (user+id) + ' init\n');
+	fs.appendFileSyncc(`debug.log`, (user+id) + ' init\ (err) => { if (err) throw err; });
 	
 	return id;
 }
 
 export function add(reqId) {
 	// DEBUG
-	fs.appendFile(`server/util/debug.log`, reqId + ' add\n', (err) => { if (err) throw err; });
+	fs.appendFile(`debug.log`, reqId + ' add\n', (err) => { if (err) throw err; });
 	
 	try{
 		userMap.get(reqId).push(Date.now().toString());
@@ -36,7 +36,7 @@ export function end(user, id, name) {
 	fs.appendFile(`server/test/python/${name}.csv`, user + ',' + userMap.get(user+id).join(',') + '\n', function (err, _data) {
  		userMap.delete(user+id);
 		// DEBUG
-		fs.appendFileSync(`server/util/debug.log`, (user+id) + ' end\n');
+		fs.appendFile(`debug.log`, (user+id) + ' end\n', (err) => { if (err) throw err; });
 		if (err) throw err;
 	});
 }
