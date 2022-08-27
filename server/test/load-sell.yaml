@@ -1,11 +1,11 @@
 config:
-    target: 'http://192.168.1.56:5000'
+    target: 'http://31.156.147.189:5000'
     http:
         timeout: 120
     phases:
         - duration: 30
-          arrivalRate: 60
-          # name: 'Warm up'
+          arrivalRate: 120
+          name: 'SELL'
         # - duration: 20
         #   arrivalRate: 20
         #   rumpTo: 40

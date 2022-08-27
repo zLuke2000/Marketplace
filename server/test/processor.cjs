@@ -22,30 +22,17 @@ async function createProduct(requestParams, context, ee, next) {
 	return next();
 }
 
-//leggo le immagini dal file
-function readImages() {
-	const data = fs.readFileSync('images.csv').toString();
-	const images = data.split(/\r?\n/);
-	images.pop();
-	return images;
-}
-
 //genera randomicamente un prodotto
 async function generateProduct(requestParams, context, ee, next) {
-	const name = faker.commerce.product();
-	const desc = faker.commerce.productDescription();
-	const price = parseInt(faker.commerce.price(1, 100, 0));
-	const index = Math.floor(Math.random() * 500);
-	const image = images.at(index);
 	const product = {
-		name: name,
-		description: desc,
-		price: price,
-		image: image,
+		name: faker.commerce.product(),
+		description: faker.commerce.productDescription(),
+		price: parseInt(faker.commerce.price(1, 100, 0)),
+		image: fs.readFileSync('image.txt').toString(),
 	};
 	context.vars['product'] = product;
-	context.vars['name'] = name;
-	context.vars['price'] = price;
+	context.vars['name'] = product.name;
+	context.vars['price'] = product.price;
 
 	return next();
 }
