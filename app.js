@@ -45,7 +45,7 @@ app.post('/my-products', async function (req, res) {
 	const id = util.init(req.body.user);
 	const result = await db.readByOwner(req.body.user);
 	// ---- PerformanceTest ----
-	util.add(req.body.user + id)
+	util.add(req.body.user + id);
 
 	const response = { products: [] };
 	for await (const el of result) {
@@ -57,12 +57,12 @@ app.post('/my-products', async function (req, res) {
 		product.purchased = el.status === 'purchased';
 		response.products.push(product);
 		// ---- PerformanceTest ----
-		util.add(req.body.user + id)
+		util.add(req.body.user + id);
 	}
 	console.log(`[${req.body.user}] finished reading own product`);
 	res.status(201).json(response);
 	// ---- PerformanceTest ----
-	util.end(req.body.user, id, "raw_read")
+	util.end(req.body.user, id, 'raw_read');
 });
 
 // permette di vendere un prodotto
@@ -110,7 +110,7 @@ app.post('/add-product', async (req, res) => {
 	// ---- PerformanceTest ----
 	util.add(body.user + body.requestId);
 	const result = await db.addProduct(body.user, body.name, body.cid, body.price);
-	console.log(result)
+	console.log(result);
 	// ---- PerformanceTest ----
 	util.end(body.user, body.requestId, 'raw_sell');
 	if (result) {
