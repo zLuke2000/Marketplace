@@ -18,8 +18,9 @@ body {
 
 .input-field input,
 .input-field textarea,
-.search-bar-container input {
-	color: var(--defaultTextColor);
+.search-bar-container input,
+hr {
+	color: var(--defaultTextColor) !important;
 }
 
 .default-text,
@@ -59,7 +60,7 @@ div.box {
 
 .loadBtn {
 	border-radius: 10px;
-	border-width: 2px
+	border-width: 2px;
 	border-style: solid;
 	border-color: var(--default-text-color);
 	background-color: var(--background);
@@ -197,4 +198,13 @@ form {
 /* Stile per il container del bottone del form di creazione del prodotto */
 .form-btn-container {
 	text-align: center;
+}
+
+/* Logo marketplace */
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: -30px;
+	width: 40%;
 }
