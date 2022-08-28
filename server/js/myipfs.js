@@ -1,8 +1,8 @@
 import * as IPFS from 'ipfs-core';
 
-const start = Date.now()
-const client = await IPFS.create();
-console.log("\n" + "IPFS: ready in " + (Date.now() - start) + " ms")
+//const start = Date.now()
+//const client = await IPFS.create();
+//console.log("\n" + "IPFS: ready in " + (Date.now() - start) + " ms")
 
 export async function addData(data) {
 	if (client == undefined) {
