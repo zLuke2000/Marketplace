@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import { resolve } from 'path';
 
 const userMap = new Map();
 
