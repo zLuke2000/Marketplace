@@ -124,23 +124,24 @@ app.post('/process-product', async (req, res) => {
 	// ---- PerformanceTest ----
 	const id = util.init(req.body.user);
 	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
-	const result = await db.processProduct(req.body.owner, req.body.cid);
+	const result = await db.processProduct(req.body.owner, req.body.cid, req.body.price);
 	// ---- PerformanceTest ----
 	util.add(req.body.user + id);
 	if (result) {
 		res.status(201).json({ requestId: id });
 	} else {
-		res.status(500).send('product is already processing!');
+		res.status(500).send(`Product ${req.body.cid} is already processing!`);
 	}
 });
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	// ---- PerformanceTest ----
-	util.add(req.body.user + req.body.id);
-	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
+	console.log("USER: " + req.body.user + " ID: " + req.body.requestId)
+	util.add(req.body.user + req.body.requestId);
+	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid, req.body.price);
 	// ---- PerformanceTest ----
-	util.end(req.body.user, req.body.id, 'raw_buy');
+	util.end(req.body.user, req.body.requestId, 'raw_buy')
 	if (result) {
 		res.sendStatus(201);
 	} else {

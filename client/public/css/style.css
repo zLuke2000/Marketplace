@@ -207,4 +207,5 @@ form {
 	margin-right: auto;
 	margin-bottom: -30px;
 	width: 40%;
+	max-width: 500px;
 }

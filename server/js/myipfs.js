@@ -1,6 +1,8 @@
-import * as IPFS from 'ipfs-http-client';
+import * as IPFS from 'ipfs-core';
 
-const client = IPFS.create('http://127.0.0.1:5002');
+const start = Date.now()
+const client = await IPFS.create();
+console.log("\n" + "IPFS: ready in " + (Date.now() - start) + " ms")
 
 export async function addData(data) {
 	if (client == undefined) {
