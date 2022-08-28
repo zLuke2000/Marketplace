@@ -25,7 +25,7 @@ export async function getMyProducts() {
 				const data = await res.json();
 				console.log(`You have ${data.products.length} products`);
 				data.products.forEach((element) => {
-					HTML.generaCard('#myProductsRow', element);
+					HTML.generateCard('#myProductsRow', element);
 				});
 			} else {
 				console.error('Error occurred during fetch', res.status);
@@ -96,7 +96,7 @@ function getProducts(url, obj) {
 				if (data.products.length > 0) {
 					console.log('Found', data.products.length, 'products');
 					data.products.forEach((element) => {
-						HTML.generaCard('#buyProductsRow', element);
+						HTML.generateCard('#buyProductsRow', element);
 					});
 					//mostra bottone 'carica altro' solo se sono stati letti n prodotti
 					if (row.childElementCount % 36 == 0) {

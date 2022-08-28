@@ -1,7 +1,7 @@
 import * as WEB3 from './web3.js';
 import * as SCRIPT from './script.js';
 
-export function generaCard(id, obj) {
+export function generateCard(id, obj) {
 	let div = document.querySelector(id);
 	let cardTemplate;
 
@@ -48,7 +48,7 @@ export function generaCard(id, obj) {
 			break;
 	}
 
-	//nascondi elementi prima di inserire il primo prodotto
+	// nascondi elementi prima di inserire il primo prodotto
 	if (div.childNodes.length == 0) {
 		div.parentElement.querySelector('.spinner-border').style.display = 'none';
 		div.parentElement.querySelector('.text-warn-no-product').style.display = 'none';
@@ -57,11 +57,11 @@ export function generaCard(id, obj) {
 	div.insertAdjacentHTML('beforeend', cardTemplate);
 }
 
-//nasconde vari elementi per mostrare solo lo spinner
+// nasconde vari elementi per mostrare solo lo spinner
 export function showSpinner(id) {
 	const row = document.querySelector(id);
 	const parent = row.parentElement;
-	//rende visibile solo lo spinner
+	// rende visibile solo lo spinner
 	row.style.visibility = 'hidden';
 	if (id === '#buyProductsRow') {
 		parent.querySelector('#loadMoreBtn').style.display = 'none';
@@ -344,14 +344,14 @@ function resetForm() {
 function showError(input, message) {
 	const element = input.parentElement;
 	element.classList.add('error');
-	const error = element.querySelector('small');
-	error.textContent = message;
+	element.querySelector('small').textContent = message;
 }
 
 // ripristina i cmapi
-function removeError(input) {
-	const element = input.parentElement;
-	element.classList.remove('error');
-	const error = element.querySelector('small');
-	error.textContent = '';
+function removeError(...input) {
+	input.forEach((value) => {
+		const element = value.parentElement;
+		element.classList.remove('error');
+		element.querySelector('small').textContent = '';
+	})
 }
