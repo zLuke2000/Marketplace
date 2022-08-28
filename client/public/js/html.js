@@ -244,7 +244,7 @@ async function buyProduct(btn) {
 	//blocca il prodotto
 	fetch('/process-product', {
 		method: 'POST',
-		body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
+		body: JSON.stringify({ user: window.account, owner: owner, cid: cid, price: parseInt(price) }),
 		headers: {
 			'Content-Type': 'application/json',
 		},

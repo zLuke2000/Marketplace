@@ -193,7 +193,8 @@ export async function buyProduct(cid, owner, price, requestId) {
 					id: requestId,
 					user: window.account,
 					owner: owner,
-					cid: cid }),
+					cid: cid,
+					price: price }),
 				headers: {
 					'Content-Type': 'application/json',
 				},

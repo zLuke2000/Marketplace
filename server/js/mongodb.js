@@ -34,16 +34,16 @@ export async function addProduct(owner, name, cid, price) {
 	return false;
 }
 
-export async function processProduct(owner, cid) {
+export async function processProduct(owner, cid, price) {
 	try {
-		const filter = { owner: owner, cid: cid, status: 'available' };
+		const filter = { owner: owner, cid: cid, price: price, status: 'available' };
 		const update = {
 			$set: {
 				status: 'processing',
 			},
 		};
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
+		console.log(`Updated ${result} document`);
 		return result.modifiedCount == 1;
 	} catch (error) {
 		console.error('Error while trying to process a product!', error);
@@ -51,9 +51,9 @@ export async function processProduct(owner, cid) {
 }
 
 // permette l'acquisto di un prodotto modificando il proprietario e lo stato del prodotto
-export async function buyProduct(user, owner, cid) {
+export async function buyProduct(user, owner, cid, price) {
 	try {
-		const filter = { owner: owner, cid: cid };
+		const filter = { owner: owner, cid: cid, price: price, status: 'processing' };
 		const update = {
 			$set: {
 				owner: user,
@@ -61,7 +61,7 @@ export async function buyProduct(user, owner, cid) {
 			},
 		};
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
+		console.log(`Updated ${result} document`);
 		return result.acknowledged;
 	} catch (error) {
 		console.error('Error while trying to update data!', error);
