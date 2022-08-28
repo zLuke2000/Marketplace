@@ -1,7 +1,7 @@
 import * as WEB3 from './web3.js';
 import * as SCRIPT from './script.js';
 
-export function generaCard(id, obj) {
+export function generateCard(id, obj) {
 	let div = document.querySelector(id);
 	let cardTemplate;
 
@@ -48,7 +48,7 @@ export function generaCard(id, obj) {
 			break;
 	}
 
-	//nascondi elementi prima di inserire il primo prodotto
+	// nascondi elementi prima di inserire il primo prodotto
 	if (div.childNodes.length == 0) {
 		div.parentElement.querySelector('.spinner-border').style.display = 'none';
 		div.parentElement.querySelector('.text-warn-no-product').style.display = 'none';
@@ -57,11 +57,11 @@ export function generaCard(id, obj) {
 	div.insertAdjacentHTML('beforeend', cardTemplate);
 }
 
-//nasconde vari elementi per mostrare solo lo spinner
+// nasconde vari elementi per mostrare solo lo spinner
 export function showSpinner(id) {
 	const row = document.querySelector(id);
 	const parent = row.parentElement;
-	//rende visibile solo lo spinner
+	// rende visibile solo lo spinner
 	row.style.visibility = 'hidden';
 	if (id === '#buyProductsRow') {
 		parent.querySelector('#loadMoreBtn').style.display = 'none';
@@ -122,65 +122,61 @@ document.querySelector('#btn_createProduct').addEventListener('click', function 
 
 	if (!window.account) {
 		alert('Non hai effettuato l\'accesso a MetaMask! Accedi prima di poter vendere un prodotto');
-	} else {
-		// nome, prezzo, immagine e descrizione
-		const nameEl = document.querySelector('#inputProductName');
-		const priceEl = document.querySelector('#inputProductPrice');
-		const imageEl = document.querySelector('#inputProductImage');
-		const descriptionEl = document.querySelector('#inputProductDescription');
-		let prodDescription = descriptionEl.value.trim() === '' ? 'Questo prodotto non ha una descrizione' : descriptionEl.value.trim();
-
-		removeError(nameEl);
-		removeError(priceEl);
-		removeError(imageEl);
-
-		this.disabled = true;
-		this.innerHTML = 'Attendi...';
-
-		const request = {
-			user: window.account,
-			product: {
-				name: nameEl.value.trim(),
-				image: imageEl.src,
-				description: prodDescription,
-				price: priceEl.valueAsNumber,
-			},
-		};
-
-		fetch('/sell-product', {
-			method: 'POST',
-			body: JSON.stringify(request),
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-			},
-		})
-			.then(async (res) => {
-				const data = await res.json();
-				if (res.ok) {
-					request.product.cid = data.cid;
-					WEB3.createProduct(request.product, data.requestId);
-					resetForm();
-				} else {
-					if (!data.name.status) {
-						showError(nameEl, "Il nome di questo prodotto non e' valido!");
-					}
-					if (!data.price.status) {
-						showError(priceEl, "Il prezzo inserito non e' valido!");
-					}
-					if (!data.image.status) {
-						showError(imageEl, "L'immagine non e' valida!");
-					}
-
-					const btn = document.querySelector('#btn_createProduct');
-					btn.disabled = false;
-					btn.innerHTML = 'Salva prodotto';
-				}
-			})
-			.catch(function (error) {
-				console.error('Error occurred while trying to add a product!', error);
-			});
+		return;
 	}
+	
+	// nome, prezzo, immagine e descrizione
+	const nameEl = document.querySelector('#inputProductName');
+	const priceEl = document.querySelector('#inputProductPrice');
+	const imageEl = document.querySelector('#inputProductImage');
+	const descriptionEl = document.querySelector('#inputProductDescription');
+	let prodDescription = descriptionEl.value.trim() === '' ? 'Questo prodotto non ha una descrizione' : descriptionEl.value.trim();
+
+	removeError(nameEl, priceEl, imageEl);
+
+	this.disabled = true;
+	this.innerHTML = 'Attendi...';
+
+	const request = {
+		user: window.account,
+		product: {
+			name: nameEl.value.trim(),
+			image: imageEl.src,
+			description: prodDescription,
+			price: priceEl.valueAsNumber
+		}
+	};
+
+	fetch('/sell-product', {
+		method: 'POST',
+		body: JSON.stringify(request),
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+		}
+	}).then(async (res) => {
+		const data = await res.json();
+		if (res.ok) {
+			request.product.cid = data.cid;
+			WEB3.createProduct(request.product, data.requestId);
+			resetForm();
+		} else {
+			if (!data.name.status) {
+				showError(nameEl, "Il nome di questo prodotto non \u00E8 valido!");
+			}
+			if (!data.price.status) {
+				showError(priceEl, "Il prezzo inserito non \u00E8 valido!");
+			}
+			if (!data.image.status) {
+				showError(imageEl, "L'immagine non \u00E8 valida!");
+			}
+			const btn = document.querySelector('#btn_createProduct');
+			btn.disabled = false;
+			btn.innerHTML = 'Salva prodotto';
+		}
+	}).catch(function (error) {
+		console.error('Error occurred while trying to add a product!', error);
+	});
 });
 
 // listener per la ricerca di un prodotto
@@ -189,7 +185,7 @@ document.querySelector('#searchIcon').addEventListener('click', function () {
 	const text = searchbar.value.trim();
 	if (text != '') {
 		searchbar.setAttribute('state', 'active');
-		//rimuove tutti gli elementi della row e mostra lo spinner
+		// rimuove tutti gli elementi della row e mostra lo spinner
 		document.querySelector('#buyProductsRow').replaceChildren();
 		showSpinner('#buyProductsRow');
 		SCRIPT.searchProducts(text, 0);
@@ -215,19 +211,12 @@ document.querySelector('#myProductsRow').addEventListener('click', (event) => {
 
 // listener evento aggiunta immagine per nuovo prodotto
 document.querySelector('#inputImage').addEventListener('change', function () {
-	const start = Date.now();
 	const reader = new FileReader();
 	reader.readAsDataURL(this.files[0]);
 	reader.onload = () => {
 		const imgTemp = document.createElement('img');
 		imgTemp.src = reader.result;
-		imgTemp.onload = () => {
-			const loadTime = Date.now();
-			console.log('Tempo di caricamento =', loadTime - start, 'ms');
-			compressImage(imgTemp);
-			console.log('Tempo di compressione =', Date.now() - loadTime, 'ms');
-			console.log("Tempo totale di caricamento dell'immagine =", Date.now() - start, 'ms');
-		};
+		imgTemp.onload = () => compressImage(imgTemp);
 	};
 });
 
@@ -241,28 +230,25 @@ async function buyProduct(btn) {
 	const price = parent.querySelector('#price').innerHTML.replace(/\D/g, '');
 	const cid = parent.querySelector('#cid').innerHTML;
 	console.log(`${window.account} going to process ${name} with cid ${cid}`);
+
 	//blocca il prodotto
 	fetch('/process-product', {
 		method: 'POST',
 		body: JSON.stringify({ user: window.account, owner: owner, cid: cid, price: parseInt(price) }),
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	})
-		.then(async (res) => {
-			const data = await res.json()
-			if (res.ok) {
-				console.log(`Going to buy ${name} for ${price} ETH`);
-				await WEB3.buyProduct(cid, owner, price, data.requestId);
-			} else {
-				if (res.status === 500) {
-					alert('Non e\' stato possibile acquistare il prodotto!');
-					document.location.reload();
-				}
-				console.error('Something went wrong while fetching!', res.status);
+		headers: { 'Content-Type': 'application/json' },
+	}).then(async (res) => {
+		const data = await res.json()
+		if (res.ok) {
+			console.log(`Going to buy ${name} for ${price} ETH`);
+			await WEB3.buyProduct(cid, owner, price, data.requestId);
+		} else {
+			if (res.status === 500) {
+				alert('Non e\' stato possibile acquistare il prodotto!');
+				document.location.reload();
 			}
-		})
-		.catch((error) => console.error('An error occurred while fetching', error));
+			console.error('Something went wrong while fetching!', res.status);
+		}
+	}).catch((error) => console.error('An error occurred while fetching', error));
 }
 
 function showPopup(btn) {
@@ -288,9 +274,7 @@ function showPopup(btn) {
 	</div>`;
 	document.querySelector('body').insertAdjacentHTML('afterbegin', popup);
 	document.querySelector('.popup-container').addEventListener('click', function (e) {
-		if (e.target == this || e.target.id === 'popup-cancel') {
-			closePopup();
-		}
+		if (e.target == this || e.target.id === 'popup-cancel') { closePopup() }
 	});
 	document.querySelector('#popup-ok').addEventListener('click', function () {
 		const priceEL = document.querySelector('#inputResellPrice');
@@ -320,15 +304,10 @@ function closePopup() {
 
 function compressImage(imgToCompress) {
 	const canvas = document.createElement('canvas');
-	const context = canvas.getContext('2d');
 	canvas.width = 280;
 	canvas.height = 280;
-
-	context.drawImage(imgToCompress, 0, 0, imgToCompress.width, imgToCompress.height, 0, 0, canvas.width, canvas.height);
-
-	const dataURI = canvas.toDataURL('image/jpeg', 0.5);
-	const img = document.querySelector('#inputProductImage');
-	img.src = dataURI;
+	canvas.getContext('2d').drawImage(imgToCompress, 0, 0, imgToCompress.width, imgToCompress.height, 0, 0, canvas.width, canvas.height);
+	document.querySelector('#inputProductImage').src = canvas.toDataURL('image/jpeg', 0.5);
 }
 
 // resetta il form di caricamento di un prodotto
@@ -344,14 +323,14 @@ function resetForm() {
 function showError(input, message) {
 	const element = input.parentElement;
 	element.classList.add('error');
-	const error = element.querySelector('small');
-	error.textContent = message;
+	element.querySelector('small').textContent = message;
 }
 
 // ripristina i cmapi
-function removeError(input) {
-	const element = input.parentElement;
-	element.classList.remove('error');
-	const error = element.querySelector('small');
-	error.textContent = '';
+function removeError(...input) {
+	input.forEach((value) => {
+		const element = value.parentElement;
+		element.classList.remove('error');
+		element.querySelector('small').textContent = '';
+	})
 }

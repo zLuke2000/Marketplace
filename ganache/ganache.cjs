@@ -7,6 +7,7 @@ const options = {
 };
 const server = ganache.server(options);
 const PORT = 8545;
+
 server.listen(PORT, async (err) => {
 	if (err) throw err;
 

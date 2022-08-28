@@ -1,14 +1,11 @@
 import express from 'express';
-import path from 'path';
 import bodyParser from 'body-parser';
-import * as fs from 'fs';
 import * as ic from './server/js/inputChecker.js';
 import * as ipfs from './server/js/myipfs.js';
 import * as db from './server/js/mongodb.js';
-import * as util from './server/util/util.js';
+import * as util from './server/js/util.js';
 
 const app = express();
-const __dirname = path.resolve();
 
 //Imposto la cartella public - non è necessario specificare un metodo per l'index.html se quest'ultimo viene messo nella cartella public
 app.use(express.static('./client/public'));
