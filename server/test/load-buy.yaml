@@ -4,7 +4,7 @@ config:
         timeout: 120
     phases:
         - duration: 30
-          arrivalRate: 50
+          arrivalRate: 30
           name: 'Load Test Buy'
     payload:
         - path: 'users.csv'
@@ -29,6 +29,7 @@ scenarios:
                     user: '0x{{ user }}'
                     owner: '0x{{ owner }}'
                     cid: '{{ cid }}'
+                    price: '{{ price }}'
                 capture:
                     - json: '$.requestId'
                       as: 'id'
@@ -44,6 +45,7 @@ scenarios:
                     user: '0x{{ user }}'
                     cid: '{{ cid }}'
                     owner: '0x{{ owner }}'
+                    price: '{{ price }}'
                 ifTrue: 'status'
                 expect:
                     - statusCode: 201
