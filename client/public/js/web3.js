@@ -1,6 +1,6 @@
 import { getAllProducts, getMyProducts } from './script.js';
 
-const contract_address = '0xEB5d2e062534DE53ABb7909D0578DcdcF0eeB419';
+const contract_address = '0x09CcD23e46639a748138fCc20128684842E8f37E';
 const contract_abi = [
 	{
 		anonymous: false,
@@ -110,9 +110,8 @@ async function loadWeb3() {
 				document.querySelector('#buyProductsRow').replaceChildren();
 				getAllProducts(0);
 			})
-			.catch((error) => {
-				console.error('Error occurred while requesting the account!', error);
-			});
+			.catch((error) => console.error('Error occurred while requesting the account!', error));
+
 		// listener per il cambio di account tramite metamask
 		window.ethereum.on('accountsChanged', function (accounts) {
 			window.account = web3.utils.toChecksumAddress(accounts[0]);
@@ -127,7 +126,7 @@ async function loadWeb3() {
 
 // recupera il riferimento allo smart contract
 async function loadContract() {
-	return await new window.web3.eth.Contract(contract_abi, contract_address);
+	return new window.web3.eth.Contract(contract_abi, contract_address);
 }
 
 // permette la creazione di un prodotto
@@ -147,42 +146,35 @@ export async function createProduct(product, requestId) {
 					user: window.account,
 					name: product.name,
 					cid: product.cid,
-					price: product.price,
+					price: product.price
 				}),
 				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-				.then((res) => {
-					if (res.ok) {
-						alert('Your product has been added to the marketplace!');
-						document.location.reload();
-					} else {
-						console.error('An error occured during fetch', res.status);
-					}
-				})
-				.catch((error) => {
-					console.log('An error occured while fetching', error);
-				});
-		})
-		.on('error', function (error, receipt) {
+					'Content-Type': 'application/json'
+				}
+			}).then((res) => {
+				if (res.ok) {
+					alert('Your product has been added to the marketplace!');
+					document.location.reload();
+				} else {
+					console.error('An error occured during fetch', res.status);
+				}
+			}).catch((error) => console.log('An error occured while fetching', error));
+		}).on('error', function (error, receipt) {
 			console.error('An error occurred:\n' + error.message, error);
 			if (receipt != null) {
 				console.log('Transaction receipt:', receipt);
 			}
-		})
-		.catch((e) => console.error('An error occurred during the transaction!', e));
+		}).catch((e) => console.error('An error occurred during the transaction!', e));
 }
 
 // permette l'acquisto di un prodotto
 export async function buyProduct(cid, owner, price, requestId) {
 	console.log('Going to buy the product:', cid);
 	// calling the smart contract method
-	//FIXME: usare `${price}`
 	console.log('ID', requestId);
 	contract.methods
 		.purchaseProduct(cid, owner)
-		.send({ from: window.account, value: web3.utils.toWei('1') })
+		.send({ from: window.account, value: web3.utils.toWei(`${price}`) })
 		.on('receipt', (receipt) => {
 			console.log("Transaction completed here's the receipt:", receipt);
 			console.log('going to fetch...');
@@ -193,28 +185,25 @@ export async function buyProduct(cid, owner, price, requestId) {
 					id: requestId,
 					user: window.account,
 					owner: owner,
-					cid: cid }),
+					cid: cid,
+					price: price }),
 				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-				.then((res) => {
-					if (res.ok) {
-						alert('You have successfully purchased the product!');
-						document.location.reload();
-					} else {
-						console.error('Something went wrong while fetching!', res.status);
-					}
-				})
-				.catch((error) => console.error('An error occurred while fetching', error));
-		})
-		.on('error', function (error, receipt) {
+					'Content-Type': 'application/json'
+				}
+			}).then((res) => {
+				if (res.ok) {
+					alert('You have successfully purchased the product!');
+					document.location.reload();
+				} else {
+					console.error('Something went wrong while fetching!', res.status);
+				}
+			}).catch((error) => console.error('An error occurred while fetching', error));
+		}).on('error', function (error, receipt) {
 			console.error('An error occurred:\n' + error.message, error);
 			if (receipt != null) {
 				console.log('Transaction receipt:', receipt);
 			}
-		})
-		.catch((error) => {
+		}).catch((error) => {
 			console.error('An error occurred during the transaction!', error);
 			if (error.code === 4001) {
 				//sblocca il prodotto se l'utente annulla la transazione
@@ -222,20 +211,12 @@ export async function buyProduct(cid, owner, price, requestId) {
 					method: 'POST',
 					body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
 					headers: {
-						'Content-Type': 'application/json',
-					},
+						'Content-Type': 'application/json'
+					}
 				});
 			}
 			document.location.reload();
 		});
-}
-
-async function getAllEvents() {
-	contract.getPastEvents('productCreated', { fromBlock: 0, toBlock: 'latest' }).then((events) => {
-		for (let event of events) {
-			console.log(event.returnValues);
-		}
-	});
 }
 
 async function load() {

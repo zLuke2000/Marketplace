@@ -5,14 +5,13 @@ const url = 'mongodb://admin:avcu7p1g5JCL4hpfHOmYbsjgruVSd7uS@localhost:27017';
 //const url = 'mongodb://localhost:27017';
 
 const client = await connectToDB();
-const dbo = client.db('marketplace');
-const collection = dbo.collection('products');
+const collection = client.db('marketplace').collection('products');
 
 async function connectToDB() {
 	try {
 		return MongoClient.connect(url);
 	} catch (error) {
-		console.error('Connection error', error);
+		console.error('[MongoDB] Connection error: ', error);
 		return null;
 	}
 }
@@ -25,46 +24,40 @@ export async function addProduct(owner, name, cid, price) {
 			name: name,
 			cid: cid,
 			price: price,
-			status: 'available',
+			status: 'available'
 		});
 		return res.acknowledged;
 	} catch (error) {
-		console.error('Error while trying to insert the product', error);
+		console.error('[addProduct] Error while trying to insert the product: ', error);
 	}
 	return false;
 }
 
-export async function processProduct(owner, cid) {
+export async function processProduct(owner, cid, price) {
 	try {
-		const filter = { owner: owner, cid: cid, status: 'available' };
-		const update = {
-			$set: {
-				status: 'processing',
-			},
-		};
+		const filter = { owner: owner, cid: cid, price: price, status: 'available' };
+		const update = { $set: { status: 'processing'} };
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
 		return result.modifiedCount == 1;
 	} catch (error) {
-		console.error('Error while trying to process a product!', error);
+		console.error('[processProduct] Error while trying to process a product!', error);
 	}
 }
 
 // permette l'acquisto di un prodotto modificando il proprietario e lo stato del prodotto
-export async function buyProduct(user, owner, cid) {
+export async function buyProduct(user, owner, cid, price) {
 	try {
-		const filter = { owner: owner, cid: cid };
+		const filter = { owner: owner, cid: cid, price: price, status: 'processing' };
 		const update = {
 			$set: {
 				owner: user,
-				status: 'purchased',
-			},
+				status: 'purchased'
+			}
 		};
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
 		return result.acknowledged;
 	} catch (error) {
-		console.error('Error while trying to update data!', error);
+		console.error('[buyProduct] Error while trying to update data!', error);
 	}
 	return false;
 }
@@ -72,16 +65,11 @@ export async function buyProduct(user, owner, cid) {
 export async function cancelBuy(owner, cid) {
 	try {
 		const filter = { owner: owner, cid: cid };
-		const update = {
-			$set: {
-				status: 'available',
-			},
-		};
+		const update = { $set: { status: 'available' } };
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
 		return result.acknowledged;
 	} catch (error) {
-		console.error('Error while trying to update data!', error);
+		console.error('[cancelBuy] Error while trying to update data!', error);
 	}
 }
 
@@ -91,14 +79,13 @@ export async function resellProduct(user, cid, price) {
 		const update = {
 			$set: {
 				price: price,
-				status: 'available',
-			},
+				status: 'available'
+			}
 		};
 		const result = await collection.updateOne(filter, update);
-		console.log(`Updated ${result.modifiedCount} document`);
 		return result.acknowledged;
 	} catch (error) {
-		console.error('Error while trying to update data!', error);
+		console.error('[resellProduct] Error while trying to update data!', error);
 	}
 	return false;
 }
@@ -108,10 +95,9 @@ export async function readAll(user, skip) {
 	try {
 		const regex = new RegExp('^(?!.*' + user + ').*');
 		const query = { owner: regex, status: 'available' };
-		const result = await collection.find(query).skip(skip).limit(36).toArray();
-		return result;
+		return collection.find(query).skip(skip).limit(36).toArray();
 	} catch (error) {
-		console.error('1 - Error while trying to read the product', error);
+		console.error('[readAll] Error while trying to read the product', error);
 		return null;
 	}
 }
@@ -119,10 +105,9 @@ export async function readAll(user, skip) {
 // legge tutti i prodotti dell'utente
 export async function readByOwner(owner) {
 	try {
-		const result = await collection.find({ owner: owner }).toArray();
-		return result;
+		return collection.find({ owner: owner }).toArray();
 	} catch (error) {
-		console.error('2 - Error while trying to read the product', error);
+		console.error('[readByOwner] Error while trying to read the product', error);
 		return null;
 	}
 }
@@ -132,11 +117,14 @@ export async function searchProducts(user, string, skip) {
 	try {
 		const reUser = new RegExp('^(?!.*' + user + ').*');
 		const reProduct = new RegExp('^' + string + '.*', 'i');
-		const query = { owner: reUser, name: reProduct, status: 'available' };
-		const result = await collection.find(query).skip(skip).limit(36).sort({ name: 1 }).toArray();
-		return result;
+		const query = { 
+			owner: reUser, 
+			name: reProduct, 
+			status: 'available'
+		};
+		return collection.find(query).skip(skip).limit(36).sort({ name: 1 }).toArray();
 	} catch (error) {
-		console.error('Error while searching for specific products!', error);
+		console.error('[searchProducts] Error while searching for specific products!', error);
 		return null;
 	}
 }

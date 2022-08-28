@@ -1,12 +1,13 @@
 const ganache = require('ganache');
 
 const options = {
-	wallet: { totalAccounts: '100', seed: 'marketplaceTest', accountKeysPath: 'ganache/keys.json', defaultBalance: '10000' },
+	wallet: { totalAccounts: '100', seed: 'marketplaceTest2', accountKeysPath: 'ganache/keys.json', defaultBalance: '100000' },
 	server: { host: '0.0.0.0' },
-	database: { dbPath: 'ganache/db' },
+	database: { dbPath: 'ganache/db' }
 };
 const server = ganache.server(options);
 const PORT = 8545;
+
 server.listen(PORT, async (err) => {
 	if (err) throw err;
 

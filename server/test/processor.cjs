@@ -25,16 +25,17 @@ async function generateProduct(requestParams, context, ee, next) {
 	const desc = faker.commerce.productDescription();
 	const price = parseInt(faker.commerce.price(1, 100, 0));
 	var image = fs.readFileSync('image.txt').toString();
+	console.log(image);
 
 	const product = {
-		name: name,
-		description: desc,
-		price: price,
-		image: image,
+		name: faker.commerce.product(),
+		description: faker.commerce.productDescription(),
+		price: parseInt(faker.commerce.price(1, 100, 0)),
+		image: fs.readFileSync('image.txt').toString(),
 	};
 	context.vars['product'] = product;
-	context.vars['name'] = name;
-	context.vars['price'] = price;
+	context.vars['name'] = product.name;
+	context.vars['price'] = product.price;
 
 	return next();
 }

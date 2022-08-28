@@ -1,14 +1,11 @@
 import express from 'express';
-import path from 'path';
 import bodyParser from 'body-parser';
-import * as fs from 'fs';
 import * as ic from './server/js/inputChecker.js';
 import * as ipfs from './server/js/myipfs.js';
 import * as db from './server/js/mongodb.js';
-import * as util from './server/util/util.js';
+import * as util from './server/js/util.js';
 
 const app = express();
-const __dirname = path.resolve();
 
 //Imposto la cartella public - non è necessario specificare un metodo per l'index.html se quest'ultimo viene messo nella cartella public
 app.use(express.static('./client/public'));
@@ -124,23 +121,24 @@ app.post('/process-product', async (req, res) => {
 	// ---- PerformanceTest ----
 	const id = util.init(req.body.user);
 	console.log(`[${req.body.user}] processing product ${req.body.cid}`);
-	const result = await db.processProduct(req.body.owner, req.body.cid);
+	const result = await db.processProduct(req.body.owner, req.body.cid, req.body.price);
 	// ---- PerformanceTest ----
 	util.add(req.body.user + id);
 	if (result) {
 		res.status(201).json({ requestId: id });
 	} else {
-		res.status(500).send('product is already processing!');
+		res.status(500).send(`Product ${req.body.cid} is already processing!`);
 	}
 });
 
 app.post('/buy-product', async (req, res) => {
 	console.log(`[${req.body.user}] going to buy the product ${req.body.cid}`);
 	// ---- PerformanceTest ----
-	util.add(req.body.user + req.body.id);
-	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid);
+	console.log("USER: " + req.body.user + " ID: " + req.body.requestId)
+	util.add(req.body.user + req.body.requestId);
+	const result = await db.buyProduct(req.body.user, req.body.owner, req.body.cid, req.body.price);
 	// ---- PerformanceTest ----
-	util.end(req.body.user, req.body.id, 'raw_buy');
+	util.end(req.body.user, req.body.requestId, 'raw_buy')
 	if (result) {
 		res.sendStatus(201);
 	} else {
