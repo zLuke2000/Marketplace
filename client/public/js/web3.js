@@ -209,7 +209,7 @@ export async function buyProduct(cid, owner, price, requestId) {
 				//sblocca il prodotto se l'utente annulla la transazione
 				fetch('/cancel-buy', {
 					method: 'POST',
-					body: JSON.stringify({ user: window.account, owner: owner, cid: cid }),
+					body: JSON.stringify({ user: window.account, owner: owner, cid: cid, price: price }),
 					headers: {
 						'Content-Type': 'application/json'
 					}

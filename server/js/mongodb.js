@@ -64,7 +64,7 @@ export async function buyProduct(user, owner, cid, price) {
 
 export async function cancelBuy(owner, cid) {
 	try {
-		const filter = { owner: owner, cid: cid };
+		const filter = { owner: owner, cid: cid, price: price, status: 'processing'};
 		const update = { $set: { status: 'available' } };
 		const result = await collection.updateOne(filter, update);
 		return result.acknowledged;
