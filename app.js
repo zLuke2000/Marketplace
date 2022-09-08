@@ -151,7 +151,7 @@ app.post('/buy-product', async (req, res) => {
 
 app.post('/cancel-buy', async (req, res) => {
 	console.log(`[${req.body.user}] denied transaction to buy product ${req.body.cid}`);
-	const result = await db.cancelBuy(req.body.owner, req.body.cid);
+	const result = await db.cancelBuy(req.body.owner, req.body.cid, req.body.price);
 	if (result) {
 		res.sendStatus(201);
 	} else {

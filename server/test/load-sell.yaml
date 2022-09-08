@@ -3,8 +3,8 @@ config:
     http:
         timeout: 120
     phases:
-        - duration: 1
-          arrivalRate: 1
+        - duration: 20
+          arrivalRate: 30
           name: 'Load Test Sell'
     payload:
         path: 'users.csv'
