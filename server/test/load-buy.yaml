@@ -1,10 +1,10 @@
 config:
-    target: 'http://192.168.1.56:5000'
+    target: 'http://31.156.147.189:5000'
     http:
         timeout: 120
     phases:
-        - duration: 30
-          arrivalRate: 30
+        - duration: 20
+          arrivalRate: 20
           name: 'Load Test Buy'
     payload:
         - path: 'users.csv'

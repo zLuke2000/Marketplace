@@ -12,7 +12,7 @@ const contract = new web3.eth.Contract(abi, address);
 async function createProduct(requestParams, context, ee, next) {
 	try {
 		await contract.methods.createProduct(context.vars['cid'], context.vars['price']).send({ from: '0x' + context.vars['user'] });
-		console.log(`============================================\t\t[0x${context.vars['user']}] got receipt\t\t===========================================`);
+		console.log(`============================================\t[0x${context.vars['user']}] got receipt\t===========================================`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
 	}
@@ -21,12 +21,6 @@ async function createProduct(requestParams, context, ee, next) {
 
 //genera randomicamente un prodotto
 async function generateProduct(requestParams, context, ee, next) {
-	const name = faker.commerce.product();
-	const desc = faker.commerce.productDescription();
-	const price = parseInt(faker.commerce.price(1, 100, 0));
-	var image = fs.readFileSync('image.txt').toString();
-	console.log(image);
-
 	const product = {
 		name: faker.commerce.product(),
 		description: faker.commerce.productDescription(),
@@ -45,7 +39,7 @@ async function purchaseProduct(requestParams, context, ee, next) {
 		await contract.methods
 			.purchaseProduct(context.vars['cid'], '0x' + context.vars['owner'])
 			.send({ from: '0x' + context.vars['user'], value: web3.utils.toWei(context.vars['price'].toString()) });
-		console.log(`============================================\t\t[0x${context.vars['user']}] got receipt\t\t===========================================`);
+		console.log(`============================================\t[0x${context.vars['user']}] got receipt\t===========================================`);
 	} catch (error) {
 		console.error(`[0x${context.vars['user']}] transaction error`, error);
 	}
