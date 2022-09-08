@@ -4,6 +4,9 @@ import * as ic from './server/js/inputChecker.js';
 import * as ipfs from './server/js/myipfs.js';
 import * as db from './server/js/mongodb.js';
 import * as util from './server/js/util.js';
+import * as https from 'https'
+import * as fs from 'fs'
+import * as forge from 'node-forge'
 
 const app = express();
 
@@ -192,7 +195,16 @@ app.all('*', (_req, res) => {
 });
 
 //app.listen
-app.listen(5000, () => {
+/* app.listen(5000, () => {
 	console.clear();
 	console.log('server is listening on port 5000...');
-});
+}); */
+https.createServer(
+	{
+		key: fs.readFileSync('./certificate/ethmarketplace.key'),
+		cert: fs.readFileSync('./certificate/ethmarketplace.crt'),
+	},
+	app).listen(5000, () => {
+		console.clear();
+		console.log('Server is listening on port 5000...');
+	})

@@ -117,6 +117,12 @@ async function loadWeb3() {
 			window.account = web3.utils.toChecksumAddress(accounts[0]);
 			document.location.reload();
 		});
+		window.ethereum.on('chainChanged', function(chainId) {
+			console.warn('network changed', chainId);
+			if (chainId != 0x539) {
+				alert(`La rete attualmente selezionata e' diversa dalla rete di ETHMarketplace!\nSeleziona la rete giusta per garantire il corretto funzionamento della pagina.`);
+			}
+		})
 	} else {
 		console.error('Metamask is required!');
 		window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en');
